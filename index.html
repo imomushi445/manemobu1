@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAGICAL PROTOCOL // 6×5 SYNERGY ENGINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Moe Pastel & Magical Palette */
+    --bg-main: #fff5f8;
+    --bg-grad-1: #ffe8f1;
+    --bg-grad-2: #f3e8ff;
+    --bg-card: #ffffff;
+    --bg-soft: #fdf2f8;
+    --border-soft: #f5d0fe;
+    --border-pink: #f472b6;
+    --border-purple: #c084fc;
+    --text-dark: #3b1e36;
+    --text-muted: #7c5875;
+    --text-light: #a888a2;
+
+    /* 6 Archetypes (Vibrant Anime Colors) */
+    --c-swift: #0284c7;   /* 連撃: スカイブルー */
+    --c-heavy: #e11d48;   /* 重撃: クリムゾンローズ */
+    --c-venom: #059669;   /* 侵食: エメラルド */
+    --c-aegis: #d97706;   /* 装甲: アンバーゴールド */
+    --c-cycle: #7c3aed;   /* 循環: ロイヤルバイオレット */
+    --c-echo:  #db2777;   /* 共鳴: マゼンタピンク */
+
+    --shadow-card: 0 6px 18px rgba(219, 39, 119, 0.10);
+    --shadow-pop: 0 10px 25px rgba(124, 58, 237, 0.18);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+  }
+
+  body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-main) 50%, var(--bg-grad-2) 100%);
+    background-attachment: fixed;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Decorative floating stars pattern */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(#f472b6 1px, transparent 1px), radial-gradient(#c084fc 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header HUD */
+  header {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--border-soft);
+    padding: 8px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(244, 114, 182, 0.08);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-title {
+    font-weight: 900;
+    font-size: 1.05rem;
+    background: linear-gradient(90deg, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-pill {
+    background: var(--bg-soft);
+    border: 1.5px solid var(--border-pink);
+    color: var(--text-dark);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  /* 6 Archetypes Tracker */
+  .arch-tracker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .arch-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1.5px solid #e9d5ff;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .arch-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .arch-pill.is-main {
+    background: #fff1f2;
+    border-width: 2px;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.25);
+  }
+
+  .arch-pill.is-sub {
+    background: #f5f3ff;
+    border-style: dashed;
+    border-width: 2px;
+  }
+
+  .role-tag {
+    font-size: 0.62rem;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 999px;
+    color: #fff;
+  }
+
+  .mult-tag {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 800;
+  }
+
+  /* Buttons */
+  .btn {
+    background: #fff;
+    color: var(--text-dark);
+    border: 2px solid var(--border-purple);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 3px 0 #d8b4fe;
+  }
+
+  .btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 #c084fc;
+    background: #faf5ff;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #c084fc;
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-pink {
+    background: linear-gradient(135deg, #f43f5e, #ec4899);
+    border-color: #be185d;
+    color: #fff;
+    box-shadow: 0 3px 0 #9d174d;
+  }
+
+  .btn-pink:hover:not(:disabled) {
+    background: linear-gradient(135deg, #fb7185, #f472b6);
+    box-shadow: 0 5px 0 #9d174d;
+  }
+
+  .btn-violet {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    border-color: #4c1d95;
+    color: #fff;
+    box-shadow: 0 3px 0 #4c1d95;
+  }
+
+  .btn-violet:hover:not(:disabled) {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    box-shadow: 0 5px 0 #4c1d95;
+  }
+
+  .btn-amber {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: #b45309;
+    color: #fff;
+    box-shadow: 0 3px 0 #92400e;
+  }
+
+  /* Active Protocol Banner */
+  .protocol-banner {
+    background: linear-gradient(90deg, #fff1f2, #fdf4ff, #fff1f2);
+    border-bottom: 2px solid #fbcfe8;
+    padding: 7px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+  }
+
+  .protocol-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .protocol-chip {
+    background: #fff;
+    border: 1.5px solid #f472b6;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .protocol-title {
+    font-weight: 900;
+    font-size: 0.94rem;
+    color: #be185d;
+  }
+
+  .protocol-desc {
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    max-width: 1320px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 16px 24px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    animation: popIn 0.25s ease;
+  }
+
+  .screen.active {
+    display: flex;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Title Screen */
+  .hero-box {
+    background: rgba(255, 255, 255, 0.95);
+    border: 3px solid #f9a8d4;
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-pop);
+    margin-top: 12px;
+  }
+
+  .hero-box h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #ec4899, #8b5cf6, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .hero-sub {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    max-width: 720px;
+    margin: 0 auto 22px;
+    line-height: 1.65;
+    font-weight: 600;
+  }
+
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    max-width: 960px;
+    margin: 0 auto 24px;
+    text-align: left;
+  }
+
+  .rule-card {
+    background: var(--bg-soft);
+    border: 2px solid #fbcfe8;
+    border-radius: 16px;
+    padding: 14px;
+  }
+
+  .rule-card h3 {
+    font-size: 0.9rem;
+    color: #db2777;
+    margin-bottom: 5px;
+    font-weight: 900;
+  }
+
+  .rule-card p {
+    font-size: 0.78rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+
+  /* Map Screen */
+  .map-panel {
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid #f5d0fe;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--shadow-card);
+    overflow-x: auto;
+  }
+
+  .map-layers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-width: 760px;
+    margin-top: 12px;
+  }
+
+  .map-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .map-node {
+    width: 100%;
+    max-width: 145px;
+    background: #fff;
+    border: 2px solid #e9d5ff;
+    border-radius: 16px;
+    padding: 10px 8px;
+    text-align: center;
+    opacity: 0.5;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .map-node.visited {
+    background: #fdf2f8;
+    border-color: #fbcfe8;
+    opacity: 0.75;
+  }
+
+  .map-node.visited::after {
+    content: "CLEAR ♡";
+    position: absolute;
+    top: -8px;
+    right: 6px;
+    background: #ec4899;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 1px 6px;
+    border-radius: 999px;
+  }
+
+  .map-node.available {
+    opacity: 1;
+    cursor: pointer;
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.18), 0 8px 16px rgba(236, 72, 153, 0.2);
+    animation: bounceNode 1.8s infinite;
+  }
+
+  .map-node.available:hover {
+    transform: translateY(-4px) scale(1.04);
+    background: #fff1f2;
+  }
+
+  @keyframes bounceNode {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
+  /* COMBAT LAYOUT (Anime Character Left + Tactical Arena Right) */
+  .combat-layout {
+    display: grid;
+    grid-template-columns: 270px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  @media (max-width: 920px) {
+    .combat-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Magical Girl Character Panel */
+  .chara-panel {
+    background: linear-gradient(180deg, #fff1f2 0%, #ffffff 100%);
+    border: 2.5px solid #f472b6;
+    border-radius: 20px;
+    padding: 12px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .chara-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: #be185d;
+  }
+
+  .chara-portrait-frame {
+    width: 210px;
+    height: 215px;
+    background: radial-gradient(circle at 50% 40%, #ffe4e6, #f3e8ff);
+    border: 2px solid #fbcfe8;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chara-speech {
+    width: 100%;
+    background: #fdf2f8;
+    border: 1.5px solid #f9a8d4;
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.4;
+    min-height: 54px;
+    position: relative;
+  }
+
+  .hp-bar-wrap {
+    width: 100%;
+    background: #fce7f3;
+    border: 1.5px solid #f472b6;
+    height: 20px;
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fb7185, #ec4899);
+    transition: width 0.25s ease;
+  }
+
+  .hp-bar-fill.enemy-fill {
+    background: linear-gradient(90deg, #9333ea, #e11d48);
+  }
+
+  .hp-bar-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.76rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(80, 7, 36, 0.85);
+  }
+
+  .status-pills {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 26px;
+  }
+
+  .st-badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1.5px solid #e9d5ff;
+  }
+
+  /* Right Combat Arena */
+  .arena-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .arena-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 680px) {
+    .arena-top-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .enemy-card {
+    background: #fff;
+    border: 2.5px solid #c084fc;
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .intent-box {
+    background: #fff1f2;
+    border: 1.5px solid #fda4af;
+    border-radius: 12px;
+    padding: 7px 10px;
+  }
+
+  .action-console {
+    background: #fff;
+    border: 2.5px solid #f9a8d4;
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .slot-tracker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fdf2f8;
+    border: 1.5px solid #fbcfe8;
+    border-radius: 12px;
+    padding: 6px 10px;
+  }
+
+  .action-pips {
+    display: flex;
+    gap: 6px;
+  }
+
+  .pip {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fce7f3;
+    border: 2px solid #f472b6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #be185d;
+    transition: all 0.2s;
+  }
+
+  .pip.active {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    border-color: #fff;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+    transform: scale(1.08);
+  }
+
+  .pip.finisher {
+    border-color: #f59e0b;
+  }
+
+  .combat-log {
+    height: 92px;
+    overflow-y: auto;
+    background: #faf5ff;
+    border: 1.5px solid #e9d5ff;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--text-dark);
+  }
+
+  /* 7 Skills Grid */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+
+  @media (max-width: 1200px) {
+    .skills-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .skill-card {
+    background: #fff;
+    border: 2px solid #e9d5ff;
+    border-radius: 16px;
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    position: relative;
+    min-height: 196px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  }
+
+  .skill-card:hover:not(.expended):not(.locked) {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(236, 72, 153, 0.18);
+    border-color: #ec4899;
+  }
+
+  .skill-card.expended {
+    opacity: 0.48;
+    filter: grayscale(0.7);
+    border-style: dashed;
+    background: #f8fafc;
+    cursor: not-allowed;
+  }
+
+  .skill-card.expended::after {
+    content: "装填切れ // EMPTY";
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-7deg);
+    background: #fff1f2;
+    border: 2px solid #e11d48;
+    color: #e11d48;
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .skill-card.locked:not(.expended) {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .skill-title {
+    font-weight: 900;
+    font-size: 0.8rem;
+    line-height: 1.25;
+  }
+
+  .skill-desc {
+    font-size: 0.72rem;
+    line-height: 1.38;
+    background: #fdf2f8;
+    padding: 5px 6px;
+    border-radius: 8px;
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+
+  .mod-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: auto;
+  }
+
+  .mod-slot {
+    font-size: 0.67rem;
+    padding: 3px 6px;
+    border-radius: 7px;
+    border: 1.5px solid #e9d5ff;
+    background: #fff;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .mod-slot.empty {
+    border-style: dashed;
+    color: var(--text-light);
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Reward & Modals */
+  .panel-white {
+    background: rgba(255, 255, 255, 0.96);
+    border: 2.5px solid #f472b6;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--shadow-pop);
+  }
+
+  .reward-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+
+  .reward-card {
+    background: #fff;
+    border: 2.5px solid #e9d5ff;
+    border-radius: 16px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.16s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .reward-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .reward-card.selected {
+    background: #fff1f2;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.25);
+  }
+
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(59, 30, 54, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal-box {
+    background: #fff;
+    border: 3px solid #f472b6;
+    border-radius: 22px;
+    max-width: 1080px;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+
+  .modal-head {
+    padding: 12px 18px;
+    background: #fdf2f8;
+    border-bottom: 2px solid #fbcfe8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-body {
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.71rem;
+  }
+
+  .matrix-table th, .matrix-table td {
+    border: 1.5px solid #f3e8ff;
+    padding: 6px;
+    vertical-align: top;
+  }
+
+  .matrix-table th {
+    background: #fdf2f8;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .matrix-active {
+    background: #fef9c3 !important;
+    border: 2px solid #f59e0b !important;
+  }
+
+  /* Animations */
+  .shake {
+    animation: shakeAnim 0.3s ease;
+  }
+
+  @keyframes shakeAnim {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .floater {
+    position: fixed;
+    pointer-events: none;
+    font-weight: 900;
+    font-size: 1.35rem;
+    text-shadow: 0 2px 0 #fff, 0 0 8px rgba(255,255,255,0.9);
+    z-index: 200;
+    animation: floatUp 0.9s ease-out forwards;
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(0.85); }
+    30% { transform: translateY(-16px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-42px) scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-title">🌸 MAGICAL PROTOCOL // 6×5</span>
+    <span class="badge-pill" id="hud-stage">STANDBY</span>
+    <span class="badge-pill" id="hud-hp" style="border-color:#e11d48; color:#be185d;">♥ HP: 65 / 65</span>
+  </div>
+
+  <div class="arch-tracker" id="hud-archetypes" title="クリックでMAIN/SUBの軸を切り替えられます"></div>
+
+  <div style="display:flex; gap:6px;">
+    <button class="btn" onclick="openDeckModal()">🎀 魔導スキル (7)</button>
+    <button class="btn" onclick="openMatrixModal()">📖 30種プロトコル図鑑</button>
+  </div>
+</header>
+
+<div class="protocol-banner">
+  <div class="protocol-info">
+    <div class="protocol-chip" id="proto-pair">
+      <span>未起動（2系統のモジュール装着で発動）</span>
+    </div>
+    <span class="protocol-title" id="proto-name">---</span>
+    <span class="protocol-desc" id="proto-desc">特化する2系統のレベル（MAIN×SUB）に応じて、爆発的な融合プロトコルが起動します！</span>
+  </div>
+  <button class="btn btn-pink" id="btn-swap-proto" style="display:none; font-size:0.74rem; padding:4px 10px;" onclick="swapMainSub()">⇄ MAIN / SUB 入替</button>
+</div>
+
+<main>
+  <!-- 1. TITLE SCREEN -->
+  <section id="screen-title" class="screen active">
+    <div class="hero-box">
+      <h1>🌸 MAGICAL PROTOCOL // 6×5 SYNERGY ENGINE 🌸</h1>
+      <p class="hero-sub">
+        AP制なし・毎ターン<strong>最大3行動枠</strong>のシビアな戦術ローグライト！<br>
+        6つの魔導系統から<strong>「MAIN（主軸）」と「SUB（副軸）」の2系統に特化</strong>し、<br>
+        <strong>6 × 5 ＝ 30通り</strong>の『デュアル・プロトコル』と<strong>7つの魔改造スキル</strong>で深層を突破しよう！
+      </p>
+
+      <div class="rule-grid">
+        <div class="rule-card">
+          <h3>⏳ 1ターン3行動枠 ＆ リロードのジレンマ</h3>
+          <p>APは存在しません。1ターンに使えるスキルは<strong>3回まで</strong>。使用済みスキルを戻す<strong>「一括リロード」は1ターン（全3行動）を丸ごと消費</strong>するため、敵の行動予告を見極める駆け引きが重要です。</p>
+        </div>
+        <div class="rule-card">
+          <h3>📈 系統特化の指数スケーリング</h3>
+          <p>各系統はレベルが上がるほどモジュール倍率が<strong>×1.1 → ×1.4 → ×1.9 → ×2.6 → ×3.5</strong>と急上昇！中途半端な分散ではなく、<strong>2系統への集中特化</strong>が圧倒的な火力を生みます。</p>
+        </div>
+        <div class="rule-card">
+          <h3>🛡️ シールドはターン終了時に消滅</h3>
+          <p>防御の持ち越しはできません（一部プロトコルを除く）。限られたHP（65）をやりくりし、敵に押し切られる前に特化コンボで撃破する緊張感を味わえます。</p>
+        </div>
+        <div class="rule-card">
+          <h3>🧬 6×5＝30通りの順列シナジー</h3>
+          <p>「連撃×侵食」と「侵食×連撃」は全く別の必殺コンボ！伸ばした2系統の順序（MAIN×SUB）を切り替えながら戦えます。</p>
+        </div>
+      </div>
+
+      <button class="btn btn-pink" style="font-size:1.05rem; padding:12px 34px;" onclick="startNewRun()">✨ 作戦スタート（NEW RUN）</button>
+    </div>
+  </section>
+
+  <!-- 2. MAP SCREEN -->
+  <section id="screen-map" class="screen">
+    <div class="map-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h2 id="map-act-title" style="font-size:1.05rem; color:#be185d;">ACT 1 // 星屑の外縁回廊</h2>
+          <p style="font-size:0.78rem; color:var(--text-muted);">光っているノードを選んで進もう！バッジはドロップしやすい魔導系統だよ♪</p>
+        </div>
+        <span class="badge-pill">💡 上部の系統バッジクリックでMAIN/SUB入替可能</span>
+      </div>
+      <div class="map-layers" id="map-layers"></div>
+    </div>
+  </section>
+
+  <!-- 3. COMBAT SCREEN -->
+  <section id="screen-combat" class="screen">
+    <div class="combat-layout">
+      <!-- Left: Magical Girl Operator Portrait & Status -->
+      <aside class="chara-panel" id="chara-panel">
+        <div class="chara-header">
+          <span>🎀 ルナ・ステラ [LV.07]</span>
+          <span class="badge-pill" id="turn-badge" style="padding:2px 8px; font-size:0.72rem;">TURN 1</span>
+        </div>
+
+        <div class="chara-portrait-frame" id="chara-portrait">
+          <!-- Dynamic Anime SVG Portrait rendered by JS -->
+        </div>
+
+        <div class="chara-speech" id="chara-speech">
+          「マスター、指示をお願い！1ターン3手までだから慎重にいこうね♪」
+        </div>
+
+        <div class="hp-bar-wrap">
+          <div class="hp-bar-fill" id="player-hp-bar" style="width:100%"></div>
+          <div class="hp-bar-text" id="player-hp-text">HP 65 / 65</div>
+        </div>
+
+        <div class="status-pills" id="player-statuses"></div>
+      </aside>
+
+      <!-- Right: Enemy + Action Console + 7 Skills -->
+      <div class="arena-col">
+        <div class="arena-top-grid">
+          <!-- Enemy Box -->
+          <div class="enemy-card" id="enemy-box">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-weight:900; font-size:0.98rem; color:#6b21a8;" id="enemy-name">👾 ENEMY</span>
+                <span class="badge-pill" id="enemy-rank" style="font-size:0.68rem;">NORMAL</span>
+              </div>
+              <div class="hp-bar-wrap" style="border-color:#c084fc; background:#f3e8ff;">
+                <div class="hp-bar-fill enemy-fill" id="enemy-hp-bar" style="width:100%"></div>
+                <div class="hp-bar-text" id="enemy-hp-text">50 / 50</div>
+              </div>
+              <div class="status-pills" id="enemy-statuses" style="margin-top:6px;"></div>
+            </div>
+
+            <div class="intent-box">
+              <div style="font-size:0.68rem; font-weight:800; color:#e11d48;">NEXT ENEMY ACTION // 次の敵行動</div>
+              <div style="font-size:0.86rem; font-weight:900; color:#881337;" id="enemy-intent-text">⚔️ 攻撃 10 ダメージ</div>
+            </div>
+          </div>
+
+          <!-- Action Slots & Log -->
+          <div class="action-console">
+            <div class="slot-tracker">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.78rem; font-weight:900;">残り行動枠:</span>
+                <div class="action-pips" id="action-pips"></div>
+              </div>
+              <span style="font-size:0.72rem; font-weight:800; color:#db2777;" id="slot-hint">3手目はフィニッシュ枠！</span>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-amber" id="btn-full-reload" onclick="triggerFullReload()" style="flex:1; justify-content:center;">
+                🔄 一括リロード (全3枠消費)
+              </button>
+              <button class="btn btn-violet" id="btn-end-turn" onclick="endPlayerTurn()" style="flex:1; justify-content:center;">
+                ⏭ ターン終了
+              </button>
+            </div>
+
+            <div class="combat-log" id="combat-log"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; font-weight:800; color:var(--text-muted); padding:0 4px;">
+          <span>✨ 魔導スキル (7) — 1ターンに最大3つまで発動可能（使用後は装填切れ）</span>
+          <span id="loaded-count-text">装填済: 7 / 7</span>
+        </div>
+
+        <div class="skills-grid" id="combat-skills-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. REWARD SCREEN -->
+  <section id="screen-reward" class="screen">
+    <div class="panel-white">
+      <h2 style="font-size:1.1rem; color:#db2777; margin-bottom:4px;">🎉 戦闘勝利！ — 魔導モジュール獲得</h2>
+      <p style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">
+        ① 獲得するモジュールを1つ選び、② 下の7つのスキルのどれかに装着しよう！（各スキル最大3スロット・同じ系統を伸ばすと倍率が急上昇！）
+      </p>
+
+      <div class="reward-grid" id="reward-choices"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 8px; flex-wrap:wrap; gap:8px;">
+        <span style="font-size:0.84rem; font-weight:900; color:#be185d;" id="install-guide">▶ 装着先のスキルをクリックしてください</span>
+        <button class="btn" onclick="advanceNode()">装着せずスキップ ⏭</button>
+      </div>
+
+      <div class="skills-grid" id="reward-skills-grid"></div>
+    </div>
+  </section>
+
+  <!-- 5. REST / FORGE SCREEN -->
+  <section id="screen-rest" class="screen">
+    <div class="panel-white" style="max-width:780px; margin:16px auto; text-align:center;">
+      <h2 style="font-size:1.15rem; color:#d97706; margin-bottom:6px;">🍰 魔導整備ティータイム</h2>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">
+        HP回復は貴重です。体力温存か、特化系統のさらなる限界突破かを選択してください。
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; text-align:left;">
+        <div class="reward-card" onclick="doRestHeal()">
+          <div style="font-size:1.3rem;">🍓 ショートケーキ休憩</div>
+          <div style="font-weight:900; color:#be185d;">最大HPの 30%（+20）回復</div>
+          <div style="font-size:0.76rem; color:var(--text-muted);">損傷した魔力障壁を修復します。</div>
+        </div>
+        <div class="reward-card" onclick="openRestForge()">
+          <div style="font-size:1.3rem;">💎 モジュール共鳴増幅</div>
+          <div style="font-weight:900; color:#7c3aed;">装着済みモジュール1つを強化</div>
+          <div style="font-size:0.76rem; color:var(--text-muted);">効果値を+35%し、さらに<strong>系統レベル+1</strong>を追加！特化ビルドに最適。</div>
+        </div>
+      </div>
+      <div id="rest-forge-area" style="display:none; margin-top:16px; text-align:left;">
+        <p style="font-size:0.8rem; font-weight:800; color:#7c3aed; margin-bottom:8px;">強化するモジュールが装着されたスキルを選択：</p>
+        <div class="skills-grid" id="rest-skills-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. END SCREEN -->
+  <section id="screen-end" class="screen">
+    <div class="hero-box">
+      <h1 id="end-title">MISSION COMPLETE!</h1>
+      <p class="hero-sub" id="end-subtitle">すべての深層防衛システムを攻略しました！</p>
+      <div id="end-summary" style="max-width:800px; margin:0 auto 20px; text-align:left; background:#fdf2f8; padding:16px; border-radius:16px; border:2px solid #fbcfe8;"></div>
+      <button class="btn btn-pink" style="font-size:1rem; padding:12px 30px;" onclick="startNewRun()">🌸 もう一度プレイする</button>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL: 30 PROTOCOLS MATRIX -->
+<div class="modal-backdrop" id="modal-matrix" onclick="if(event.target===this) closeModals()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3 style="font-size:0.98rem; color:#be185d;">📖 デュアル・プロトコル全30種マトリクス（MAIN × SUB）</h3>
+        <p style="font-size:0.72rem; color:var(--text-muted);">縦軸が【MAIN】、横軸が【SUB】。効果は <strong>MAINレベル × SUBレベル</strong> に比例して爆発的に強化されます！</p>
+      </div>
+      <button class="btn" onclick="closeModals()">✕ 閉じる</button>
+    </div>
+    <div class="modal-body" id="matrix-body"></div>
+  </div>
+</div>
+
+<!-- MODAL: SKILL INSPECTOR -->
+<div class="modal-backdrop" id="modal-deck" onclick="if(event.target===this) closeModals()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3 style="font-size:0.98rem; color:#be185d;">🎀 魔導スキル構成 ＆ 特化倍率ステータス</h3>
+        <p style="font-size:0.72rem; color:var(--text-muted);">系統レベルが高いほど、その系統のモジュール威力が指数的に跳ね上がります。</p>
+      </div>
+      <button class="btn" onclick="closeModals()">✕ 閉じる</button>
+    </div>
+    <div class="modal-body">
+      <div id="deck-arch-bar" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+      <div class="skills-grid" id="deck-skills-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * ============================================================================
+ * 1. 6 ARCHETYPES & NONLINEAR SPECIALIZATION SCALING
+ * ============================================================================
+ */
+const ARCHETYPES = {
+  swift: { id: 'swift', name: '連撃', color: '#0284c7', bg: '#e0f2fe', icon: '⚡' },
+  heavy: { id: 'heavy', name: '重撃', color: '#e11d48', bg: '#ffe4e6', icon: '💥' },
+  venom: { id: 'venom', name: '侵食', color: '#059669', bg: '#d1fae5', icon: '☣️' },
+  aegis: { id: 'aegis', name: '装甲', color: '#d97706', bg: '#fef3c7', icon: '🛡️' },
+  cycle: { id: 'cycle', name: '循環', color: '#7c3aed', bg: '#ede9fe', icon: '🔄' },
+  echo:  { id: 'echo',  name: '共鳴', color: '#db2777', bg: '#fce7f3', icon: '✨' }
+};
+const ARCH_KEYS = Object.keys(ARCHETYPES);
+
+/**
+ * Exponential Specialization Multiplier:
+ * Punishes spreading thin (Lv1 = x1.1), rewards deep focus (Lv4 = x2.6, Lv6 = x4.5)!
+ */
+function getSpecMultiplier(level) {
+  if (level <= 0) return 1.0;
+  const table = [1.0, 1.1, 1.4, 1.9, 2.6, 3.5, 4.5, 5.8, 7.2];
+  return table[Math.min(level, table.length - 1)];
+}
+
+/**
+ * ============================================================================
+ * 2. ALL 30 (6 x 5) HIGH-IMPACT DUAL PROTOCOLS
+ * Scale directly with M (MAIN level) and S (SUB level)!
+ * ============================================================================
+ */
+const PROTOCOLS = {
+  // === SWIFT MAIN (連撃主軸) ===
+  swift_heavy: {
+    name: '星屑パイル・ラッシュ',
+    desc: (M, S) => `攻撃ヒットごとに追撃 +${3 * M} ダメージ！さらに3手目（フィニッシュ枠）は敵シールドを貫通し +${12 * S} ダメージ！`
+  },
+  swift_venom: {
+    name: '神経毒の乱れ咲き',
+    desc: (M, S) => `攻撃ヒットごとに、敵の毒の ${25 + 15 * S}% 分の侵食ダメージを即座に起爆！（1ターン最大${3 + M}回）`
+  },
+  swift_aegis: {
+    name: '舞踏リアクティブ盾',
+    desc: (M, S) => `攻撃ヒットごとにシールド +${3 * S}。自分のシールドが ${10} 以上の間、全攻撃のダメージ +${5 * M}！`
+  },
+  swift_cycle: {
+    name: '刹那の装填ステップ',
+    desc: (M, S) => `1ターンに3回スキルを使うと、装填切れのランダムなスキル ${Math.min(3, 1 + Math.floor(S / 2))} 個を即座にリロードし、次ターンまで敵に脆弱 +${M}！`
+  },
+  swift_echo: {
+    name: '幻影ミラージュ連奏',
+    desc: (M, S) => `2手目のスキルは +${6 * M} 追加ダメージ、3手目のスキルは威力が +${35 * S}% 増幅される！`
+  },
+
+  // === HEAVY MAIN (重撃主軸) ===
+  heavy_swift: {
+    name: '超加速メテオ・インパクト',
+    desc: (M, S) => `15以上の単発ダメージを与えると、敵に ${5 * M * S} の追加貫通追撃が発生する（1ターン1回）！`
+  },
+  heavy_venom: {
+    name: '劇毒破城カタストロフィ',
+    desc: (M, S) => `14以上の単発ダメージを与えると、敵の毒を +${5 * S} 増加させた後、敵の毒の ${100 + 40 * M}% 分を即起爆！`
+  },
+  heavy_aegis: {
+    name: 'イージス・キャノン変換',
+    desc: (M, S) => `攻撃スキル発動時、現在のシールドをすべて消費し、消費シールドの ${160 + 50 * M}% ＋ ${6 * S} の貫通ダメージを与える！`
+  },
+  heavy_cycle: {
+    name: '排熱オーバーロード砲',
+    desc: (M, S) => `装填切れスキル1枚につき全攻撃ダメージ +${4 * M}！さらに20以上の単発ダメージでランダムな装填切れ1枚をリロード（S:${S}）！`
+  },
+  heavy_echo: {
+    name: '収束アルテマ・バースト',
+    desc: (M, S) => `「チャージ」のダメージ倍率が +50% から +${80 + 35 * M}% に激増し、3手目（フィニッシュ枠）の攻撃ダメージがさらに +${10 * S}！`
+  },
+
+  // === VENOM MAIN (侵食主軸) ===
+  venom_swift: {
+    name: 'パンデミック多段感染',
+    desc: (M, S) => `敵に毒が付与されている時、すべての攻撃スキルに「毒 +${2 * M} 付与 ＆ 追加 ${4 * S} ダメージ」が乗る！`
+  },
+  venom_heavy: {
+    name: '致死性ベノム・デトネイト',
+    desc: (M, S) => `3手目（フィニッシュ枠）のスキル使用時、敵の毒を +${4 * S} 増やしてから、毒スタックの ${150 + 50 * M}% 分の大爆発を起こす！`
+  },
+  venom_aegis: {
+    name: '瘴気クリスタル防壁',
+    desc: (M, S) => `ターン終了時、敵の毒スタックの ${80 + 30 * S}% 分のシールドを獲得！さらに毒の自然減少（-1）が完全に無効化（M:${M}）！`
+  },
+  venom_cycle: {
+    name: '変異ウイルス培養炉',
+    desc: (M, S) => `スキルが装填切れになるたび敵に毒 +${3 * M}！さらに一括リロード実行時、敵の毒が ${1.5 + 0.25 * S} 倍に増殖する！`
+  },
+  venom_echo: {
+    name: '複合汚染レゾナンス',
+    desc: (M, S) => `敵に「毒」と「脆弱」の両方がある時、ターン終了時の毒ダメージが ${1.6 + 0.3 * M} 倍になり、自分のHPを ${2 * S} 回復（戦闘中2回まで）！`
+  },
+
+  // === AEGIS MAIN (装甲主軸) ===
+  aegis_swift: {
+    name: 'プリズム反射スパイク',
+    desc: (M, S) => `シールドを獲得するたび、獲得量の ${50 + 25 * S}% ＋ ${3 * M} の反射ダメージを即座に敵へ撃ち込む！`
+  },
+  aegis_heavy: {
+    name: '要塞反撃バスター',
+    desc: (M, S) => `ターン終了時に残っていたシールドの ${140 + 40 * M}% ＋ ${5 * S} を、敵の攻撃を受けた直後にカウンター砲撃として叩き込む！`
+  },
+  aegis_venom: {
+    name: '腐食ソーン・バリア',
+    desc: (M, S) => `シールド状態でターンを終えると、敵に毒 +${5 * S} と脆弱 +${1 + Math.floor(M / 2)} を付与する！`
+  },
+  aegis_cycle: {
+    name: 'ナノ修復サイクル盾',
+    desc: (M, S) => `装填切れスキル1枚につきターン終了時にシールド +${4 * M}！さらに一括リロードしたターンは受けるダメージを ${40 + 10 * S}% 軽減！`
+  },
+  aegis_echo: {
+    name: '絶対防壁サンクチュアリ',
+    desc: (M, S) => `すべてのシールド獲得量が +${30 + 15 * M}% され、通常消滅するシールドの ${40 + 12 * S}%（最大90%）を次ターンへ持ち越す！`
+  },
+
+  // === CYCLE MAIN (循環主軸) ===
+  cycle_swift: {
+    name: '高速リロード・テンポ',
+    desc: (M, S) => `装填切れスキル1枚につき、全スキルのダメージとシールドが +${3 * S}！さらに一括リロードした次のターン、行動枠が +1（4行動）になる（M:${M}）！`
+  },
+  cycle_heavy: {
+    name: 'オーバーロード装填砲',
+    desc: (M, S) => `一括リロードを実行した瞬間、装填切れだった枚数 × ${6 * M} の重撃砲火を敵に放ち、チャージ +${S} を得る！`
+  },
+  cycle_venom: {
+    name: '廃液パージ・ハザード',
+    desc: (M, S) => `一括リロードを実行した瞬間、装填切れだった枚数 × ${4 * M} の猛毒と脆弱 +${S} を敵に浴びせる！`
+  },
+  cycle_aegis: {
+    name: '緊急パージ・シェルター',
+    desc: (M, S) => `一括リロードを実行した瞬間、装填切れだった枚数 × ${6 * M} の特大シールドを展開し、そのターンの被ダメージを乗り切る（S:${S}）！`
+  },
+  cycle_echo: {
+    name: 'クオンタム・メモリー',
+    desc: (M, S) => `装填切れスキルが4枚以上の時、スキルの基本威力が +${40 + 20 * M}% され、3手目のスキルが装填切れにならず即リロードされる（S:${S}）！`
+  },
+
+  // === ECHO MAIN (共鳴主軸) ===
+  echo_swift: {
+    name: 'ハーモニック・クレッシェンド',
+    desc: (M, S) => `1手目→2手目→3手目と進むごとに、スキル威力が +${20 * S}% → +${45 * S}% → +${80 * M}% と段階的に跳ね上がる！`
+  },
+  echo_heavy: {
+    name: 'シンギュラリティ終焉奏',
+    desc: (M, S) => `3手目（フィニッシュ枠）に使用したスキルが、${70 + 20 * M}% の威力で<strong>2回連続発動</strong>し、さらに +${8 * S} ダメージ！`
+  },
+  echo_venom: {
+    name: '共鳴インフェクション',
+    desc: (M, S) => `敵に状態異常（毒・脆弱）を付与するたび、同じ量の毒を追加付与し、さらに敵の異常合計値 × ${2 * M} ダメージ（S:${S}）！`
+  },
+  echo_aegis: {
+    name: '攻防一体レゾナンス',
+    desc: (M, S) => `攻撃スキルを使うとシールド +${5 * S}、非攻撃スキルを使うと敵に ${8 * M} ダメージを与える！`
+  },
+  echo_cycle: {
+    name: 'エターナル・アンコール',
+    desc: (M, S) => `3手目（フィニッシュ枠）でスキルを発動すると、装填切れのランダムなスキル ${Math.min(3, 1 + Math.floor(S / 2))} 個をリロードし、次ターンの初撃が +${10 * M}！`
+  }
+};
+
+/**
+ * ============================================================================
+ * 3. 7 BASE SKILLS & MODULE TEMPLATES (Limited Reloads!)
+ * ============================================================================
+ */
+function createInitialSkills() {
+  return [
+    {
+      id: 's1', name: 'スターライト連弾', baseArch: 'swift',
+      baseDesc: '敵に 4 ダメージ × 2回攻撃。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.dealDamage(4, { isAttack: true });
+        ctx.dealDamage(4, { isAttack: true });
+      }
+    },
+    {
+      id: 's2', name: 'メテオブレイカー', baseArch: 'heavy',
+      baseDesc: '敵に 15 の重撃ダメージを与える。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.dealDamage(15, { isAttack: true });
+      }
+    },
+    {
+      id: 's3', name: 'ヴェノムキス', baseArch: 'venom',
+      baseDesc: '敵に 4 ダメージ ＋ 毒 +5 を付与。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.dealDamage(4, { isAttack: true });
+        ctx.applyPoison(5);
+      }
+    },
+    {
+      id: 's4', name: 'プリズムバリア', baseArch: 'aegis',
+      baseDesc: 'このターン中、シールド +12 を獲得。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.gainShield(12);
+      }
+    },
+    {
+      id: 's5', name: 'クイックチャージ', baseArch: 'cycle',
+      baseDesc: '装填切れの別スキル1つをリロード ＋ シールド +6。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.reloadRandom(1, 's5');
+        ctx.gainShield(6);
+      }
+    },
+    {
+      id: 's6', name: 'オーバークロック', baseArch: 'echo',
+      baseDesc: '次に使うスキルの出力を +65% 増幅（チャージ+1）。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        ctx.gainCharge(1);
+      }
+    },
+    {
+      id: 's7', name: 'フィナーレ・エコー', baseArch: 'cycle',
+      baseDesc: '敵に 7 ＋（装填切れスキル数 × 4）ダメージ。',
+      expended: false,
+      modules: [],
+      executeBase: (ctx) => {
+        const exp = ctx.getExpendedCount();
+        ctx.dealDamage(7 + exp * 4, { isAttack: true });
+      }
+    }
+  ];
+}
+
+// Note: Reload modules are intentionally rare and restricted to prevent infinite loops!
+const MODULE_TEMPLATES = [
+  // SWIFT
+  { arch: 'swift', name: '星屑連射バレル', baseVal: 5, text: (v) => `追加 ${v} ダメージ`, apply: (ctx, v) => ctx.dealDamage(v, { isAttack: true }) },
+  { arch: 'swift', name: 'ツイン・スパーク弾', baseVal: 3, text: (v) => `追加 ${v} ダメージ×2回`, apply: (ctx, v) => { ctx.dealDamage(v, { isAttack: true }); ctx.dealDamage(v, { isAttack: true }); } },
+
+  // HEAVY
+  { arch: 'heavy', name: '魔導徹甲コア', baseVal: 10, text: (v) => `重撃 +${v} ダメージ`, apply: (ctx, v) => ctx.dealDamage(v, { isAttack: true }) },
+  { arch: 'heavy', name: '高圧コンデンサ', baseVal: 1, text: (v) => `チャージ +${v}（次撃+65%）`, apply: (ctx, v) => ctx.gainCharge(v) },
+
+  // VENOM
+  { arch: 'venom', name: '劇毒インジェクタ', baseVal: 5, text: (v) => `敵に毒 +${v} 付与`, apply: (ctx, v) => ctx.applyPoison(v) },
+  { arch: 'venom', name: '装甲腐食ミスト', baseVal: 2, text: (v) => `敵に脆弱 +${v} 付与`, apply: (ctx, v) => ctx.applyFragile(v) },
+
+  // AEGIS
+  { arch: 'aegis', name: '位相シールド発生器', baseVal: 8, text: (v) => `シールド +${v} 獲得`, apply: (ctx, v) => ctx.gainShield(v) },
+  { arch: 'aegis', name: '聖盾カウンター棘', baseVal: 50, text: (v) => `現シールドの${v}%ダメージ`, apply: (ctx, v) => { const d = Math.floor(ctx.state.player.shield * (v / 100)); if (d > 0) ctx.dealDamage(d, { isAttack: true }); } },
+
+  // CYCLE
+  { arch: 'cycle', name: '空薬莢ブースター', baseVal: 4, text: (v) => `装填切れ数×${v} ダメージ`, apply: (ctx, v) => { const c = ctx.getExpendedCount(); if (c > 0) ctx.dealDamage(c * v, { isAttack: true }); } },
+  { arch: 'cycle', name: '予備弾倉バイパス', baseVal: 1, text: (v) => `別スキル1つリロード（1T1回）`, apply: (ctx, v) => { if (!ctx.state.player.usedModReloadThisTurn) { ctx.state.player.usedModReloadThisTurn = true; ctx.reloadRandom(1, ctx.skill.id); } } },
+
+  // ECHO
+  { arch: 'echo', name: '共鳴ハーモナイザー', baseVal: 5, text: (v) => `+${v} ダメージ＆シールド+${v}`, apply: (ctx, v) => { ctx.dealDamage(v, { isAttack: true }); ctx.gainShield(v); } },
+  { arch: 'echo', name: '状態異常レゾネータ', baseVal: 4, text: (v) => `敵異常種×${v} ダメージ`, apply: (ctx, v) => { const s = (ctx.state.enemy.poison > 0 ? 1 : 0) + (ctx.state.enemy.fragile > 0 ? 1 : 0); if (s > 0) ctx.dealDamage(s * v, { isAttack: true }); } }
+];
+
+/**
+ * ============================================================================
+ * 4. GAME STATE & SVG ANIME CHARACTER PORTRAIT
+ * ============================================================================
+ */
+let game = {
+  act: 1,
+  step: 0,
+  map: [],
+  visitedNodes: [],
+  player: {
+    hp: 65,
+    maxHp: 65,
+    shield: 0,
+    actionsLeft: 3,
+    maxActions: 3,
+    bonusActionsNextTurn: 0,
+    charge: 0,
+    nextTurnFirstHitBonus: 0,
+    skillsUsedThisTurn: 0,
+    swiftVenomProcsThisTurn: 0,
+    heavySwiftUsedThisTurn: false,
+    usedModReloadThisTurn: false,
+    venomEchoHealsThisCombat: 0,
+    fullReloadedThisTurn: false
+  },
+  skills: [],
+  preferredMain: null,
+  preferredSub: null,
+  enemy: null,
+  turn: 1,
+  inCombat: false,
+  mood: 'normal', // 'normal' | 'happy' | 'pinch' | 'awaken'
+  speech: '',
+  rewardChoices: [],
+  selectedRewardIdx: 0
+};
+
+function renderCharaSvg(mood = 'normal') {
+  const frame = document.getElementById('chara-portrait');
+  if (!frame) return;
+
+  // Dynamic facial features & aura by mood
+  let eyeLeft = `<ellipse cx="82" cy="108" rx="7" ry="9" fill="#4c1d95"/><circle cx="84" cy="105" r="3" fill="#fff"/>`;
+  let eyeRight = `<ellipse cx="128" cy="108" rx="7" ry="9" fill="#4c1d95"/><circle cx="130" cy="105" r="3" fill="#fff"/>`;
+  let mouth = `<path d="M 98 130 Q 105 136 112 130" stroke="#e11d48" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  let aura = '';
+  let sweat = '';
+
+  if (mood === 'happy' || mood === 'awaken') {
+    eyeLeft = `<path d="M 74 109 Q 82 100 90 109" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    eyeRight = `<path d="M 120 109 Q 128 100 136 109" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    mouth = `<path d="M 96 128 Q 105 140 114 128 Z" fill="#fb7185" stroke="#be185d" stroke-width="1.5"/>`;
+    aura = `<circle cx="105" cy="110" r="88" fill="none" stroke="#f472b6" stroke-width="3" stroke-dasharray="10 6" opacity="0.75"/>
+            <text x="24" y="46" font-size="18">✨</text><text x="168" y="54" font-size="18">💖</text>`;
+  } else if (mood === 'pinch') {
+    eyeLeft = `<path d="M 75 104 L 89 109 L 75 114" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    eyeRight = `<path d="M 135 104 L 121 109 L 135 114" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    mouth = `<ellipse cx="105" cy="132" rx="6" ry="5" fill="#fb7185" stroke="#be185d" stroke-width="1.5"/>`;
+    sweat = `<path d="M 148 88 Q 153 96 148 100 Q 143 96 148 88 Z" fill="#38bdf8"/>`;
+  }
+
+  frame.innerHTML = `
+    <svg viewBox="0 0 210 215" width="210" height="215" xmlns="http://www.w3.org/2000/svg">
+      ${aura}
+      <!-- Back Hair (Pastel Pink-Lavender) -->
+      <path d="M 48 95 Q 35 165 55 198 L 155 198 Q 175 165 162 95 Z" fill="#f472b6"/>
+      <!-- Magical Ribbon -->
+      <polygon points="105,42 72,24 80,52" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+      <polygon points="105,42 138,24 130,52" fill="#ec4899" stroke="#be185d" stroke-width="2"/>
+      <circle cx="105" cy="42" r="8" fill="#fde047" stroke="#d97706" stroke-width="2"/>
+      <!-- Outfit / Magical Collar -->
+      <path d="M 65 162 L 145 162 L 162 215 L 48 215 Z" fill="#ffffff" stroke="#c084fc" stroke-width="2.5"/>
+      <path d="M 78 162 L 105 188 L 132 162 Z" fill="#f43f5e"/>
+      <circle cx="105" cy="176" r="6" fill="#fde047" stroke="#b45309" stroke-width="1.5"/>
+      <!-- Face -->
+      <path d="M 62 85 Q 62 146 105 148 Q 148 146 148 85 Q 148 52 105 52 Q 62 52 62 85 Z" fill="#fff1eb" stroke="#f9a8d4" stroke-width="2"/>
+      <!-- Blush -->
+      <ellipse cx="74" cy="121" rx="8" ry="4" fill="#fda4af" opacity="0.65"/>
+      <ellipse cx="136" cy="121" rx="8" ry="4" fill="#fda4af" opacity="0.65"/>
+      <!-- Eyes & Mouth -->
+      ${eyeLeft}
+      ${eyeRight}
+      ${mouth}
+      ${sweat}
+      <!-- Front Bangs -->
+      <path d="M 58 92 Q 68 48 105 48 Q 142 48 152 92 Q 138 68 124 86 Q 114 66 105 88 Q 95 66 86 86 Q 72 68 58 92 Z" fill="#f9a8d4" stroke="#db2777" stroke-width="1.5"/>
+      <!-- Side Locks -->
+      <path d="M 58 88 Q 52 135 66 164 Q 72 130 68 95 Z" fill="#f472b6"/>
+      <path d="M 152 88 Q 158 135 144 164 Q 138 130 142 95 Z" fill="#f472b6"/>
+    </svg>
+  `;
+}
+
+function setCharaReaction(mood, line) {
+  game.mood = mood;
+  game.speech = line;
+  renderCharaSvg(mood);
+  const el = document.getElementById('chara-speech');
+  if (el) el.textContent = `「${line}」`;
+}
+
+/**
+ * ============================================================================
+ * 5. ARCHETYPE & PROTOCOL RESOLUTION
+ * ============================================================================
+ */
+function getArchetypeLevels() {
+  const levels = { swift: 0, heavy: 0, venom: 0, aegis: 0, cycle: 0, echo: 0 };
+  game.skills.forEach(sk => {
+    sk.modules.forEach(m => {
+      levels[m.arch] += (m.level || 1);
+    });
+  });
+  return levels;
+}
+
+function getActiveProtocol() {
+  const levels = getArchetypeLevels();
+  const sorted = ARCH_KEYS.filter(k => levels[k] > 0).sort((a, b) => levels[b] - levels[a]);
+
+  if (sorted.length < 2) {
+    return { active: false, main: sorted[0] || null, sub: null, M: levels[sorted[0]] || 0, S: 0, levels };
+  }
+
+  let main = sorted[0];
+  let sub = sorted[1];
+
+  if (game.preferredMain && levels[game.preferredMain] > 0) {
+    main = game.preferredMain;
+    if (game.preferredSub && game.preferredSub !== main && levels[game.preferredSub] > 0) {
+      sub = game.preferredSub;
+    } else {
+      sub = sorted.find(k => k !== main);
+    }
+  }
+
+  const M = levels[main];
+  const S = levels[sub];
+  const key = `${main}_${sub}`;
+  const proto = PROTOCOLS[key];
+
+  return {
+    active: true,
+    key,
+    main,
+    sub,
+    M,
+    S,
+    name: proto.name,
+    desc: proto.desc(M, S),
+    levels
+  };
+}
+
+function hasProto(main, sub) {
+  const p = getActiveProtocol();
+  return p.active && p.main === main && p.sub === sub ? p : null;
+}
+
+function swapMainSub() {
+  const p = getActiveProtocol();
+  if (!p.active) return;
+  game.preferredMain = p.sub;
+  game.preferredSub = p.main;
+  updateHud();
+}
+
+function selectRole(k) {
+  const lv = getArchetypeLevels();
+  if (lv[k] <= 0) return;
+  const p = getActiveProtocol();
+  if (p.main === k) return;
+  if (p.sub === k) {
+    swapMainSub();
+    return;
+  }
+  game.preferredSub = p.main;
+  game.preferredMain = k;
+  updateHud();
+}
+
+function updateHud() {
+  const p = getActiveProtocol();
+  document.getElementById('hud-stage').textContent = game.act ? `ACT ${game.act} - STEP ${game.step + 1}/6` : 'STANDBY';
+  document.getElementById('hud-hp').textContent = `♥ HP: ${game.player.hp} / ${game.player.maxHp}`;
+
+  const tracker = document.getElementById('hud-archetypes');
+  tracker.innerHTML = '';
+  ARCH_KEYS.forEach(k => {
+    const info = ARCHETYPES[k];
+    const lv = p.levels[k];
+    const mult = getSpecMultiplier(lv).toFixed(1);
+    const isM = p.main === k && lv > 0;
+    const isS = p.sub === k && lv > 0;
+
+    const pill = document.createElement('div');
+    pill.className = `arch-pill ${isM ? 'is-main' : ''} ${isS ? 'is-sub' : ''}`;
+    pill.style.borderColor = (isM || isS) ? info.color : '#e9d5ff';
+    pill.onclick = () => selectRole(k);
+
+    let tag = '';
+    if (isM) tag = `<span class="role-tag" style="background:${info.color};">MAIN</span>`;
+    else if (isS) tag = `<span class="role-tag" style="background:#7c3aed;">SUB</span>`;
+
+    pill.innerHTML = `
+      <span>${info.icon}</span>
+      <span style="color:${info.color}; font-weight:900;">${info.name}</span>
+      <span>Lv.${lv}</span>
+      <span class="mult-tag">(×${mult})</span>
+      ${tag}
+    `;
+    tracker.appendChild(pill);
+  });
+
+  const pairEl = document.getElementById('proto-pair');
+  const nameEl = document.getElementById('proto-name');
+  const descEl = document.getElementById('proto-desc');
+  const swapBtn = document.getElementById('btn-swap-proto');
+
+  if (!p.active) {
+    pairEl.innerHTML = `<span>未起動（2系統以上のモジュール装着で発動）</span>`;
+    nameEl.textContent = '---';
+    descEl.textContent = '同じ2系統に集中投資するほど、基礎倍率とプロトコル威力が指数的に跳ね上がります！';
+    swapBtn.style.display = 'none';
+  } else {
+    const mInfo = ARCHETYPES[p.main];
+    const sInfo = ARCHETYPES[p.sub];
+    pairEl.innerHTML = `
+      <span style="color:${mInfo.color};">[MAIN] ${mInfo.icon}${mInfo.name} Lv.${p.M}</span>
+      <span>×</span>
+      <span style="color:${sInfo.color};">[SUB] ${sInfo.icon}${sInfo.name} Lv.${p.S}</span>
+    `;
+    nameEl.textContent = `【${p.name}】`;
+    descEl.textContent = p.desc;
+    swapBtn.style.display = 'inline-flex';
+  }
+}
+
+/**
+ * ============================================================================
+ * 6. MAP & PROGRESSION (3 ACTS)
+ * ============================================================================
+ */
+function startNewRun() {
+  game.act = 1;
+  game.step = 0;
+  game.visitedNodes = [];
+  game.player = {
+    hp: 65, maxHp: 65, shield: 0,
+    actionsLeft: 3, maxActions: 3, bonusActionsNextTurn: 0,
+    charge: 0, nextTurnFirstHitBonus: 0,
+    skillsUsedThisTurn: 0, swiftVenomProcsThisTurn: 0,
+    heavySwiftUsedThisTurn: false, usedModReloadThisTurn: false,
+    venomEchoHealsThisCombat: 0, fullReloadedThisTurn: false
+  };
+  game.skills = createInitialSkills();
+  game.preferredMain = null;
+  game.preferredSub = null;
+
+  generateActMap(1);
+  updateHud();
+  renderMap();
+  showScreen('screen-map');
+}
+
+function generateActMap(actNum) {
+  game.act = actNum;
+  game.step = 0;
+  game.visitedNodes = [];
+  const layers = [];
+  const totalSteps = 6;
+
+  for (let s = 0; s < totalSteps; s++) {
+    const col = [];
+    if (s === totalSteps - 1) {
+      col.push({
+        id: `n_${s}_0`, step: s, type: 'boss',
+        title: actNum === 3 ? '終焉コア・オメガ' : `ACT ${actNum} 守護神機`,
+        affinities: [ARCH_KEYS[(actNum * 2) % 6], ARCH_KEYS[(actNum * 2 + 3) % 6]]
+      });
+    } else {
+      const count = s === 0 ? 2 : 3;
+      for (let i = 0; i < count; i++) {
+        let type = 'combat';
+        if (s === 2 && i === 1) type = 'elite';
+        else if (s === 3 && i === 0) type = 'rest';
+        else if (s === 4 && i === 2) type = 'elite';
+        else if (s === 4 && i === 1) type = 'rest';
+
+        col.push({
+          id: `n_${s}_${i}`, step: s, type,
+          title: type === 'elite' ? '精鋭・強襲機' : type === 'rest' ? '魔導ティータイム' : '自律防衛ドローン',
+          affinities: type === 'rest' ? [] : [
+            ARCH_KEYS[(s + i + actNum) % 6],
+            ARCH_KEYS[(s * 2 + i + 2) % 6]
+          ]
+        });
+      }
+    }
+    layers.push(col);
+  }
+  game.map = layers;
+}
+
+function renderMap() {
+  document.getElementById('map-act-title').textContent = `ACT ${game.act} / 3 // 魔導セクター攻略`;
+  const container = document.getElementById('map-layers');
+  container.innerHTML = '';
+
+  game.map.forEach((col, sIdx) => {
+    const colDiv = document.createElement('div');
+    colDiv.className = 'map-col';
+    colDiv.innerHTML = `<div style="font-size:0.7rem; font-weight:800; color:var(--text-light);">STEP ${sIdx + 1}</div>`;
+
+    col.forEach(node => {
+      const visited = game.visitedNodes.includes(node.id);
+      const avail = sIdx === game.step;
+      const card = document.createElement('div');
+      card.className = `map-node ${visited ? 'visited' : ''} ${avail ? 'available' : ''}`;
+
+      const icon = node.type === 'boss' ? '👑' : node.type === 'elite' ? '💀' : node.type === 'rest' ? '🍰' : '⚔️';
+      const affHtml = node.affinities.map(ak => {
+        const ai = ARCHETYPES[ak];
+        return `<span style="font-size:0.65rem; font-weight:800; color:${ai.color}; background:${ai.bg}; padding:1px 6px; border-radius:999px;">${ai.icon}${ai.name}</span>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div style="font-size:1.35rem; margin-bottom:3px;">${icon}</div>
+        <div style="font-size:0.8rem; font-weight:900; margin-bottom:4px;">${node.title}</div>
+        <div style="display:flex; justify-content:center; gap:3px; flex-wrap:wrap;">
+          ${affHtml || '<span style="font-size:0.66rem; color:var(--text-muted);">回復 / 系統強化</span>'}
+        </div>
+      `;
+      if (avail) card.onclick = () => enterNode(node);
+      colDiv.appendChild(card);
+    });
+    container.appendChild(colDiv);
+  });
+}
+
+function enterNode(node) {
+  game.visitedNodes.push(node.id);
+  if (node.type === 'rest') {
+    document.getElementById('rest-forge-area').style.display = 'none';
+    showScreen('screen-rest');
+  } else {
+    startCombat(node);
+  }
+}
+
+function advanceNode() {
+  game.step++;
+  if (game.step >= game.map.length) {
+    if (game.act < 3) {
+      generateActMap(game.act + 1);
+      updateHud();
+      renderMap();
+      showScreen('screen-map');
+    } else {
+      showEndScreen(true);
+    }
+  } else {
+    updateHud();
+    renderMap();
+    showScreen('screen-map');
+  }
+}
+
+/**
+ * ============================================================================
+ * 7. COMBAT ENGINE (3 ACTION SLOTS, TIGHT SHIELD, FULL-TURN RELOAD)
+ * ============================================================================
+ */
+const ENEMIES = {
+  1: {
+    combat: [
+      { name: '星屑センチネル', hp: 46, dmg: 9, pattern: ['atk', 'atk_shield', 'heavy'] },
+      { name: 'ヴァイパー・ドローン', hp: 44, dmg: 8, pattern: ['multi', 'atk', 'heavy'] }
+    ],
+    elite: [
+      { name: '重装魔導騎士・バルカン', hp: 74, dmg: 12, pattern: ['shield_buff', 'multi', 'heavy'] }
+    ],
+    boss: [
+      { name: '第一階層守護神・アイギス姫', hp: 108, dmg: 14, pattern: ['shield_buff', 'multi', 'heavy', 'atk_shield'] }
+    ]
+  },
+  2: {
+    combat: [
+      { name: '幻影アサシン・ノワール', hp: 78, dmg: 15, pattern: ['multi', 'heavy', 'atk'] },
+      { name: 'クリスタル・ゴーレム', hp: 86, dmg: 16, pattern: ['atk_shield', 'heavy', 'shield_buff'] }
+    ],
+    elite: [
+      { name: '双頭竜プロトタイプ・ヒュドラ', hp: 124, dmg: 18, pattern: ['multi', 'shield_buff', 'heavy'] }
+    ],
+    boss: [
+      { name: '第二階層中枢・クロノス女帝', hp: 175, dmg: 21, pattern: ['multi', 'shield_buff', 'heavy', 'multi'] }
+    ]
+  },
+  3: {
+    combat: [
+      { name: '深層エクスキューター', hp: 118, dmg: 22, pattern: ['heavy', 'multi', 'atk_shield'] },
+      { name: 'アビス・リーパー', hp: 112, dmg: 21, pattern: ['multi', 'shield_buff', 'heavy'] }
+    ],
+    elite: [
+      { name: '零式殲滅天使・ネメシス', hp: 162, dmg: 25, pattern: ['shield_buff', 'multi', 'heavy'] }
+    ],
+    boss: [
+      { name: '終焉コア・オメガ【最終決戦体】', hp: 250, dmg: 28, pattern: ['multi', 'shield_buff', 'heavy', 'multi'] }
+    ]
+  }
+};
+
+function startCombat(node) {
+  const pool = ENEMIES[game.act][node.type];
+  const tmpl = pool[Math.floor(Math.random() * pool.length)];
+
+  game.enemy = {
+    name: tmpl.name,
+    type: node.type,
+    hp: tmpl.hp,
+    maxHp: tmpl.hp,
+    baseDmg: tmpl.dmg,
+    shield: node.type === 'boss' ? 15 : 0,
+    poison: 0,
+    fragile: 0,
+    strength: 0,
+    pattern: tmpl.pattern,
+    turnIdx: 0,
+    affinities: node.affinities
+  };
+
+  game.turn = 1;
+  game.inCombat = true;
+  game.player.shield = 0;
+  game.player.actionsLeft = 3;
+  game.player.bonusActionsNextTurn = 0;
+  game.player.charge = 0;
+  game.player.nextTurnFirstHitBonus = 0;
+  game.player.skillsUsedThisTurn = 0;
+  game.player.swiftVenomProcsThisTurn = 0;
+  game.player.heavySwiftUsedThisTurn = false;
+  game.player.usedModReloadThisTurn = false;
+  game.player.venomEchoHealsThisCombat = 0;
+  game.player.fullReloadedThisTurn = false;
+
+  game.skills.forEach(s => s.expended = false);
+
+  document.getElementById('combat-log').innerHTML = '';
+  addLog(`🌸 <strong>戦闘開始！</strong> ${game.enemy.name} が立ちはだかった！`);
+
+  const proto = getActiveProtocol();
+  if (proto.active) {
+    setCharaReaction('awaken', `プロトコル【${proto.name}】起動中！3手の組み立てが勝負だよっ！`);
+  } else {
+    setCharaReaction('normal', '1ターンに使えるスキルは3回まで！リロードのタイミングを見極めよう！');
+  }
+
+  showScreen('screen-combat');
+  renderCombat();
+}
+
+function getEnemyIntent() {
+  const e = game.enemy;
+  const act = e.pattern[e.turnIdx % e.pattern.length];
+  const atk = e.baseDmg + e.strength;
+
+  if (act === 'atk') return { type: 'atk', label: `⚔️ 攻撃 ${atk} ダメージ`, dmg: atk, hits: 1 };
+  if (act === 'multi') {
+    const h = Math.max(5, Math.floor(atk * 0.62));
+    return { type: 'multi', label: `⚡ 連続攻撃 ${h} × 2 ダメージ`, dmg: h, hits: 2 };
+  }
+  if (act === 'heavy') {
+    const h = Math.floor(atk * 1.5);
+    return { type: 'heavy', label: `💥 強襲チャージ攻撃 ${h} ダメージ！`, dmg: h, hits: 1 };
+  }
+  if (act === 'atk_shield') {
+    const h = Math.floor(atk * 0.8);
+    return { type: 'atk_shield', label: `🛡️ 攻防一体（${h} 攻撃 ＋ 敵シールド12）`, dmg: h, hits: 1, shield: 12 };
+  }
+  if (act === 'shield_buff') {
+    return { type: 'shield_buff', label: `✨ 魔力充填（敵シールド15 ＋ 攻撃力+3）`, shield: 15, buff: 3 };
+  }
+  return { type: 'atk', label: `⚔️ 攻撃 ${atk}`, dmg: atk, hits: 1 };
+}
+
+/**
+ * FULL RELOAD: Costs ALL 3 action slots (1 full turn)!
+ * Creates the core tactical dilemma.
+ */
+function triggerFullReload() {
+  if (!game.inCombat) return;
+  if (game.player.actionsLeft < 3) {
+    setCharaReaction('pinch', '一括リロードには行動枠が3つ全部必要だよ！先にスキルを使ってからじゃ間に合わないの！');
+    return;
+  }
+  const expendedCount = game.skills.filter(s => s.expended).length;
+  if (expendedCount === 0) {
+    setCharaReaction('normal', '全部のスキルが装填済みだよ！今は攻撃しよう♪');
+    return;
+  }
+
+  game.player.actionsLeft = 0;
+  game.player.fullReloadedThisTurn = true;
+  game.skills.forEach(s => s.expended = false);
+
+  addLog(`🔄 <strong style="color:#d97706;">一括リロード実行（全3行動枠を消費）！</strong> ${expendedCount}枚のスキルが再装填された！`);
+
+  // Protocol triggers on Full Reload!
+  let p;
+  if ((p = hasProto('cycle', 'swift'))) {
+    game.player.bonusActionsNextTurn = 1;
+    addLog(`✨ <strong>[高速リロード・テンポ]</strong> 次のターンの行動枠が +1（4行動）に増加！`);
+  }
+  if ((p = hasProto('cycle', 'heavy'))) {
+    const blast = expendedCount * 6 * p.M;
+    game.player.charge += p.S;
+    dealRawDamage(blast, 'オーバーロード装填砲');
+  }
+  if ((p = hasProto('cycle', 'venom'))) {
+    const pAdd = expendedCount * 4 * p.M;
+    applyPoison(pAdd);
+    game.enemy.fragile += p.S;
+    addLog(`☣️ <strong>[廃液パージ・ハザード]</strong> 毒 +${pAdd} ＆ 脆弱 +${p.S}！`);
+  }
+  if ((p = hasProto('cycle', 'aegis'))) {
+    const sh = expendedCount * 6 * p.M;
+    gainShield(sh);
+    addLog(`🛡️ <strong>[緊急パージ・シェルター]</strong> 緊急シールド +${sh} 展開！`);
+  }
+  if ((p = hasProto('venom', 'cycle'))) {
+    const mult = 1.5 + 0.25 * p.S;
+    game.enemy.poison = Math.ceil(game.enemy.poison * mult);
+    addLog(`☣️ <strong>[変異ウイルス培養炉]</strong> 敵の毒が ${mult.toFixed(2)}倍（${game.enemy.poison}）に増殖！`);
+  }
+
+  setCharaReaction('happy', '全弾リロード完了っ！あとは敵の攻撃を耐えきって反撃だよ！');
+  renderCombat();
+}
+
+function gainShield(amount) {
+  if (amount <= 0) return;
+  let p;
+  if ((p = hasProto('aegis', 'echo'))) {
+    amount = Math.ceil(amount * (1.3 + 0.15 * p.M));
+  }
+  game.player.shield += amount;
+  spawnFloater('chara-panel', `+${amount} 🛡️`, '#d97706');
+
+  if ((p = hasProto('aegis', 'swift'))) {
+    const refl = Math.floor(amount * (0.5 + 0.25 * p.S)) + 3 * p.M;
+    dealRawDamage(refl, 'プリズム反射スパイク');
+  }
+}
+
+function applyPoison(amount) {
+  if (amount <= 0) return;
+  game.enemy.poison += amount;
+  spawnFloater('enemy-box', `+${amount} ☣️`, '#059669');
+
+  let p;
+  if ((p = hasProto('echo', 'venom'))) {
+    game.enemy.poison += amount;
+    const totalStatus = game.enemy.poison + game.enemy.fragile;
+    dealRawDamage(totalStatus * 2 * p.M, '共鳴インフェクション');
+  }
+}
+
+function dealRawDamage(amount, label = '', pierce = false) {
+  if (!game.inCombat || !game.enemy || amount <= 0) return;
+  const e = game.enemy;
+  let dmg = Math.floor(amount);
+
+  if (!pierce && e.shield > 0) {
+    const blk = Math.min(e.shield, dmg);
+    e.shield -= blk;
+    dmg -= blk;
+  }
+
+  if (dmg > 0) {
+    e.hp = Math.max(0, e.hp - dmg);
+    spawnFloater('enemy-box', `-${dmg}`, '#e11d48');
+    const box = document.getElementById('enemy-box');
+    if (box) {
+      box.classList.remove('shake');
+      void box.offsetWidth;
+      box.classList.add('shake');
+    }
+    if (label) addLog(`💥 <strong>[${label}]</strong> <span style="color:#e11d48; font-weight:800;">${dmg} ダメージ！</span>`);
+  } else if (label) {
+    addLog(`🛡️ [${label}] 敵のシールドに阻まれた！`);
+  }
+
+  checkCombatEnd();
+}
+
+function executeSkill(skillId) {
+  if (!game.inCombat) return;
+  const skill = game.skills.find(s => s.id === skillId);
+  if (!skill || skill.expended || game.player.actionsLeft <= 0) return;
+
+  const slotNumber = (game.player.maxActions - game.player.actionsLeft) + 1; // 1st, 2nd, 3rd...
+  const isFinisherSlot = (game.player.actionsLeft === 1); // Last action slot of the turn!
+
+  game.player.actionsLeft--;
+  game.player.skillsUsedThisTurn++;
+
+  addLog(`✨ <strong>[${slotNumber}手目] 【${skill.name}】発動！</strong>${isFinisherSlot ? ' <span style="color:#db2777;">(★フィニッシュ枠)</span>' : ''}`);
+
+  const archLevels = getArchetypeLevels();
+  let p;
+
+  // Heavy MAIN x Aegis SUB: Convert all shield into massive piercing damage on attack
+  let consumedShieldBonus = 0;
+  if ((p = hasProto('heavy', 'aegis')) && game.player.shield > 0) {
+    consumedShieldBonus = Math.floor(game.player.shield * (1.6 + 0.5 * p.M)) + 6 * p.S;
+    addLog(`🛡️💥 <strong>[イージス・キャノン]</strong> シールド ${game.player.shield} を全消費し +${consumedShieldBonus} 貫通変換！`);
+    game.player.shield = 0;
+  }
+
+  const runSkillExecution = (replayMult = 1.0, isReplay = false) => {
+    if (!game.inCombat) return;
+    let didAttack = false;
+    let totalDamageThisCast = 0;
+
+    const executeCtx = (specMult) => ({
+      state: game,
+      skill,
+      dealDamage: (baseVal, opts = {}) => {
+        if (!game.inCombat) return;
+        let dmg = baseVal * specMult;
+        let pierce = false;
+
+        // First-hit bonus from Echo x Cycle
+        if (game.player.nextTurnFirstHitBonus > 0) {
+          dmg += game.player.nextTurnFirstHitBonus;
+          game.player.nextTurnFirstHitBonus = 0;
+        }
+
+        // Consumed shield conversion (Heavy x Aegis)
+        if (consumedShieldBonus > 0) {
+          dmg += consumedShieldBonus;
+          consumedShieldBonus = 0;
+          pierce = true;
+        }
+
+        // Charge multiplier (オーバークロック / Heavy x Echo)
+        if (game.player.charge > 0) {
+          let cRate = 0.65;
+          if ((p = hasProto('heavy', 'echo'))) {
+            cRate = 0.8 + 0.35 * p.M;
+          }
+          dmg *= (1 + cRate * game.player.charge);
+          game.player.charge = 0;
+        }
+
+        // Flat Protocol Bonuses
+        if ((p = hasProto('swift', 'heavy'))) {
+          dmg += 3 * p.M;
+          if (isFinisherSlot) {
+            dmg += 12 * p.S;
+            pierce = true;
+          }
+        }
+        if ((p = hasProto('swift', 'aegis')) && game.player.shield >= 10) {
+          dmg += 5 * p.M;
+        }
+        if ((p = hasProto('swift', 'echo'))) {
+          if (slotNumber === 2) dmg += 6 * p.M;
+          if (isFinisherSlot) dmg *= (1 + 0.35 * p.S);
+        }
+        if ((p = hasProto('heavy', 'cycle'))) {
+          dmg += game.skills.filter(s => s.expended).length * 4 * p.M;
+        }
+        if ((p = hasProto('heavy', 'echo')) && isFinisherSlot) {
+          dmg += 10 * p.S;
+        }
+        if ((p = hasProto('venom', 'swift')) && game.enemy.poison > 0) {
+          dmg += 4 * p.S;
+        }
+        if ((p = hasProto('cycle', 'swift'))) {
+          dmg += game.skills.filter(s => s.expended).length * 3 * p.S;
+        }
+        if ((p = hasProto('cycle', 'echo')) && game.skills.filter(s => s.expended).length >= 4) {
+          dmg *= (1.4 + 0.2 * p.M);
+        }
+        if ((p = hasProto('echo', 'swift'))) {
+          if (slotNumber === 1) dmg *= (1 + 0.2 * p.S);
+          else if (slotNumber === 2) dmg *= (1 + 0.45 * p.S);
+          else if (isFinisherSlot) dmg *= (1 + 0.8 * p.M);
+        }
+
+        dmg = Math.floor(dmg * replayMult);
+
+        if (game.enemy.fragile > 0) {
+          dmg = Math.floor(dmg * 1.5);
+        }
+
+        didAttack = true;
+        totalDamageThisCast += dmg;
+        dealRawDamage(dmg, skill.name, pierce);
+
+        // Post-Hit Protocol Triggers
+        if (!game.inCombat) return;
+
+        if ((p = hasProto('swift', 'venom')) && game.enemy.poison > 0 && game.player.swiftVenomProcsThisTurn < (3 + p.M)) {
+          game.player.swiftVenomProcsThisTurn++;
+          const burst = Math.ceil(game.enemy.poison * (0.25 + 0.15 * p.S));
+          dealRawDamage(burst, '神経毒起爆', true);
+        }
+        if ((p = hasProto('swift', 'aegis'))) {
+          gainShield(3 * p.S);
+        }
+        if ((p = hasProto('heavy', 'swift')) && dmg >= 15 && !game.player.heavySwiftUsedThisTurn) {
+          game.player.heavySwiftUsedThisTurn = true;
+          dealRawDamage(5 * p.M * p.S, '超加速メテオ追撃', true);
+        }
+        if ((p = hasProto('heavy', 'venom')) && dmg >= 14) {
+          applyPoison(5 * p.S);
+          const vBurst = Math.floor(game.enemy.poison * (1.0 + 0.4 * p.M));
+          dealRawDamage(vBurst, '劇毒破城起爆', true);
+        }
+        if ((p = hasProto('heavy', 'cycle')) && dmg >= 20) {
+          const cands = game.skills.filter(s => s.expended && s.id !== skill.id);
+          if (cands.length > 0) {
+            const t = cands[Math.floor(Math.random() * cands.length)];
+            t.expended = false;
+            addLog(`🔄 <strong>[排熱オーバーロード]</strong> 【${t.name}】がリロードされた！`);
+          }
+        }
+      },
+      gainShield: (val) => {
+        let s = val * specMult;
+        if ((p = hasProto('cycle', 'swift'))) {
+          s += game.skills.filter(s => s.expended).length * 3 * p.S;
+        }
+        if ((p = hasProto('echo', 'swift'))) {
+          if (slotNumber === 1) s *= (1 + 0.2 * p.S);
+          else if (slotNumber === 2) s *= (1 + 0.45 * p.S);
+          else if (isFinisherSlot) s *= (1 + 0.8 * p.M);
+        }
+        gainShield(Math.floor(s * replayMult));
+      },
+      applyPoison: (val) => {
+        applyPoison(Math.max(1, Math.floor(val * specMult * replayMult)));
+      },
+      applyFragile: (val) => {
+        game.enemy.fragile += val;
+        spawnFloater('enemy-box', `脆弱+${val}`, '#7c3aed');
+      },
+      gainCharge: (val) => {
+        game.player.charge += val;
+        spawnFloater('chara-panel', `チャージ+${val}`, '#db2777');
+      },
+      getExpendedCount: () => game.skills.filter(s => s.expended).length,
+      reloadRandom: (count, excludeId) => {
+        const cands = game.skills.filter(s => s.expended && s.id !== excludeId);
+        for (let i = 0; i < count && cands.length > 0; i++) {
+          const idx = Math.floor(Math.random() * cands.length);
+          const t = cands.splice(idx, 1)[0];
+          t.expended = false;
+          addLog(`🔄 【${t.name}】がリロードされた！`);
+        }
+      }
+    });
+
+    // Execute base skill with base archetype specialization multiplier
+    const baseMult = getSpecMultiplier(archLevels[skill.baseArch]);
+    skill.executeBase(executeCtx(baseMult));
+
+    // Execute each attached module with its own archetype specialization multiplier!
+    skill.modules.forEach(mod => {
+      if (!game.inCombat) return;
+      const tmpl = MODULE_TEMPLATES.find(t => t.name === mod.name);
+      if (tmpl) {
+        const modMult = getSpecMultiplier(archLevels[mod.arch]);
+        tmpl.apply(executeCtx(modMult), mod.val);
+      }
+    });
+
+    if (game.inCombat && !isReplay) {
+      if ((p = hasProto('venom', 'swift')) && didAttack && game.enemy.poison > 0) {
+        applyPoison(2 * p.M);
+      }
+      if ((p = hasProto('echo', 'aegis'))) {
+        if (didAttack) gainShield(5 * p.S);
+        else dealRawDamage(8 * p.M, '攻防一体レゾナンス');
+      }
+    }
+  };
+
+  // Primary Execution
+  runSkillExecution(1.0, false);
+
+  // Echo MAIN x Heavy SUB: Finisher slot double-cast!
+  if (game.inCombat && isFinisherSlot && (p = hasProto('echo', 'heavy'))) {
+    const rate = 0.7 + 0.2 * p.M;
+    addLog(`✨💥 <strong>[シンギュラリティ終焉奏]</strong> フィニッシュスキルが ${Math.round(rate * 100)}% 威力で連続発動！`);
+    runSkillExecution(rate, true);
+    dealRawDamage(8 * p.S, '終焉奏フィニッシュ追撃', true);
+  }
+
+  // Mark skill as EXPENDED (unless Cycle x Echo finisher keeps it loaded!)
+  let keepLoaded = false;
+  if (game.inCombat && isFinisherSlot && (p = hasProto('cycle', 'echo'))) {
+    keepLoaded = true;
+    addLog(`🔄✨ <strong>[クオンタム・メモリー]</strong> フィニッシュ枠の【${skill.name}】が装填維持された！`);
+  }
+
+  if (!keepLoaded) {
+    skill.expended = true;
+    if (game.inCombat && (p = hasProto('venom', 'cycle'))) {
+      applyPoison(3 * p.M);
+    }
+  }
+
+  // Finisher slot / 3rd-skill triggers
+  if (game.inCombat && isFinisherSlot) {
+    if ((p = hasProto('swift', 'cycle'))) {
+      const rCnt = Math.min(3, 1 + Math.floor(p.S / 2));
+      const cands = game.skills.filter(s => s.expended);
+      for (let i = 0; i < rCnt && cands.length > 0; i++) {
+        const t = cands.splice(Math.floor(Math.random() * cands.length), 1)[0];
+        t.expended = false;
+      }
+      game.enemy.fragile += p.M;
+      addLog(`⚡🔄 <strong>[刹那の装填ステップ]</strong> リロード＆脆弱 +${p.M}！`);
+    }
+    if ((p = hasProto('venom', 'heavy'))) {
+      applyPoison(4 * p.S);
+      const blast = Math.floor(game.enemy.poison * (1.5 + 0.5 * p.M));
+      dealRawDamage(blast, '致死性ベノム・デトネイト', true);
+    }
+    if ((p = hasProto('echo', 'cycle'))) {
+      const rCnt = Math.min(3, 1 + Math.floor(p.S / 2));
+      const cands = game.skills.filter(s => s.expended);
+      for (let i = 0; i < rCnt && cands.length > 0; i++) {
+        const t = cands.splice(Math.floor(Math.random() * cands.length), 1)[0];
+        t.expended = false;
+      }
+      game.player.nextTurnFirstHitBonus = 10 * p.M;
+      addLog(`✨🔄 <strong>[エターナル・アンコール]</strong> リロード＆次ターン初撃 +${10 * p.M}！`);
+    }
+  }
+
+  if (game.inCombat) {
+    if (isFinisherSlot) {
+      setCharaReaction('awaken', '3手目フィニッシュ決まったぁっ！ターン終了で敵の攻撃に備えよう！');
+    } else if (game.player.actionsLeft === 1) {
+      setCharaReaction('happy', 'あと1手はフィニッシュ枠だよ！一番強い一撃を叩き込もう♪');
+    } else {
+      setCharaReaction('normal', `いい感じ！残り行動枠はあと ${game.player.actionsLeft} つだよ！`);
+    }
+    renderCombat();
+  }
+}
+
+function endPlayerTurn() {
+  if (!game.inCombat) return;
+  addLog(`🌙 <strong>--- ターン ${game.turn} 終了 ---</strong>`);
+
+  let p;
+  const savedShieldBeforeEnd = game.player.shield;
+
+  // End-of-turn player protocols
+  if ((p = hasProto('venom', 'aegis')) && game.enemy.poison > 0) {
+    const sh = Math.floor(game.enemy.poison * (0.8 + 0.3 * p.S));
+    gainShield(sh);
+    addLog(`☣️🛡️ <strong>[瘴気クリスタル防壁]</strong> 毒連動シールド +${sh}！`);
+  }
+  if ((p = hasProto('aegis', 'venom')) && game.player.shield > 0) {
+    applyPoison(5 * p.S);
+    game.enemy.fragile += (1 + Math.floor(p.M / 2));
+    addLog(`🛡️☣️ <strong>[腐食ソーン・バリア]</strong> 毒 +${5 * p.S} ＆ 脆弱付与！`);
+  }
+  if ((p = hasProto('aegis', 'cycle'))) {
+    const exp = game.skills.filter(s => s.expended).length;
+    if (exp > 0) {
+      gainShield(exp * 4 * p.M);
+      addLog(`🛡️🔄 <strong>[ナノ修復サイクル盾]</strong> 装填切れ${exp}枚分のシールド +${exp * 4 * p.M}！`);
+    }
+  }
+
+  // Poison tick on enemy
+  if (game.enemy.poison > 0) {
+    let pDmg = game.enemy.poison;
+    if ((p = hasProto('venom', 'echo')) && game.enemy.fragile > 0) {
+      pDmg = Math.floor(pDmg * (1.6 + 0.3 * p.M));
+      if (game.player.venomEchoHealsThisCombat < 2) {
+        game.player.venomEchoHealsThisCombat++;
+        game.player.hp = Math.min(game.player.maxHp, game.player.hp + 2 * p.S);
+      }
+    }
+    game.enemy.hp = Math.max(0, game.enemy.hp - pDmg);
+    spawnFloater('enemy-box', `-${pDmg} ☣️`, '#059669');
+    addLog(`☣️ 敵に毒ダメージ <strong>${pDmg}</strong>！`);
+
+    if (!hasProto('venom', 'aegis')) {
+      game.enemy.poison = Math.max(0, game.enemy.poison - 1);
+    }
+    if (checkCombatEnd()) return;
+  }
+
+  // Enemy Action Phase
+  const intent = getEnemyIntent();
+  addLog(`👾 <strong style="color:#6b21a8;">${game.enemy.name} の行動：${intent.label}</strong>`);
+
+  if (intent.shield) game.enemy.shield += intent.shield;
+  if (intent.buff) game.enemy.strength += intent.buff;
+
+  let tookHpDamage = false;
+  if (intent.dmg) {
+    let dmgMult = 1.0;
+    if (game.player.fullReloadedThisTurn && (p = hasProto('aegis', 'cycle'))) {
+      dmgMult = Math.max(0.2, 1.0 - (0.4 + 0.1 * p.S));
+    }
+    for (let h = 0; h < (intent.hits || 1); h++) {
+      let incoming = Math.floor(intent.dmg * dmgMult);
+      if (game.player.shield > 0) {
+        const blk = Math.min(game.player.shield, incoming);
+        game.player.shield -= blk;
+        incoming -= blk;
+      }
+      if (incoming > 0) {
+        game.player.hp = Math.max(0, game.player.hp - incoming);
+        tookHpDamage = true;
+        spawnFloater('chara-panel', `-${incoming} 💔`, '#e11d48');
+      } else {
+        spawnFloater('chara-panel', `GUARD! 🛡️`, '#d97706');
+      }
+    }
+  }
+
+  if (checkCombatEnd()) return;
+
+  // Aegis x Heavy Counter after enemy attack!
+  if ((p = hasProto('aegis', 'heavy')) && savedShieldBeforeEnd > 0) {
+    const counter = Math.floor(savedShieldBeforeEnd * (1.4 + 0.4 * p.M)) + 5 * p.S;
+    dealRawDamage(counter, '要塞反撃バスター', true);
+    if (!game.inCombat) return;
+  }
+
+  // Shield Reset Rule (Prevents infinite turtle stalling!)
+  if ((p = hasProto('aegis', 'echo'))) {
+    const keepRate = Math.min(0.9, 0.4 + 0.12 * p.S);
+    game.player.shield = Math.floor(game.player.shield * keepRate);
+  } else {
+    game.player.shield = 0;
+  }
+
+  // Next Turn Setup
+  game.turn++;
+  game.enemy.turnIdx++;
+  if (game.enemy.fragile > 0) game.enemy.fragile--;
+
+  game.player.maxActions = 3 + game.player.bonusActionsNextTurn;
+  game.player.bonusActionsNextTurn = 0;
+  game.player.actionsLeft = game.player.maxActions;
+  game.player.skillsUsedThisTurn = 0;
+  game.player.swiftVenomProcsThisTurn = 0;
+  game.player.heavySwiftUsedThisTurn = false;
+  game.player.usedModReloadThisTurn = false;
+  game.player.fullReloadedThisTurn = false;
+
+  if (tookHpDamage) {
+    setCharaReaction('pinch', `きゃっ、痛い…！残りHP ${game.player.hp}！次は気をつけないと！`);
+  } else {
+    setCharaReaction('happy', 'ナイス防御！シールドがリセットされたから、次の手番を組み立てよう♪');
+  }
+
+  renderCombat();
+}
+
+function checkCombatEnd() {
+  if (game.enemy.hp <= 0) {
+    game.inCombat = false;
+    updateHud();
+    setCharaReaction('awaken', 'やったぁーっ！完全勝利だよマスター♪');
+    setTimeout(() => {
+      if (game.act === 3 && game.enemy.type === 'boss') {
+        showEndScreen(true);
+      } else {
+        prepareReward();
+      }
+    }, 550);
+    return true;
+  }
+  if (game.player.hp <= 0) {
+    game.inCombat = false;
+    updateHud();
+    setTimeout(() => showEndScreen(false), 500);
+    return true;
+  }
+  return false;
+}
+
+function renderCombat() {
+  updateHud();
+  const p = game.player;
+  const e = game.enemy;
+
+  document.getElementById('turn-badge').textContent = `TURN ${game.turn}`;
+  document.getElementById('player-hp-bar').style.width = `${(p.hp / p.maxHp) * 100}%`;
+  document.getElementById('player-hp-text').textContent = `♥ HP ${p.hp} / ${p.maxHp}`;
+
+  const pSt = document.getElementById('player-statuses');
+  pSt.innerHTML = '';
+  if (p.shield > 0) pSt.innerHTML += `<span class="st-badge" style="color:#d97706; border-color:#f59e0b;">🛡️ シールド ${p.shield} (T終了消滅)</span>`;
+  if (p.charge > 0) pSt.innerHTML += `<span class="st-badge" style="color:#db2777; border-color:#f472b6;">✨ チャージ ×${p.charge}</span>`;
+  if (p.nextTurnFirstHitBonus > 0) pSt.innerHTML += `<span class="st-badge" style="color:#7c3aed;">🔥 初撃+${p.nextTurnFirstHitBonus}</span>`;
+
+  // Enemy
+  document.getElementById('enemy-name').textContent = `👾 ${e.name}`;
+  document.getElementById('enemy-rank').textContent = e.type.toUpperCase();
+  document.getElementById('enemy-hp-bar').style.width = `${(e.hp / e.maxHp) * 100}%`;
+  document.getElementById('enemy-hp-text').textContent = `HP ${e.hp} / ${e.maxHp}`;
+
+  const eSt = document.getElementById('enemy-statuses');
+  eSt.innerHTML = '';
+  if (e.shield > 0) eSt.innerHTML += `<span class="st-badge" style="color:#d97706;">🛡️ 敵シールド ${e.shield}</span>`;
+  if (e.poison > 0) eSt.innerHTML += `<span class="st-badge" style="color:#059669;">☣️ 毒 ${e.poison}</span>`;
+  if (e.fragile > 0) eSt.innerHTML += `<span class="st-badge" style="color:#7c3aed;">💔 脆弱 ${e.fragile}T</span>`;
+  if (e.strength > 0) eSt.innerHTML += `<span class="st-badge" style="color:#e11d48;">⚔️ 攻撃+${e.strength}</span>`;
+
+  document.getElementById('enemy-intent-text').textContent = getEnemyIntent().label;
+
+  // Action Pips
+  const pipsEl = document.getElementById('action-pips');
+  pipsEl.innerHTML = '';
+  for (let i = 0; i < p.maxActions; i++) {
+    const isActive = i < p.actionsLeft;
+    const isLastPip = (i === 0);
+    pipsEl.innerHTML += `<div class="pip ${isActive ? 'active' : ''} ${isLastPip ? 'finisher' : ''}">${isActive ? (isLastPip ? '★' : '●') : '・'}</div>`;
+  }
+
+  document.getElementById('slot-hint').textContent =
+    p.actionsLeft === 1 ? '★ 次はフィニッシュ枠！' :
+    p.actionsLeft === 0 ? '行動終了（ターン終了へ）' :
+    `あと ${p.actionsLeft} 手行動可能`;
+
+  const reloadBtn = document.getElementById('btn-full-reload');
+  reloadBtn.disabled = (p.actionsLeft < p.maxActions || game.skills.every(s => !s.expended));
+
+  // 7 Skills
+  const loaded = game.skills.filter(s => !s.expended).length;
+  document.getElementById('loaded-count-text').textContent = `装填済: ${loaded} / 7`;
+
+  const grid = document.getElementById('combat-skills-grid');
+  grid.innerHTML = '';
+  game.skills.forEach(sk => {
+    grid.appendChild(createSkillCard(sk, {
+      mode: 'combat',
+      onClick: () => executeSkill(sk.id)
+    }));
+  });
+}
+
+function createSkillCard(skill, opts = {}) {
+  const levels = getArchetypeLevels();
+  const baseArch = ARCHETYPES[skill.baseArch];
+  const baseMult = getSpecMultiplier(levels[skill.baseArch]).toFixed(1);
+
+  const card = document.createElement('div');
+  const locked = opts.mode === 'combat' && game.player.actionsLeft <= 0;
+  card.className = `skill-card ${opts.mode === 'combat' && skill.expended ? 'expended' : ''} ${locked ? 'locked' : ''}`;
+  card.style.borderColor = baseArch.color + '88';
+
+  let modHtml = '';
+  for (let i = 0; i < 3; i++) {
+    const m = skill.modules[i];
+    if (m) {
+      const ma = ARCHETYPES[m.arch];
+      const tmpl = MODULE_TEMPLATES.find(t => t.name === m.name);
+      const effVal = Math.floor(m.val * getSpecMultiplier(levels[m.arch]));
+      const desc = tmpl ? tmpl.text(effVal) : m.name;
+      modHtml += `
+        <div class="mod-slot" style="border-color:${ma.color}; background:${ma.bg}; color:${ma.color};">
+          ${ma.icon} ${desc}
+        </div>
+      `;
+    } else {
+      modHtml += `<div class="mod-slot empty">+ 空きスロット ${i + 1}</div>`;
+    }
+  }
+
+  card.innerHTML = `
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; margin-bottom:4px;">
+        <span class="skill-title" style="color:${baseArch.color};">${baseArch.icon} ${skill.name}</span>
+        <span style="font-size:0.65rem; font-weight:900; background:${baseArch.bg}; color:${baseArch.color}; padding:1px 5px; border-radius:999px;">×${baseMult}</span>
+      </div>
+      <div class="skill-desc">${skill.baseDesc}</div>
+    </div>
+    <div class="mod-list">${modHtml}</div>
+  `;
+
+  if (opts.onClick) card.onclick = opts.onClick;
+  return card;
+}
+
+/**
+ * ============================================================================
+ * 8. REWARD & REST SYSTEM
+ * ============================================================================
+ */
+function prepareReward() {
+  const affs = game.enemy.affinities || [];
+  const isHigh = game.enemy.type === 'elite' || game.enemy.type === 'boss';
+  const mult = isHigh ? 1.35 : 1.0;
+
+  const choices = [];
+  for (let i = 0; i < 3; i++) {
+    const arch = (affs.length > 0 && Math.random() < 0.68)
+      ? affs[Math.floor(Math.random() * affs.length)]
+      : ARCH_KEYS[Math.floor(Math.random() * ARCH_KEYS.length)];
+
+    const pool = MODULE_TEMPLATES.filter(t => t.arch === arch);
+    const tmpl = pool[Math.floor(Math.random() * pool.length)];
+    const val = Math.max(1, Math.round(tmpl.baseVal * mult));
+
+    choices.push({
+      arch,
+      name: tmpl.name,
+      val,
+      level: isHigh ? 2 : 1,
+      desc: tmpl.text(val),
+      isRare: isHigh
+    });
+  }
+
+  game.rewardChoices = choices;
+  game.selectedRewardIdx = 0;
+  renderReward();
+  showScreen('screen-reward');
+}
+
+function renderReward() {
+  const levels = getArchetypeLevels();
+  const box = document.getElementById('reward-choices');
+  box.innerHTML = '';
+
+  game.rewardChoices.forEach((mod, idx) => {
+    const ai = ARCHETYPES[mod.arch];
+    const nextLv = levels[mod.arch] + mod.level;
+    const nextMult = getSpecMultiplier(nextLv).toFixed(1);
+    const sel = game.selectedRewardIdx === idx;
+
+    const card = document.createElement('div');
+    card.className = `reward-card ${sel ? 'selected' : ''}`;
+    card.style.borderColor = sel ? '#ec4899' : ai.color;
+    card.onclick = () => {
+      game.selectedRewardIdx = idx;
+      renderReward();
+    };
+
+    card.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="color:${ai.color}; font-weight:900; font-size:0.84rem;">${ai.icon} ${ai.name}系統 +${mod.level} (特化倍率 → ×${nextMult})</span>
+        ${mod.isRare ? '<span class="badge-pill" style="font-size:0.65rem; background:#fef9c3;">★ RARE</span>' : ''}
+      </div>
+      <div style="font-weight:900; font-size:0.98rem;">${mod.name}</div>
+      <div style="font-size:0.8rem; background:${ai.bg}; padding:6px 8px; border-radius:8px; font-weight:700;">
+        基礎効果：${mod.desc}
+      </div>
+    `;
+    box.appendChild(card);
+  });
+
+  const selMod = game.rewardChoices[game.selectedRewardIdx];
+  const grid = document.getElementById('reward-skills-grid');
+  grid.innerHTML = '';
+  game.skills.forEach(sk => {
+    const canInstall = selMod && sk.modules.length < 3;
+    const card = createSkillCard(sk, {
+      mode: 'reward',
+      onClick: canInstall ? () => {
+        sk.modules.push({ arch: selMod.arch, name: selMod.name, val: selMod.val, level: selMod.level });
+        updateHud();
+        advanceNode();
+      } : null
+    });
+    if (!canInstall) card.style.opacity = '0.45';
+    grid.appendChild(card);
+  });
+}
+
+function doRestHeal() {
+  game.player.hp = Math.min(game.player.maxHp, game.player.hp + 20);
+  updateHud();
+  advanceNode();
+}
+
+function openRestForge() {
+  if (!game.skills.some(s => s.modules.length > 0)) {
+    doRestHeal();
+    return;
+  }
+  document.getElementById('rest-forge-area').style.display = 'block';
+  const grid = document.getElementById('rest-skills-grid');
+  grid.innerHTML = '';
+  game.skills.forEach(sk => {
+    const hasMod = sk.modules.length > 0;
+    const card = createSkillCard(sk, {
+      mode: 'rest',
+      onClick: hasMod ? () => {
+        const m = sk.modules[sk.modules.length - 1];
+        m.val = Math.max(m.val + 1, Math.round(m.val * 1.35));
+        m.level = (m.level || 1) + 1;
+        updateHud();
+        advanceNode();
+      } : null
+    });
+    if (!hasMod) card.style.opacity = '0.4';
+    grid.appendChild(card);
+  });
+}
+
+/**
+ * ============================================================================
+ * 9. MODALS, HELPERS & END SCREEN
+ * ============================================================================
+ */
+function openMatrixModal() {
+  const body = document.getElementById('matrix-body');
+  const active = getActiveProtocol();
+  const M_disp = active.active ? active.M : 2;
+  const S_disp = active.active ? active.S : 2;
+
+  let html = `<table class="matrix-table"><thead><tr><th>MAIN ＼ SUB</th>`;
+  ARCH_KEYS.forEach(sk => {
+    const s = ARCHETYPES[sk];
+    html += `<th style="color:${s.color};">${s.icon} ${s.name}<br>(SUB)</th>`;
+  });
+  html += `</tr></thead><tbody>`;
+
+  ARCH_KEYS.forEach(mk => {
+    const m = ARCHETYPES[mk];
+    html += `<tr><th style="color:${m.color};">${m.icon} ${m.name}<br>(MAIN)</th>`;
+    ARCH_KEYS.forEach(sk => {
+      if (mk === sk) {
+        html += `<td style="background:#faf5ff; text-align:center; color:var(--text-light);">—<br>(単一不可)</td>`;
+      } else {
+        const key = `${mk}_${sk}`;
+        const p = PROTOCOLS[key];
+        const isCur = active.active && active.key === key;
+        const mLv = isCur ? active.M : M_disp;
+        const sLv = isCur ? active.S : S_disp;
+        html += `
+          <td class="${isCur ? 'matrix-active' : ''}">
+            <div style="font-weight:900; color:${isCur ? '#b45309' : '#be185d'}; margin-bottom:2px;">
+              ${isCur ? '★起動中: ' : ''}${p.name}
+            </div>
+            <div style="font-size:0.66rem; line-height:1.32;">${p.desc(mLv, sLv)}</div>
+          </td>
+        `;
+      }
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table>`;
+  body.innerHTML = html;
+  document.getElementById('modal-matrix').classList.add('open');
+}
+
+function openDeckModal() {
+  const levels = getArchetypeLevels();
+  const bar = document.getElementById('deck-arch-bar');
+  bar.innerHTML = '';
+
+  ARCH_KEYS.forEach(k => {
+    const ai = ARCHETYPES[k];
+    const lv = levels[k];
+    const mult = getSpecMultiplier(lv).toFixed(1);
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.disabled = lv <= 0;
+    btn.style.borderColor = ai.color;
+    btn.innerHTML = `${ai.icon} ${ai.name} Lv.${lv} (倍率 ×${mult})`;
+    btn.onclick = () => {
+      selectRole(k);
+      openDeckModal();
+    };
+    bar.appendChild(btn);
+  });
+
+  const grid = document.getElementById('deck-skills-grid');
+  grid.innerHTML = '';
+  game.skills.forEach(sk => grid.appendChild(createSkillCard(sk, { mode: 'inspect' })));
+  document.getElementById('modal-deck').classList.add('open');
+}
+
+function closeModals() {
+  document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function addLog(html) {
+  const el = document.getElementById('combat-log');
+  if (!el) return;
+  const row = document.createElement('div');
+  row.style.marginBottom = '2px';
+  row.innerHTML = html;
+  el.appendChild(row);
+  el.scrollTop = el.scrollHeight;
+}
+
+function spawnFloater(targetId, text, color) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  const f = document.createElement('div');
+  f.className = 'floater';
+  f.textContent = text;
+  f.style.color = color;
+  f.style.left = `${r.left + r.width * (0.25 + Math.random() * 0.5)}px`;
+  f.style.top = `${r.top + r.height * 0.3}px`;
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 900);
+}
+
+function showEndScreen(win) {
+  document.getElementById('end-title').textContent = win ? '🌸 MAGICAL VICTORY!! 🌸' : '💔 MISSION FAILED...';
+  document.getElementById('end-subtitle').textContent = win
+    ? 'おめでとう！2系統特化プロトコルで終焉コア・オメガを完全撃破したよ！'
+    : `ACT ${game.act} - STEP ${game.step + 1} で力尽きてしまいました…。リロードと防御のタイミングを見直して再挑戦しよう！`;
+
+  const p = getActiveProtocol();
+  const levels = getArchetypeLevels();
+  const protoStr = p.active
+    ? `<strong>【${p.name}】</strong> (${ARCHETYPES[p.main].name} Lv.${p.M} × ${ARCHETYPES[p.sub].name} Lv.${p.S})`
+    : '未起動';
+
+  const skHtml = game.skills.map(sk => {
+    const mods = sk.modules.map(m => {
+      const tmpl = MODULE_TEMPLATES.find(t => t.name === m.name);
+      const effVal = Math.floor(m.val * getSpecMultiplier(levels[m.arch]));
+      return `<span style="color:${ARCHETYPES[m.arch].color}; font-weight:800;">[${tmpl ? tmpl.text(effVal) : m.name}]</span>`;
+    }).join(' ');
+    return `<div style="font-size:0.8rem; margin-bottom:4px;">• <strong>${sk.name}</strong>: ${mods || '未改造'}</div>`;
+  }).join('');
+
+  document.getElementById('end-summary').innerHTML = `
+    <div style="margin-bottom:8px; font-size:0.9rem;">最終デュアル・プロトコル：${protoStr}</div>
+    ${skHtml}
+  `;
+  showScreen('screen-end');
+}
+
+// Initial render
+renderCharaSvg('normal');
+updateHud();
+</script>
+</body>
+</html>
