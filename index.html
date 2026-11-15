@@ -1,2637 +1,2136 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>魔法少女ピンボール 〜4つの輝きと奇跡の4層聖域〜</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>魔法少女と田舎町のエンドレス強襲戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;900&display=swap');
     body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at center, #1e1035 0%, #090414 100%);
-      color: #fff;
-      font-family: 'M PLUS Rounded 1c', sans-serif;
       overflow: hidden;
-      height: 100dvh;
-      width: 100vw;
+      background-color: #1e1b4b;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
     }
-
-    /* 魔法陣回転アニメーション */
-    @keyframes spinSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes spinReverse {
-      from { transform: rotate(360deg); }
-      to { transform: rotate(0deg); }
-    }
-    @keyframes pulseGlow {
-      0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 180, 240, 0.8)); transform: scale(1); }
-      50% { filter: drop-shadow(0 0 18px rgba(255, 230, 120, 1)); transform: scale(1.04); }
-    }
-    @keyframes slideInRight {
-      0% { transform: translateX(120%) skewX(-12deg); opacity: 0; }
-      15% { transform: translateX(0%) skewX(-12deg); opacity: 1; }
-      85% { transform: translateX(-4%) skewX(-12deg); opacity: 1; }
-      100% { transform: translateX(120%) skewX(-12deg); opacity: 0; }
-    }
-    @keyframes awakenZoom {
-      0% { transform: scale(0.6); opacity: 0; filter: brightness(2); }
-      20% { transform: scale(1.05); opacity: 1; filter: brightness(1.2); }
-      85% { transform: scale(1.0); opacity: 1; filter: brightness(1); }
-      100% { transform: scale(1.2); opacity: 0; }
-    }
-    @keyframes beamFlash {
-      0% { opacity: 0; transform: scaleY(0.1); }
-      20% { opacity: 1; transform: scaleY(1.2); }
-      75% { opacity: 0.95; transform: scaleY(1); }
-      100% { opacity: 0; transform: scaleY(0.2); }
-    }
-
-    .animate-spin-slow { animation: spinSlow 14s linear infinite; }
-    .animate-spin-reverse { animation: spinReverse 10s linear infinite; }
-    .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
-    .cutin-nonstop {
-      animation: slideInRight 2.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .cutin-awaken {
-      animation: awakenZoom 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .unison-beam {
-      animation: beamFlash 2.8s ease-out forwards;
-    }
-
-    /* カスタムスクロールバー非表示 */
-    ::-webkit-scrollbar { display: none; }
-
-    .glass-panel {
-      background: rgba(24, 14, 48, 0.78);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 210, 245, 0.28);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(255, 190, 240, 0.12);
-    }
-
-    .game-btn {
-      background: linear-gradient(135deg, #ff6ec7 0%, #7873f5 100%);
-      border: 2px solid rgba(255, 255, 255, 0.75);
-      box-shadow: 0 4px 15px rgba(255, 110, 199, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6);
-      transition: transform 0.1s, filter 0.15s;
-    }
-    .game-btn:hover { filter: brightness(1.12); }
-    .game-btn:active { transform: scale(0.95); }
-
     canvas {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
     }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .card-hover {
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 25px -5px rgba(244, 114, 182, 0.45);
+      border-color: #f472b6;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 12px rgba(244, 114, 182, 0.6); }
+      50% { box-shadow: 0 0 24px rgba(244, 114, 182, 0.95); }
+    }
+    .skill-ready {
+      animation: pulse-glow 2s infinite;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(244, 114, 182, 0.5); border-radius: 3px; }
   </style>
 </head>
-<body class="flex flex-col md:flex-row items-center justify-center p-1 sm:p-2 gap-2">
+<body class="text-white">
 
-  <!-- 左サイド HUD（PC表示 / モバイル時は上部コンパクトバー） -->
-  <aside id="hud-left" class="w-full md:w-72 lg:w-80 flex flex-row md:flex-col justify-between md:justify-start gap-1.5 md:gap-2.5 z-20 shrink-0">
-    <!-- タイトル & サウンド切替 -->
-    <div class="glass-panel rounded-2xl p-2 md:p-3 flex items-center justify-between">
+  <!-- ゲームキャンバス -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- トップHUD（常時表示） -->
+  <div id="hudTop" class="fixed top-0 left-0 right-0 p-2 sm:p-4 pointer-events-none flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 z-10 hidden">
+    <!-- 左：距離＆スコア -->
+    <div class="glass-panel rounded-2xl px-4 py-2 flex items-center gap-4 shadow-lg">
       <div>
-        <div class="text-[10px] md:text-xs text-pink-300 font-bold tracking-wider">MAGICAL 4-LAYER PINBALL</div>
-        <h1 class="text-sm md:text-lg font-black bg-gradient-to-r from-white via-pink-200 to-amber-200 bg-clip-text text-transparent leading-tight">
-          魔法少女ピンボール
-        </h1>
+        <div class="text-[10px] sm:text-xs text-pink-300 font-bold tracking-wider">アジト突入距離 (SCORE)</div>
+        <div class="text-xl sm:text-3xl font-black text-white flex items-baseline gap-1">
+          <span id="hudMaxDist">0</span><span class="text-sm sm:text-base text-pink-400">m</span>
+        </div>
       </div>
-      <div class="flex items-center gap-1.5">
-        <button id="btn-sound" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-xs font-bold" title="サウンド切替">
-          🔊 ON
-        </button>
-        <button id="btn-help" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-xs font-bold" title="遊び方">
-          ？
-        </button>
+      <div class="h-8 w-px bg-white/15"></div>
+      <div class="text-xs sm:text-sm">
+        <div class="text-slate-400">現在地: <span id="hudCurrDist" class="text-white font-bold">0</span>m</div>
+        <div class="text-slate-400">最深記録: <span id="hudBestDist" class="text-amber-300 font-bold">0</span>m</div>
       </div>
     </div>
 
-    <!-- スコア & 倍率 & 残機 -->
-    <div class="glass-panel rounded-2xl p-2 md:p-3 flex-1 md:flex-none flex flex-col justify-center">
-      <div class="flex items-center justify-between text-xs text-purple-200">
-        <span>SCORE</span>
-        <span id="hud-mult" class="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-slate-950 font-black text-[11px]">
-          ×1
+    <!-- 中央：バランス指標（エリア深度 vs 時間危険度） -->
+    <div class="glass-panel rounded-2xl px-4 py-2 flex items-center gap-3 sm:gap-5 shadow-lg">
+      <div>
+        <div class="flex items-center gap-1 text-[10px] sm:text-xs text-rose-300 font-bold">
+          <span>🏰 アジト警戒度 (防衛戦力)</span>
+        </div>
+        <div class="text-sm sm:text-lg font-black text-rose-400">Lv.<span id="hudDepthLv">1</span> <span class="text-xs font-normal text-slate-300">(HP ×<span id="hudEnemyMult">1.0</span>)</span></div>
+      </div>
+      <div class="h-8 w-px bg-white/15"></div>
+      <div>
+        <div class="flex items-center gap-1 text-[10px] sm:text-xs text-amber-300 font-bold">
+          <span>🚨 敵組織の増員状況 (経過時間)</span>
+        </div>
+        <div class="text-sm sm:text-lg font-black text-amber-400"><span id="hudTime">00:00</span> <span class="text-xs font-normal text-slate-300">(増員 ×<span id="hudSpawnMult">1.0</span>)</span></div>
+      </div>
+    </div>
+
+    <!-- 右：撃破数＆ビルド確認ボタン -->
+    <div class="flex items-center gap-2 pointer-events-auto self-end sm:self-auto">
+      <div class="glass-panel rounded-2xl px-3 py-2 text-right hidden md:block">
+        <div class="text-[10px] text-slate-400">撃破数</div>
+        <div class="text-base font-black text-cyan-300"><span id="hudKills">0</span>体</div>
+      </div>
+      <button id="btnBuildView" class="bg-pink-600/80 hover:bg-pink-500 active:scale-95 transition rounded-2xl px-3.5 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 border-2 border-pink-300/70 shadow-lg shadow-pink-500/20 cursor-pointer">
+        <span class="text-lg">📜</span>
+        <div class="text-left leading-tight">
+          <div class="text-xs sm:text-sm font-black text-white">ビルド確認</div>
+          <div class="text-[9px] text-pink-200 font-bold hidden sm:block">[Esc] 一時停止</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ボトムHUD（HP・EXP・アクティブスキル） -->
+  <div id="hudBottom" class="fixed bottom-0 left-0 right-0 p-2 sm:p-4 pointer-events-none flex flex-col items-center gap-2 z-10 hidden">
+    <!-- アクティブスキル3枠 -->
+    <div id="skillSlotsContainer" class="flex items-center justify-center gap-3 sm:gap-5 pointer-events-auto">
+      <!-- JSで3つのスキルスロットを生成 -->
+    </div>
+
+    <!-- HP & EXP ゲージ -->
+    <div class="w-full max-w-2xl glass-panel rounded-2xl p-2.5 sm:p-3 flex flex-col gap-1.5 shadow-xl">
+      <div class="flex justify-between items-center text-xs sm:text-sm font-bold">
+        <div class="flex items-center gap-2">
+          <span class="bg-pink-500 text-white px-2 py-0.5 rounded-md text-xs font-black">Lv.<span id="hudLevel">1</span></span>
+          <span class="text-rose-300">HP: <span id="hudHpText">100 / 100</span></span>
+        </div>
+        <div class="text-cyan-300 text-xs">
+          次のLvまで: <span id="hudExpText">0 / 10</span>
+        </div>
+      </div>
+      <!-- HPバー -->
+      <div class="w-full h-3 bg-slate-900/90 rounded-full overflow-hidden border border-white/10">
+        <div id="hudHpBar" class="h-full bg-gradient-to-r from-rose-500 to-pink-400 transition-all duration-150" style="width: 100%;"></div>
+      </div>
+      <!-- EXPバー -->
+      <div class="w-full h-2 bg-slate-900/90 rounded-full overflow-hidden border border-white/10">
+        <div id="hudExpBar" class="h-full bg-gradient-to-r from-cyan-400 to-indigo-400 transition-all duration-150" style="width: 0%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- タイトル画面オーバーレイ -->
+  <div id="screenTitle" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 z-30">
+    <div class="glass-panel max-w-xl w-full rounded-3xl p-6 sm:p-8 text-center border-2 border-pink-400/40 shadow-2xl">
+      <div class="inline-block bg-pink-500/20 border border-pink-400/50 text-pink-300 text-xs font-bold px-3 py-1 rounded-full mb-3">
+        🚨 敵アジト単身強襲エンドレス・アクション 🚨
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 mb-3 leading-tight">
+        魔法少女と田舎町の<br>エンドレス強襲戦
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed">
+        田舎町外れの山奥で、悪の組織が着々と増員を進めている！<br>
+        <span class="text-amber-300 font-bold">もたつくと増員された大群に圧殺され、急ぎすぎるとアジト最深部の精鋭に返り討ちに遭う。</span><br>
+        取り返しがつかなくなる前に、絶妙なペースで敵陣の奥深くへ突入せよ！
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left text-xs bg-slate-900/70 rounded-2xl p-4 mb-6 border border-white/10">
+        <div>
+          <div class="font-bold text-pink-300 mb-1">🎮 操作方法</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>・移動：<span class="text-white font-bold">WASD / 矢印キー</span> (スマホは画面ドラッグ)</li>
+            <li>・通常攻撃：<span class="text-white font-bold">完全オート</span>（最寄りの敵を狙撃）</li>
+            <li>・スキル・強化選択：<span class="text-white font-bold">1〜5 キー</span> またはタップ</li>
+          </ul>
+        </div>
+        <div>
+          <div class="font-bold text-cyan-300 mb-1">⚡ ローグライト要素</div>
+          <ul class="space-y-1 text-slate-300">
+            <li>・開始時に<span class="text-white font-bold">ランダムな3つのスキル</span>を配布</li>
+            <li>・LvUPごとに<span class="text-white font-bold">5択</span>から強化・効果追加を選択</li>
+            <li>・多様な<span class="text-white font-bold">誘発(トリガー)能力</span>で爆発的シナジー</li>
+          </ul>
+        </div>
+      </div>
+
+      <button id="btnStartGame" class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:from-pink-400 hover:to-amber-400 text-white font-black text-lg sm:text-xl shadow-lg shadow-pink-500/30 active:scale-95 transition cursor-pointer">
+        🎀 変身して敵アジトへ突入！ 🎀
+      </button>
+    </div>
+  </div>
+
+  <!-- レベルアップ5択モーダル -->
+  <div id="screenLevelUp" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6 z-30 hidden overflow-y-auto">
+    <div class="max-w-5xl w-full my-auto">
+      <div class="text-center mb-4">
+        <span class="inline-block bg-amber-400/20 border border-amber-300/50 text-amber-300 text-xs font-black px-3 py-1 rounded-full mb-1">
+          ✨ LEVEL UP! ✨
         </span>
-      </div>
-      <div id="hud-score" class="text-xl md:text-3xl font-black tracking-tight text-white drop-shadow">
-        000,000,000
-      </div>
-      <div class="mt-1 flex items-center justify-between text-xs">
-        <span class="text-pink-200 font-bold">残機（魔力球）:</span>
-        <div id="hud-balls" class="flex items-center gap-1 text-base">💖💖💖</div>
-      </div>
-    </div>
-
-    <!-- 覚醒ポイントゲージ & 4人の覚醒レベル -->
-    <div class="glass-panel rounded-2xl p-2 md:p-3 flex-1 md:flex-none">
-      <div class="flex items-center justify-between text-xs font-bold mb-1">
-        <span class="text-amber-300">✨ 覚醒ゲージ</span>
-        <span id="hud-awaken-pt" class="text-white">0 / 10 pt</span>
-      </div>
-      <div class="w-full h-3 bg-slate-900/90 rounded-full overflow-hidden border border-pink-300/40 p-0.5">
-        <div id="hud-awaken-bar" class="h-full rounded-full bg-gradient-to-r from-cyan-400 via-pink-400 to-amber-300 transition-all duration-300" style="width: 0%"></div>
+        <h2 id="levelUpTitle" class="text-xl sm:text-3xl font-black text-white">強化カードを1つ選択してください <span class="text-sm sm:text-base text-amber-300 font-bold">[1〜5キー]</span></h2>
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-1">
+          <p id="levelUpSub" class="text-xs sm:text-sm text-pink-200">獲得した能力や誘発効果でビルドを構築しよう</p>
+          <button id="btnLevelUpBuildView" class="bg-slate-800/90 hover:bg-slate-700 border border-pink-400/50 text-pink-200 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 transition cursor-pointer">
+            <span>📜</span><span>現在のスキル・パッシブを確認</span>
+          </button>
+        </div>
       </div>
 
-      <!-- 4人の覚醒回数バッジ -->
-      <div class="grid grid-cols-4 md:grid-cols-2 gap-1 md:gap-1.5 mt-2">
-        <div id="badge-white" class="rounded-xl bg-white/10 border border-white/40 p-1 md:p-1.5 flex items-center justify-between text-[10px] md:text-xs">
-          <span class="font-bold text-white truncate">🤍白・スコア</span>
-          <span class="font-black text-amber-200" id="lv-white">0/4</span>
+      <!-- 5枚のカードコンテナ -->
+      <div id="upgradeCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <!-- JSで5枚のカードを生成 -->
+      </div>
+
+      <!-- スキル付与先選択パネル（モディファイアカード選択時に表示） -->
+      <div id="skillTargetSelector" class="mt-4 glass-panel rounded-2xl p-4 border-2 border-cyan-400/60 hidden">
+        <div class="text-center mb-3">
+          <div class="text-sm font-black text-cyan-300">どのアクティブスキルにこの効果を追加しますか？ <span class="text-amber-300">[1〜3キー]</span></div>
+          <div id="selectedModDesc" class="text-xs text-white mt-0.5"></div>
         </div>
-        <div id="badge-blue" class="rounded-xl bg-sky-500/15 border border-sky-400/40 p-1 md:p-1.5 flex items-center justify-between text-[10px] md:text-xs">
-          <span class="font-bold text-sky-200 truncate">💙青・緩降下</span>
-          <span class="font-black text-sky-300" id="lv-blue">0/4</span>
+        <div id="skillTargetButtons" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <!-- JSで所持スキル3つのボタンを生成 -->
         </div>
-        <div id="badge-pink" class="rounded-xl bg-pink-500/15 border border-pink-400/40 p-1 md:p-1.5 flex items-center justify-between text-[10px] md:text-xs">
-          <span class="font-bold text-pink-200 truncate">🩷桃・分身球</span>
-          <span class="font-black text-pink-300" id="lv-pink">0/4</span>
-        </div>
-        <div id="badge-yellow" class="rounded-xl bg-amber-500/15 border border-amber-400/40 p-1 md:p-1.5 flex items-center justify-between text-[10px] md:text-xs">
-          <span class="font-bold text-amber-200 truncate">💛黄・剛弾力</span>
-          <span class="font-black text-amber-300" id="lv-yellow">0/4</span>
+        <div class="text-center mt-3">
+          <button id="btnCancelTarget" class="text-xs text-slate-400 hover:text-white underline cursor-pointer">← カード選択に戻る [Esc]</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- PC専用：操作ガイド -->
-    <div class="hidden md:block glass-panel rounded-2xl p-3 text-xs text-purple-100 space-y-1">
-      <div class="font-black text-pink-300 mb-1">🎮 操作方法</div>
-      <div class="flex justify-between"><span>左フリッパー</span><span class="font-bold text-white">A / ← / 画面左タップ</span></div>
-      <div class="flex justify-between"><span>右フリッパー</span><span class="font-bold text-white">D / → / 画面右タップ</span></div>
-      <div class="flex justify-between"><span>魔力発射(プランジャー)</span><span class="font-bold text-white">Space / ↓ / 発射ボタン</span></div>
-      <div class="flex justify-between"><span>台揺らし(チルト)</span><span class="font-bold text-white">W / ↑</span></div>
-    </div>
-  </aside>
-
-  <!-- 中央メインプレイフィールド -->
-  <main class="relative flex-1 h-full max-w-[540px] w-full flex flex-col items-center justify-center">
-    <div id="canvas-wrapper" class="relative w-full h-full rounded-3xl overflow-hidden border-2 border-pink-300/50 shadow-[0_0_40px_rgba(236,72,153,0.35)] bg-slate-950">
-      <canvas id="pinball-canvas"></canvas>
-
-      <!-- 上部フローティング階層・敵ステータスバー -->
-      <div class="absolute top-2 left-2 right-2 pointer-events-none flex flex-col gap-1.5 z-10">
-        <div class="flex items-center justify-between gap-2">
-          <!-- 階層インジケーター -->
-          <div class="glass-panel rounded-full px-3 py-1 flex items-center gap-1.5">
-            <span id="layer-badge" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-            <span id="hud-layer-name" class="text-xs sm:text-sm font-black tracking-wide text-white">
-              下段：戦闘員軍団エリア
-            </span>
-          </div>
-          <!-- 4層ミニマップインジケーター -->
-          <div class="glass-panel rounded-full px-2.5 py-1 flex items-center gap-1 text-[10px] font-black">
-            <span id="minimap-0" class="px-1.5 py-0.5 rounded-full bg-pink-500 text-white">下</span>
-            <span id="minimap-1" class="px-1.5 py-0.5 rounded-full bg-white/10 text-gray-400">中</span>
-            <span id="minimap-2" class="px-1.5 py-0.5 rounded-full bg-white/10 text-gray-400">上</span>
-            <span id="minimap-3" class="px-1.5 py-0.5 rounded-full bg-white/10 text-gray-400">頂</span>
-          </div>
-        </div>
-
-        <!-- 現在の階層の敵ステータス & ギミック進捗 -->
-        <div class="glass-panel rounded-2xl px-3 py-1.5 flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2 min-w-0">
-            <div id="enemy-icon" class="w-8 h-8 rounded-xl bg-purple-900/80 border border-pink-400/40 flex items-center justify-center text-lg shrink-0">
-              👾
-            </div>
-            <div class="min-w-0">
-              <div id="enemy-name" class="text-xs font-black text-pink-200 truncate">悪の戦闘員軍団</div>
-              <div id="enemy-gimmick-hint" class="text-[10px] text-cyan-200 truncate">
-                バンパー＆ターゲット撃破でギミック起動！
-              </div>
-            </div>
-          </div>
-          <div class="text-right shrink-0">
-            <div id="layer-status-tags" class="flex flex-wrap justify-end gap-1 text-[10px] font-bold">
-              <span id="tag-stopper" class="px-1.5 py-0.5 rounded bg-slate-800/80 text-gray-400 border border-white/10">🛡️防御:未</span>
-              <span id="tag-launcher" class="px-1.5 py-0.5 rounded bg-slate-800/80 text-gray-400 border border-white/10">🚀発射:未</span>
-            </div>
-          </div>
-        </div>
+  <!-- ビルド確認モーダル（ポーズ） -->
+  <div id="screenBuild" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 z-40 hidden">
+    <div class="glass-panel max-w-3xl w-full max-h-[85vh] rounded-3xl p-5 sm:p-6 flex flex-col border-2 border-pink-400/50 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-white/10">
+        <h2 class="text-lg sm:text-2xl font-black text-pink-300">📜 現在の魔法少女ビルド構成</h2>
+        <button id="btnCloseBuild" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl text-sm font-bold cursor-pointer">✕ 閉じる [Esc]</button>
       </div>
-
-      <!-- 非停止カットイン演出コンテナ（防御魔法・必殺魔法用） -->
-      <div id="nonstop-cutin-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-20 flex items-center justify-end pr-2"></div>
-
-      <!-- 4人協力ユニゾンアタック演出オーバーレイ（最上段大ダメージ時） -->
-      <div id="unison-overlay" class="hidden absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center bg-black/55">
-        <div id="unison-content" class="w-full h-full flex flex-col items-center justify-center relative"></div>
-      </div>
-
-      <!-- モバイル・タッチ操作用オーバーレイボタン（下部） -->
-      <div class="absolute bottom-2 left-2 right-2 z-20 flex items-center justify-between gap-2 pointer-events-none">
-        <button id="touch-left" class="pointer-events-auto flex-1 py-3.5 rounded-2xl bg-pink-500/30 active:bg-pink-500/60 border border-pink-300/50 text-xs font-black text-white backdrop-blur-sm shadow-lg">
-          ◀ 左フリッパー (A)
-        </button>
-        <button id="touch-plunger" class="pointer-events-auto px-4 py-3.5 rounded-2xl bg-amber-400/40 active:bg-amber-400/75 border border-amber-200/70 text-xs font-black text-white backdrop-blur-sm shadow-lg">
-          ⚡発射
-        </button>
-        <button id="touch-right" class="pointer-events-auto flex-1 py-3.5 rounded-2xl bg-sky-500/30 active:bg-sky-500/60 border border-sky-300/50 text-xs font-black text-white backdrop-blur-sm shadow-lg">
-          右フリッパー (D) ▶
-        </button>
-      </div>
-
-      <!-- 覚醒選択モーダル（10pt到達で一時停止） -->
-      <div id="awaken-modal" class="hidden absolute inset-0 z-40 bg-slate-950/88 backdrop-blur-md flex flex-col items-center justify-center p-4">
-        <div class="text-center mb-2.5">
-          <div class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 border border-amber-300 text-amber-200 text-xs font-black mb-1 animate-bounce">
-            ✨ AWAKENING POINT MAX! ✨
-          </div>
-          <h2 class="text-xl sm:text-2xl font-black bg-gradient-to-r from-white via-pink-200 to-amber-200 bg-clip-text text-transparent">
-            覚醒する魔法少女を選択！
-          </h2>
-          <p class="text-[11px] text-purple-200 mt-0.5">
-            [1〜4]キーで即選択 ／ [←][→]で移動＆[Enter/Space]で決定（最大4回まで重複）
-          </p>
-        </div>
-        <div id="awaken-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-md"></div>
-      </div>
-
-      <!-- 覚醒変身カットイン演出（選択直後） -->
-      <div id="awaken-cutin-overlay" class="hidden absolute inset-0 z-50 pointer-events-none flex items-center justify-center bg-slate-950/75"></div>
-
-      <!-- タイトル / ゲームオーバー / 遊び方オーバーレイ -->
-      <div id="start-overlay" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-5 text-center">
-        <div class="relative w-32 h-32 mb-2 flex items-center justify-center">
-          <svg viewBox="0 0 120 120" class="w-full h-full animate-spin-slow text-pink-400/60">
-            <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/>
-            <polygon points="60,8 105,86 15,86" fill="none" stroke="#fde047" stroke-width="1.8"/>
-            <polygon points="60,112 105,34 15,34" fill="none" stroke="#38bdf8" stroke-width="1.8"/>
-            <circle cx="60" cy="60" r="24" fill="none" stroke="#f472b6" stroke-width="2"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-4xl animate-pulse-glow">💖</div>
-        </div>
-        <div class="text-xs font-black tracking-widest text-pink-300 mb-1">4 MAGICAL GIRLS × 4-STAGE PINBALL</div>
-        <h2 class="text-2xl sm:text-3xl font-black text-white drop-shadow-[0_2px_12px_rgba(244,114,182,0.8)] mb-2">
-          魔法少女ピンボール<br><span class="text-lg sm:text-xl text-amber-200">〜4つの輝きと奇跡の4層聖域〜</span>
-        </h2>
-        <p id="start-desc" class="text-xs sm:text-sm text-purple-100 max-w-sm leading-relaxed mb-4">
-          下段の戦闘員、中段の怪人、上段の幹部、そして最上段の首領へ！<br>
-          4人の魔法少女の防御・必殺・覚醒・ユニゾン魔法を駆使して最高スコアを目指そう！
-        </p>
-
-        <!-- 今回の敵編成プレビュー -->
-        <div id="enemy-preview-box" class="glass-panel rounded-2xl p-3 mb-4 w-full max-w-sm text-left text-xs space-y-1">
-          <div class="font-black text-amber-300 text-center mb-1">⚔️ 今回の出現エネミー編成 ⚔️</div>
-          <div class="flex justify-between"><span class="text-gray-300">中段・怪人：</span><span id="preview-kaijin" class="font-black text-emerald-300">---</span></div>
-          <div class="flex justify-between"><span class="text-gray-300">上段・幹部：</span><span id="preview-kanbu" class="font-black text-orange-300">---</span></div>
-          <div class="flex justify-between"><span class="text-gray-300">最上段・首領：</span><span class="font-black text-fuchsia-300">闇の魔王・ディザスター</span></div>
-        </div>
-
-        <button id="btn-start-game" class="game-btn px-8 py-3.5 rounded-full text-base sm:text-lg font-black text-white tracking-wider">
-          ✨ 魔法変身＆スタート！ ✨
-        </button>
+      <div id="buildModalContent" class="overflow-y-auto py-4 space-y-4 text-sm flex-1">
+        <!-- JSで詳細を生成 -->
       </div>
     </div>
-  </main>
+  </div>
 
-  <!-- 右サイド HUD（PC表示用：ギミック詳細＆魔法少女ステータス） -->
-  <aside class="hidden lg:flex w-80 flex-col gap-2.5 z-20 shrink-0">
-    <div class="glass-panel rounded-2xl p-3">
-      <div class="text-xs font-black text-pink-300 mb-2">🌟 魔法少女の覚醒効果</div>
-      <div class="space-y-2 text-xs">
-        <div class="p-2 rounded-xl bg-white/10 border border-white/30">
-          <div class="font-black text-white">🤍 キュア・プリズム（白・虹）</div>
-          <div class="text-purple-100 text-[11px]">獲得スコア <span class="text-amber-300 font-bold">2倍</span>（最大16倍）</div>
+  <!-- ゲームオーバー画面 -->
+  <div id="screenGameOver" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 z-30 hidden">
+    <div class="glass-panel max-w-2xl w-full max-h-[90vh] rounded-3xl p-6 text-center border-2 border-rose-500/50 shadow-2xl flex flex-col">
+      <div class="text-rose-400 font-black text-sm tracking-widest mb-1">ASSAULT FAILED</div>
+      <h2 class="text-2xl sm:text-4xl font-black text-white mb-4">増援の波に飲まれてしまった…！</h2>
+
+      <div class="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-900/80 rounded-2xl p-4 mb-4 border border-white/10">
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400">アジト突入距離</div>
+          <div class="text-lg sm:text-2xl font-black text-pink-400"><span id="overDist">0</span>m</div>
         </div>
-        <div class="p-2 rounded-xl bg-sky-500/15 border border-sky-400/30">
-          <div class="font-black text-sky-200">💙 キュア・アクア（青・蒼髪）</div>
-          <div class="text-purple-100 text-[11px]">ボール落下速度 <span class="text-sky-300 font-bold">0.9倍</span>（精密制御）</div>
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400">突入時間</div>
+          <div class="text-lg sm:text-2xl font-black text-amber-300" id="overTime">00:00</div>
         </div>
-        <div class="p-2 rounded-xl bg-pink-500/15 border border-pink-400/30">
-          <div class="font-black text-pink-200">🩷 キュア・ブロッサム（桃・ポニテ）</div>
-          <div class="text-purple-100 text-[11px]">桃色の<span class="text-pink-300 font-bold">分身ボール +1個</span>（最大4個）</div>
-        </div>
-        <div class="p-2 rounded-xl bg-amber-500/15 border border-amber-400/30">
-          <div class="font-black text-amber-200">💛 キュア・スパークル（黄・黒髪ツイン）</div>
-          <div class="text-purple-100 text-[11px]">フリッパー弾き力 <span class="text-amber-300 font-bold">1.1倍</span>（超加速）</div>
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400">撃破数 / 到達Lv</div>
+          <div class="text-lg sm:text-2xl font-black text-cyan-300"><span id="overKills">0</span>体 / Lv.<span id="overLv">1</span></div>
         </div>
       </div>
-    </div>
 
-    <div class="glass-panel rounded-2xl p-3 flex-1">
-      <div class="text-xs font-black text-cyan-300 mb-1.5">📜 4層ステージ攻略メモ</div>
-      <ul class="text-[11px] text-purple-100 space-y-1.5 leading-snug">
-        <li><strong class="text-emerald-300">【下段】</strong>上部3連レーン＋スピナー20回転で覚醒+1pt。バンパー3Hitで防御／ターゲット全撃破で発射口。</li>
-        <li><strong class="text-sky-300">【中段】</strong>怪人バリア3層破壊＋ドロップターゲット全撃破で覚醒+3pt。</li>
-        <li><strong class="text-orange-300">【上段】</strong>まず封印結界4キーを全点灯してゲート開放！開放後に発射口ギミックが出現。外周ループ3周＋試練達成で覚醒+9pt。</li>
-        <li><strong class="text-fuchsia-300">【最上段】</strong>首領の妨害を左右盾で防ぎ、中央3基ユニゾンで4人協力大魔法を発動！</li>
-        <li><strong class="text-pink-300">【分身球】</strong>下へ落ちると消え、本体の階層移動で復活。発射口に入ると本体も一緒に上層へ！</li>
-      </ul>
+      <div class="text-left text-xs font-bold text-slate-300 mb-1">今回の最終ビルド：</div>
+      <div id="overBuildSummary" class="overflow-y-auto bg-slate-900/60 rounded-xl p-3 text-left text-xs space-y-2 mb-5 flex-1 border border-white/5">
+        <!-- JSで最終ビルドを表示 -->
+      </div>
+
+      <button id="btnRetryGame" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white font-black text-lg shadow-lg active:scale-95 transition cursor-pointer">
+        🔄 もう一度敵アジトへ強襲する！
+      </button>
     </div>
-  </aside>
+  </div>
 
 <script>
 /**
  * ============================================================================
- * 魔法少女ピンボール 〜4つの輝きと奇跡の4層聖域〜
- * 4人の魔法少女（白・青・桃・黄）＆4層ステージピンボール完全実装
+ * 魔法少女と田舎町のエンドレス強襲戦 - コアゲームエンジン & バランス設計
  * ============================================================================
  */
 
 // ----------------------------------------------------------------------------
-// 1. Web Audio API シンセサイザー（効果音・魔法詠唱・BGM）
+// 1. サウンドシステム（Web Audio API によるシンセ効果音）
 // ----------------------------------------------------------------------------
-class MagicalSoundEngine {
-  constructor() {
-    this.ctx = null;
-    this.enabled = true;
-    this.bgmTimer = null;
-    this.bgmStep = 0;
-  }
-
-  init() {
-    if (!this.ctx) {
+const Sound = (() => {
+  let ctx = null;
+  function init() {
+    if (!ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
+      if (AudioCtx) ctx = new AudioCtx();
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
+    if (ctx && ctx.state === 'suspended') ctx.resume();
   }
-
-  toggle() {
-    this.enabled = !this.enabled;
-    if (!this.enabled) {
-      this.stopBgm();
-    } else {
-      this.init();
-      this.startBgm();
-    }
-    return this.enabled;
+  function playTone(freq, endFreq, duration, type = 'sine', vol = 0.08) {
+    try {
+      init();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      if (endFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFreq), ctx.currentTime + duration);
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch (e) {}
   }
-
-  playTone(freq, type = 'sine', duration = 0.15, vol = 0.18, delay = 0) {
-    if (!this.enabled) return;
-    this.init();
-    const now = this.ctx.currentTime + delay;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, now);
-    gain.gain.setValueAtTime(vol, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + duration);
-  }
-
-  playFlipper() {
-    this.playTone(180, 'triangle', 0.08, 0.22);
-    this.playTone(320, 'sine', 0.06, 0.14, 0.02);
-  }
-
-  playBumper(pitchMult = 1) {
-    this.playTone(523.25 * pitchMult, 'sine', 0.14, 0.2);
-    this.playTone(783.99 * pitchMult, 'triangle', 0.18, 0.15, 0.03);
-  }
-
-  playTarget() {
-    this.playTone(659.25, 'sine', 0.12, 0.18);
-    this.playTone(987.77, 'sine', 0.18, 0.18, 0.05);
-  }
-
-  playLaunch() {
-    this.playTone(261.63, 'sawtooth', 0.15, 0.15);
-    this.playTone(392.00, 'sawtooth', 0.18, 0.15, 0.05);
-    this.playTone(523.25, 'sine', 0.25, 0.2, 0.1);
-  }
-
-  playWarp() {
-    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
-    notes.forEach((n, idx) => this.playTone(n, 'sine', 0.22, 0.18, idx * 0.045));
-  }
-
-  playDefense() {
-    const notes = [440, 554.37, 659.25, 880];
-    notes.forEach((n, idx) => this.playTone(n, 'triangle', 0.25, 0.2, idx * 0.05));
-  }
-
-  playAwaken() {
-    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98];
-    notes.forEach((n, idx) => this.playTone(n, 'sine', 0.35, 0.22, idx * 0.07));
-  }
-
-  playUnison() {
-    const chord = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98, 2093.0];
-    chord.forEach((n, idx) => this.playTone(n, 'triangle', 0.65, 0.2, idx * 0.06));
-  }
-
-  playDrain() {
-    this.playTone(311.13, 'sawtooth', 0.25, 0.2);
-    this.playTone(233.08, 'sawtooth', 0.35, 0.2, 0.15);
-  }
-
-  startBgm() {
-    if (!this.enabled || this.bgmTimer) return;
-    const melody = [
-      523.25, 659.25, 783.99, 659.25,
-      880.00, 783.99, 659.25, 587.33,
-      523.25, 587.33, 659.25, 783.99,
-      659.25, 523.25, 587.33, 493.88
-    ];
-    this.bgmTimer = setInterval(() => {
-      if (!this.enabled) return;
-      const note = melody[this.bgmStep % melody.length];
-      this.playTone(note, 'sine', 0.18, 0.035);
-      this.bgmStep++;
-    }, 240);
-  }
-
-  stopBgm() {
-    if (this.bgmTimer) {
-      clearInterval(this.bgmTimer);
-      this.bgmTimer = null;
-    }
-  }
-}
-
-const sound = new MagicalSoundEngine();
+  return {
+    init,
+    shoot: () => playTone(880, 440, 0.08, 'triangle', 0.04),
+    skill: () => playTone(520, 1040, 0.22, 'sine', 0.1),
+    hit: () => playTone(220, 90, 0.06, 'sawtooth', 0.04),
+    explosion: () => playTone(140, 35, 0.28, 'square', 0.08),
+    gem: () => playTone(1200, 1600, 0.07, 'sine', 0.04),
+    levelUp: () => {
+      playTone(523.25, 523.25, 0.1, 'triangle', 0.1);
+      setTimeout(() => playTone(659.25, 659.25, 0.1, 'triangle', 0.1), 90);
+      setTimeout(() => playTone(783.99, 1046.5, 0.25, 'triangle', 0.12), 180);
+    },
+    hurt: () => playTone(160, 60, 0.25, 'sawtooth', 0.12)
+  };
+})();
 
 // ----------------------------------------------------------------------------
-// 2. 4人の魔法少女モチーフ・イラストSVGジェネレーター
-//    添付画像の4人の特徴（髪型・髪色・衣装カラー・リボン・ハートブローチ）を再現
+// 2. マスターデータ定義（アクティブスキル・スキル追加効果・パッシブ）
 // ----------------------------------------------------------------------------
-const MAGICAL_GIRLS = {
-  white: {
-    id: 'white',
-    name: 'キュア・プリズム（白）',
-    title: '虹の輝き・スコア2倍',
-    desc: '以降の獲得スコア 2倍',
-    color: '#ffffff',
-    accent: '#f472b6',
-    bgGrad: 'from-white via-pink-100 to-amber-100',
-    quoteDefense: '「プリズム・バリア！みんなの笑顔は私が守る！」',
-    quoteAttack: '「レインボー・ハート・シューティング！！」',
-    quoteAwaken: '「虹色の奇跡、全開！輝きが2倍になるよ！」'
-  },
-  blue: {
-    id: 'blue',
-    name: 'キュア・アクア（青）',
-    title: '蒼き静寂・落下速度0.9倍',
-    desc: 'ボールの落下速度 0.9倍',
-    color: '#38bdf8',
-    accent: '#1d4ed8',
-    bgGrad: 'from-sky-300 via-blue-400 to-indigo-500',
-    quoteDefense: '「アクア・ウォール。冷静に受け止めます。」',
-    quoteAttack: '「蒼き奔流よ、悪を貫け！アクア・ストリーム！」',
-    quoteAwaken: '「時の流れを穏やかに……落下速度が0.9倍に。」'
-  },
-  pink: {
-    id: 'pink',
-    name: 'キュア・ブロッサム（桃）',
-    title: '恋する分身・分身ボール+1',
-    desc: 'ボールの分身を 1個追加',
-    color: '#f472b6',
-    accent: '#be185d',
-    bgGrad: 'from-pink-300 via-rose-400 to-fuchsia-500',
-    quoteDefense: '「ブロッサム・シールド！絶対に通さないんだから！」',
-    quoteAttack: '「ハートフル・ピンク・フラッシュ！！」',
-    quoteAwaken: '「私と一緒にもう一人！分身ボール登場だよ♪」'
-  },
-  yellow: {
-    id: 'yellow',
-    name: 'キュア・スパークル（黄）',
-    title: '雷光の剛力・弾く力1.1倍',
-    desc: 'フリッパー弾く力 1.1倍',
+
+const ACTIVE_SKILLS_POOL = [
+  {
+    id: 'moon_slash',
+    name: 'ムーンライト・スラッシュ',
+    icon: '🌙',
     color: '#facc15',
-    accent: '#b45309',
-    bgGrad: 'from-yellow-200 via-amber-400 to-orange-500',
-    quoteDefense: '「スパークル・ガード！そんな攻撃効かないよっ！」',
-    quoteAttack: '「サンダー・ツイン・インパクト！！」',
-    quoteAwaken: '「パワー全開っ！フリッパーの弾き力が1.1倍だよ！」'
+    cd: 3.2,
+    desc: '進行方向へ巨大な三日月型の光波を放ち、前方の敵をまとめて切り裂く。',
+    execute: (p, skillInstance) => {
+      const angle = p.facingAngle;
+      const dmg = p.getAttackDamage() * 2.6 * skillInstance.dmgMult;
+      const area = p.areaMult * skillInstance.areaMult;
+      spawnSlashWave(p.x, p.y, angle, dmg, 170 * area, '#fef08a', false, skillInstance);
+      Sound.skill();
+    }
+  },
+  {
+    id: 'prism_barrier',
+    name: 'プリズム・バリア',
+    icon: '💎',
+    color: '#38bdf8',
+    cd: 5.5,
+    desc: '1.4秒間無敵になり、周囲に衝撃波を放って敵を大きく弾き飛ばす。',
+    execute: (p, skillInstance) => {
+      p.invulnTimer = Math.max(p.invulnTimer, 1.4);
+      const dmg = p.getAttackDamage() * 1.8 * skillInstance.dmgMult;
+      const radius = 150 * p.areaMult * skillInstance.areaMult;
+      spawnShockwave(p.x, p.y, radius, dmg, 380, '#38bdf8', false, skillInstance);
+      Sound.skill();
+    }
+  },
+  {
+    id: 'stardust_rain',
+    name: 'スターダスト・レイン',
+    icon: '☄️',
+    color: '#f472b6',
+    cd: 4.8,
+    desc: '周囲の敵の頭上に7発の流星を降り注がせ、着弾点で小範囲爆発を起こす。',
+    execute: (p, skillInstance) => {
+      const count = 7;
+      const dmg = p.getAttackDamage() * 1.35 * skillInstance.dmgMult;
+      const area = p.areaMult * skillInstance.areaMult;
+      for (let i = 0; i < count; i++) {
+        const target = getRandomEnemyNear(p.x, p.y, 420);
+        const tx = target ? target.x + (Math.random() - 0.5) * 50 : p.x + (Math.random() - 0.5) * 320;
+        const ty = target ? target.y + (Math.random() - 0.5) * 50 : p.y + (Math.random() - 0.5) * 260;
+        setTimeout(() => {
+          if (state.mode !== 'playing') return;
+          spawnMeteor(tx, ty, dmg, 65 * area, false, skillInstance);
+        }, i * 75);
+      }
+      Sound.skill();
+    }
+  },
+  {
+    id: 'heart_charm',
+    name: 'ハート・チャーム',
+    icon: '💖',
+    color: '#fb7185',
+    cd: 4.2,
+    desc: '周囲の敵と経験値ジェムを強力に引き寄せた後、魅了の爆発でダメージを与える。',
+    execute: (p, skillInstance) => {
+      const radius = 230 * p.areaMult * skillInstance.areaMult;
+      const dmg = p.getAttackDamage() * 2.1 * skillInstance.dmgMult;
+      state.enemies.forEach(e => {
+        const d = Math.hypot(e.x - p.x, e.y - p.y);
+        if (d < radius * 1.4 && d > 10) {
+          const pull = Math.min(d - 30, 140);
+          e.x -= ((e.x - p.x) / d) * pull;
+          e.y -= ((e.y - p.y) / d) * pull;
+        }
+      });
+      state.gems.forEach(g => {
+        const d = Math.hypot(g.x - p.x, g.y - p.y);
+        if (d < radius * 1.8) {
+          g.magnetized = true;
+        }
+      });
+      spawnShockwave(p.x, p.y, radius * 0.85, dmg, -120, '#fb7185', false, skillInstance);
+      Sound.skill();
+    }
+  },
+  {
+    id: 'thunder_ribbon',
+    name: 'サンダー・リボン',
+    icon: '⚡',
+    color: '#c084fc',
+    cd: 2.8,
+    desc: '最も近い敵に電撃リボンを放ち、周囲の敵へ最大5回まで連鎖ダメージを与える。',
+    execute: (p, skillInstance) => {
+      const dmg = p.getAttackDamage() * 1.7 * skillInstance.dmgMult;
+      const range = 260 * p.areaMult * skillInstance.areaMult;
+      triggerChainLightning(p.x, p.y, dmg, 5, range, false, skillInstance);
+      Sound.skill();
+    }
+  },
+  {
+    id: 'flash_step',
+    name: 'フラッシュ・ステップ',
+    icon: '💨',
+    color: '#34d399',
+    cd: 2.4,
+    desc: '移動方向へ高速ワープ移動し、軌跡に星屑のダメージ地帯を残す。',
+    execute: (p, skillInstance) => {
+      const dashDist = 155;
+      const oldX = p.x;
+      const oldY = p.y;
+      const nx = p.x + Math.cos(p.facingAngle) * dashDist;
+      const ny = Math.max(80, Math.min(state.height - 80, p.y + Math.sin(p.facingAngle) * dashDist));
+      p.x = nx;
+      p.y = ny;
+      p.invulnTimer = Math.max(p.invulnTimer, 0.45);
+      const dmg = p.getAttackDamage() * 1.6 * skillInstance.dmgMult;
+      for (let i = 0; i <= 2; i++) {
+        const t = i / 2;
+        const zx = oldX + (nx - oldX) * t;
+        const zy = oldY + (ny - oldY) * t;
+        spawnSanctuary(zx, zy, 55 * p.areaMult * skillInstance.areaMult, dmg * 0.6, 2.2, '#34d399', false, skillInstance);
+      }
+      Sound.skill();
+    }
   }
+];
+
+const SKILL_MODIFIERS_POOL = [
+  {
+    id: 'mod_explode',
+    name: '【追加効果】魔力爆散',
+    icon: '💥',
+    desc: 'このスキルが命中した時、35%の確率で対象周囲に小爆発(攻撃力90%)を起こす。',
+    apply: (sk) => { sk.mods.push({ id: 'mod_explode', label: '命中時35%爆発' }); }
+  },
+  {
+    id: 'mod_haste',
+    name: '【追加効果】疾風のステップ',
+    icon: '👟',
+    desc: 'このスキル使用時、3秒間自身の移動速度が+45%上昇する。',
+    apply: (sk) => { sk.mods.push({ id: 'mod_haste', label: '使用時移動+45%' }); }
+  },
+  {
+    id: 'mod_crit_cd',
+    name: '【追加効果】時間歪曲',
+    icon: '⏱️',
+    desc: 'このスキルでクリティカル発生時、このスキルの残りCDを1.2秒短縮(1回発動につき最大1回)。',
+    apply: (sk) => { sk.mods.push({ id: 'mod_crit_cd', label: 'Cri時CD-1.2s' }); }
+  },
+  {
+    id: 'mod_kill_seeker',
+    name: '【追加効果】追尾の星矢',
+    icon: '🏹',
+    desc: 'このスキルで敵を倒した時、周囲の敵を追尾する光の矢(攻撃力110%)を1本放つ。',
+    apply: (sk) => { sk.mods.push({ id: 'mod_kill_seeker', label: '撃破時追尾矢' }); }
+  },
+  {
+    id: 'mod_heal',
+    name: '【追加効果】癒しの祈り',
+    icon: '💚',
+    desc: 'このスキルを使用するたび、HPを3回復する。',
+    apply: (sk) => { sk.mods.push({ id: 'mod_heal', label: '使用時HP+3' }); }
+  },
+  {
+    id: 'mod_power_cd',
+    name: '【追加効果】オーバークロック',
+    icon: '🔥',
+    desc: 'このスキルのダメージ+35%、さらにクールタイムが18%短縮される。',
+    apply: (sk) => {
+      sk.dmgMult *= 1.35;
+      sk.cdMult *= 0.82;
+      sk.mods.push({ id: 'mod_power_cd', label: '威力+35%/CD-18%' });
+    }
+  }
+];
+
+const PASSIVES_POOL = [
+  {
+    id: 'pas_move_wave',
+    type: 'passive',
+    tag: '誘発：移動',
+    name: 'ステップ・ノヴァ',
+    icon: '💫',
+    desc: '一定距離(220px)移動するごとに、周囲に衝撃波(攻撃力100%)を自動放出する。',
+    maxLv: 5
+  },
+  {
+    id: 'pas_move_aspd',
+    type: 'passive',
+    tag: '誘発：移動',
+    name: 'ランニング・ハイ',
+    icon: '🌪️',
+    desc: '移動し続けている間、通常攻撃の連射速度が徐々に上昇(最大+60%)する。',
+    maxLv: 5
+  },
+  {
+    id: 'pas_skill_3way',
+    type: 'passive',
+    tag: '誘発：スキル',
+    name: 'トリプル・スター',
+    icon: '🔱',
+    desc: 'アクティブスキル使用後、次の通常攻撃が3WAYの貫通魔法弾に強化される。',
+    maxLv: 3
+  },
+  {
+    id: 'pas_skill_reset',
+    type: 'passive',
+    tag: '誘発：スキル',
+    name: 'チェイン・キャスト',
+    icon: '♻️',
+    desc: 'アクティブスキルを3回使用するたび、他のランダムなスキルのCDが即座に完了する。',
+    maxLv: 3
+  },
+  {
+    id: 'pas_kill_thunder',
+    type: 'passive',
+    tag: '誘発：撃破',
+    name: '天罰の落雷',
+    icon: '🌩️',
+    desc: '敵を12体倒すごとに、画面内のランダムな敵3体に強力な落雷(攻撃力220%)を落とす。',
+    maxLv: 5
+  },
+  {
+    id: 'pas_kill_sanctuary',
+    type: 'passive',
+    tag: '誘発：撃破',
+    name: '浄化の聖域',
+    icon: '🌸',
+    desc: '敵を倒した時、25%の確率でその場に2.5秒間持続するダメージエリアを生成する。',
+    maxLv: 5
+  },
+  {
+    id: 'pas_hurt_nova',
+    type: 'passive',
+    tag: '誘発：被弾',
+    name: 'リベンジ・バースト',
+    icon: '🛡️',
+    desc: 'ダメージを受けた時、周囲に超広範囲のカウンター衝撃波を放ち無敵時間が+1.0秒延長。',
+    maxLv: 3
+  },
+  {
+    id: 'pas_lowhp_cd',
+    type: 'passive',
+    tag: '誘発：ピンチ',
+    name: '火事場の魔法力',
+    icon: '❤️‍🔥',
+    desc: 'HPが50%以下の時、全アクティブスキルのCD回復速度が+45%上昇する。',
+    maxLv: 3
+  },
+  {
+    id: 'pas_crit_heal',
+    type: 'passive',
+    tag: '誘発：クリティカル',
+    name: 'ソウル・ドレイン',
+    icon: '✨',
+    desc: 'クリティカル率+12%。さらにクリティカル発生時、HPを1回復(1秒に1回まで)。',
+    maxLv: 5
+  },
+  {
+    id: 'stat_atk',
+    type: 'stat',
+    tag: '基礎強化',
+    name: 'スターステッキ強化',
+    icon: '🪄',
+    desc: '基礎攻撃力+22%、通常攻撃の弾速と連射速度+10%。',
+    maxLv: 99
+  },
+  {
+    id: 'stat_hp_magnet',
+    type: 'stat',
+    tag: '基礎強化',
+    name: '魔法のリボン＆磁力',
+    icon: '🎀',
+    desc: '最大HP+25(現在HPも25回復)、経験値ジェムの回収範囲+35%。',
+    maxLv: 99
+  },
+  {
+    id: 'stat_area_cd',
+    type: 'stat',
+    tag: '基礎強化',
+    name: '魔力循環最適化',
+    icon: '🔮',
+    desc: '全スキルの効果範囲+18%、全体のクールタイム短縮+10%。',
+    maxLv: 99
+  }
+];
+
+// ----------------------------------------------------------------------------
+// 3. ゲーム状態管理
+// ----------------------------------------------------------------------------
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+const state = {
+  mode: 'title',
+  width: window.innerWidth,
+  height: window.innerHeight,
+  lastTime: 0,
+  elapsedTime: 0,
+  cameraX: 0,
+  maxDistanceMeters: 0,
+  bestDistanceMeters: parseInt(localStorage.getItem('mg_endless_best') || '0', 10),
+  kills: 0,
+  spawnTimer: 0,
+  
+  player: {
+    x: 200,
+    y: 300,
+    radius: 18,
+    hp: 100,
+    maxHp: 100,
+    baseAtk: 18,
+    atkMult: 1.0,
+    baseSpeed: 210,
+    speedMult: 1.0,
+    hasteTimer: 0,
+    areaMult: 1.0,
+    cdReduction: 0,
+    critChance: 0.08,
+    critMult: 1.8,
+    magnetRange: 95,
+    invulnTimer: 0,
+    facingAngle: 0,
+    
+    shootTimer: 0,
+    baseShootInterval: 0.68,
+    aspdMult: 1.0,
+    movingDuration: 0,
+    moveDistAccum: 0,
+    tripleShotCharges: 0,
+    skillCastCounter: 0,
+    killTriggerCounter: 0,
+    critHealCooldown: 0,
+
+    level: 1,
+    exp: 0,
+    nextExp: 12,
+
+    skills: [],
+    passives: {},
+
+    getAttackDamage() {
+      return this.baseAtk * this.atkMult;
+    }
+  },
+
+  enemies: [],
+  projectiles: [],
+  effects: [],
+  gems: [],
+  floatingTexts: [],
+  bgObjects: [],
+
+  keys: {},
+  touchActive: false,
+  touchStart: { x: 0, y: 0 },
+  touchCurr: { x: 0, y: 0 },
+
+  currentLevelUpChoices: [],
+  pendingModifierCard: null,
+  previousModeBeforeBuild: 'playing'
 };
 
-function createMagicalGirlSVG(girlId, sizeClass = 'w-24 h-24') {
-  if (girlId === 'white') {
-    // 白色衣装・金茶ツインテール・ピンク＆白リボン・虹色フリル
-    return `
-      <svg viewBox="0 0 120 120" class="${sizeClass} drop-shadow-lg">
-        <defs>
-          <linearGradient id="rainbowTrim" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#ff6b6b"/><stop offset="33%" stop-color="#ffd93d"/>
-            <stop offset="66%" stop-color="#6bcb77"/><stop offset="100%" stop-color="#4d96ff"/>
-          </linearGradient>
-        </defs>
-        <!-- ツインテール -->
-        <path d="M35 38 Q12 52 16 92 Q26 78 38 56 Z" fill="#b59b6d"/>
-        <path d="M85 38 Q108 52 104 92 Q94 78 82 56 Z" fill="#b59b6d"/>
-        <!-- リボン（左右の羽リボン） -->
-        <polygon points="34,34 16,22 24,42" fill="#f472b6"/>
-        <polygon points="86,34 104,22 96,42" fill="#f472b6"/>
-        <circle cx="34" cy="35" r="4" fill="#e11d48"/>
-        <circle cx="86" cy="35" r="4" fill="#e11d48"/>
-        <!-- ドレス（白＆虹ライン） -->
-        <path d="M42 66 L78 66 L94 105 L26 105 Z" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
-        <path d="M30 96 L90 96 L94 104 L26 104 Z" fill="url(#rainbowTrim)"/>
-        <!-- 顔 -->
-        <circle cx="60" cy="44" r="21" fill="#ffe4d6"/>
-        <!-- 前髪 -->
-        <path d="M39 42 Q45 22 60 22 Q75 22 81 42 Q70 35 60 39 Q50 35 39 42 Z" fill="#b59b6d"/>
-        <!-- 瞳（オリーブブラウン） -->
-        <ellipse cx="52" cy="46" rx="3.2" ry="4.2" fill="#3f3a26"/>
-        <ellipse cx="68" cy="46" rx="3.2" ry="4.2" fill="#3f3a26"/>
-        <circle cx="51" cy="44.5" r="1.2" fill="#fff"/>
-        <circle cx="67" cy="44.5" r="1.2" fill="#fff"/>
-        <!-- 笑顔 -->
-        <path d="M56 54 Q60 59 64 54 Z" fill="#fb7185"/>
-        <!-- 胸のハートブローチ -->
-        <path d="M60 76 L53 69 A4 4 0 0 1 60 66 A4 4 0 0 1 67 69 Z" fill="#ec4899" stroke="#fde047" stroke-width="1.5"/>
-      </svg>`;
-  } else if (girlId === 'blue') {
-    // 青色衣装・ロングストレート青髪・クールな赤瞳
-    return `
-      <svg viewBox="0 0 120 120" class="${sizeClass} drop-shadow-lg">
-        <!-- ロングストレート青髪 -->
-        <path d="M33 36 L26 108 L94 108 L87 36 Z" fill="#1e3a8a"/>
-        <!-- 青ドレス -->
-        <path d="M42 66 L78 66 L92 106 L28 106 Z" fill="#0284c7" stroke="#bae6fd" stroke-width="2"/>
-        <path d="M30 98 L90 98 L92 106 L28 106 Z" fill="#ffffff"/>
-        <!-- 顔 -->
-        <circle cx="60" cy="45" r="20" fill="#ffe4d6"/>
-        <!-- ぱっつん前髪 -->
-        <path d="M38 42 Q42 21 60 21 Q78 21 82 42 L38 42 Z" fill="#1d4ed8"/>
-        <!-- 瞳（クールなクリムゾン） -->
-        <ellipse cx="52" cy="47" rx="3" ry="3.8" fill="#9f1239"/>
-        <ellipse cx="68" cy="47" rx="3" ry="3.8" fill="#9f1239"/>
-        <circle cx="51" cy="45.5" r="1.1" fill="#fff"/>
-        <circle cx="67" cy="45.5" r="1.1" fill="#fff"/>
-        <!-- 凛とした口元 -->
-        <line x1="57" y1="55" x2="63" y2="55" stroke="#be123c" stroke-width="1.8" stroke-linecap="round"/>
-        <!-- 胸の蒼ハート -->
-        <path d="M60 76 L53 69 A4 4 0 0 1 60 66 A4 4 0 0 1 67 69 Z" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
-      </svg>`;
-  } else if (girlId === 'pink') {
-    // 桃色衣装・黒髪ポニーテール・ピンク大きなリボン
-    return `
-      <svg viewBox="0 0 120 120" class="${sizeClass} drop-shadow-lg">
-        <!-- ポニーテール（右後ろ） -->
-        <path d="M74 26 Q106 32 100 76 Q88 64 78 44 Z" fill="#27272a"/>
-        <!-- 頭頂ピンクリボン -->
-        <polygon points="72,24 54,12 60,30" fill="#ec4899"/>
-        <polygon points="72,24 92,14 84,32" fill="#ec4899"/>
-        <circle cx="72" cy="24" r="4.5" fill="#fbcfe8"/>
-        <!-- 桃色ドレス -->
-        <path d="M42 66 L78 66 L92 106 L28 106 Z" fill="#db2777" stroke="#fbcfe8" stroke-width="2"/>
-        <path d="M30 98 L90 98 L92 106 L28 106 Z" fill="#ffffff"/>
-        <!-- 顔 -->
-        <circle cx="58" cy="45" r="20" fill="#ffe4d6"/>
-        <!-- 黒髪前髪 -->
-        <path d="M37 42 Q44 22 58 22 Q72 22 79 42 Q68 35 58 38 Q48 35 37 42 Z" fill="#27272a"/>
-        <!-- 瞳（大きなダークブラウン） -->
-        <ellipse cx="50" cy="47" rx="3.4" ry="4.4" fill="#18181b"/>
-        <ellipse cx="66" cy="47" rx="3.4" ry="4.4" fill="#18181b"/>
-        <circle cx="49" cy="45" r="1.3" fill="#fff"/>
-        <circle cx="65" cy="45" r="1.3" fill="#fff"/>
-        <!-- キュートな口元 -->
-        <circle cx="58" cy="55" r="2.2" fill="#fb7185"/>
-        <!-- 胸の大きな白＆ピンク双リボン -->
-        <polygon points="58,72 44,64 46,79" fill="#ffffff"/>
-        <polygon points="58,72 72,64 70,79" fill="#ffffff"/>
-        <circle cx="58" cy="72" r="4" fill="#a21caf"/>
-      </svg>`;
-  } else {
-    // 黄色衣装・黒髪ツインテール・黄色ドットリボン・金瞳
-    return `
-      <svg viewBox="0 0 120 120" class="${sizeClass} drop-shadow-lg">
-        <!-- 黒髪ツインテール -->
-        <path d="M34 36 Q10 56 18 98 Q28 82 38 56 Z" fill="#1f1f23"/>
-        <path d="M86 36 Q110 56 102 98 Q92 82 82 56 Z" fill="#1f1f23"/>
-        <!-- 黄色リボン -->
-        <polygon points="34,34 15,24 22,44" fill="#facc15"/>
-        <polygon points="86,34 105,24 98,44" fill="#facc15"/>
-        <circle cx="34" cy="35" r="4" fill="#d97706"/>
-        <circle cx="86" cy="35" r="4" fill="#d97706"/>
-        <!-- 黄色ドレス -->
-        <path d="M42 66 L78 66 L93 106 L27 106 Z" fill="#eab308" stroke="#fef08a" stroke-width="2"/>
-        <path d="M29 98 L91 98 L93 106 L27 106 Z" fill="#ca8a04"/>
-        <!-- 顔 -->
-        <circle cx="60" cy="45" r="20" fill="#ffe4d6"/>
-        <!-- 黒髪前髪 -->
-        <path d="M38 42 Q45 21 60 21 Q75 21 82 42 Q70 34 60 40 Q50 34 38 42 Z" fill="#1f1f23"/>
-        <!-- 瞳（元気なゴールド） -->
-        <ellipse cx="52" cy="47" rx="3.2" ry="4.1" fill="#ca8a04"/>
-        <ellipse cx="68" cy="47" rx="3.2" ry="4.1" fill="#ca8a04"/>
-        <circle cx="51" cy="45.5" r="1.2" fill="#fff"/>
-        <circle cx="67" cy="45.5" r="1.2" fill="#fff"/>
-        <!-- ニッと笑う口元 -->
-        <path d="M55 54 Q60 58 65 54" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round"/>
-        <!-- 胸のゴールドハート -->
-        <path d="M60 76 L53 69 A4 4 0 0 1 60 66 A4 4 0 0 1 67 69 Z" fill="#fde047" stroke="#fff" stroke-width="1.5"/>
-      </svg>`;
+// ----------------------------------------------------------------------------
+// 4. バランス計算式（距離スケーリング & 時間スケーリング）
+// ----------------------------------------------------------------------------
+const PX_PER_METER = 40;
+
+function getDepthMultipliers(distMeters) {
+  const d = Math.max(0, distMeters);
+  return {
+    hpMult: Math.pow(1 + d / 260, 1.65),
+    atkMult: Math.pow(1 + d / 380, 1.25),
+    expMult: Math.pow(1 + d / 240, 1.35),
+    depthLv: 1 + Math.floor(d / 100)
+  };
+}
+
+function getTimeMultipliers(seconds) {
+  const t = Math.max(0, seconds);
+  const spawnRateMult = 1 + t / 50;
+  return {
+    spawnInterval: Math.max(0.24, 1.75 / spawnRateMult),
+    packSize: 1 + Math.floor(t / 32),
+    maxEnemies: Math.min(180, 22 + Math.floor(t * 0.75)),
+    spawnRateMult: spawnRateMult
+  };
+}
+
+function calcNextExp(level) {
+  return Math.floor(12 + Math.pow(level - 1, 1.48) * 7.5);
+}
+
+// ----------------------------------------------------------------------------
+// 5. 初期化＆リサイズ処理
+// ----------------------------------------------------------------------------
+function resizeCanvas() {
+  state.width = window.innerWidth;
+  state.height = window.innerHeight;
+  canvas.width = state.width;
+  canvas.height = state.height;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function initBgObjects() {
+  state.bgObjects = [];
+  for (let x = -200; x < 3000; x += 180 + Math.random() * 140) {
+    state.bgObjects.push(createBgObject(x));
+  }
+}
+
+function createBgObject(x) {
+  const types = ['pole', 'vending', 'busstop', 'scarecrow', 'hydrant', 'tree'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  const isTopSide = Math.random() < 0.5;
+  const y = isTopSide ? 75 + Math.random() * 55 : state.height - 85 - Math.random() * 45;
+  return { x, y, type, scale: 0.9 + Math.random() * 0.25 };
+}
+
+function startNewGame() {
+  Sound.init();
+  state.mode = 'playing';
+  state.elapsedTime = 0;
+  state.cameraX = 0;
+  state.maxDistanceMeters = 0;
+  state.kills = 0;
+  state.spawnTimer = 0.5;
+
+  const p = state.player;
+  p.x = 180;
+  p.y = state.height * 0.5;
+  p.hp = 100;
+  p.maxHp = 100;
+  p.baseAtk = 18;
+  p.atkMult = 1.0;
+  p.baseSpeed = 215;
+  p.speedMult = 1.0;
+  p.hasteTimer = 0;
+  p.areaMult = 1.0;
+  p.cdReduction = 0;
+  p.critChance = 0.08;
+  p.critMult = 1.8;
+  p.magnetRange = 95;
+  p.invulnTimer = 0;
+  p.facingAngle = 0;
+  p.shootTimer = 0;
+  p.aspdMult = 1.0;
+  p.movingDuration = 0;
+  p.moveDistAccum = 0;
+  p.tripleShotCharges = 0;
+  p.skillCastCounter = 0;
+  p.killTriggerCounter = 0;
+  p.critHealCooldown = 0;
+  p.level = 1;
+  p.exp = 0;
+  p.nextExp = calcNextExp(1);
+  p.passives = {};
+
+  const shuffled = [...ACTIVE_SKILLS_POOL].sort(() => Math.random() - 0.5);
+  p.skills = shuffled.slice(0, 3).map(def => ({
+    def,
+    currentCd: 0,
+    dmgMult: 1.0,
+    areaMult: 1.0,
+    cdMult: 1.0,
+    mods: [],
+    critCdProcUsed: false
+  }));
+
+  state.enemies = [];
+  state.projectiles = [];
+  state.effects = [];
+  state.gems = [];
+  state.floatingTexts = [];
+  initBgObjects();
+
+  for (let i = 0; i < 6; i++) {
+    spawnEnemyAt(p.x + 350 + Math.random() * 250, 120 + Math.random() * (state.height - 240));
+  }
+
+  document.getElementById('screenTitle').classList.add('hidden');
+  document.getElementById('screenGameOver').classList.add('hidden');
+  document.getElementById('screenLevelUp').classList.add('hidden');
+  document.getElementById('screenBuild').classList.add('hidden');
+  document.getElementById('hudTop').classList.remove('hidden');
+  document.getElementById('hudBottom').classList.remove('hidden');
+
+  renderSkillSlots();
+  updateHUD();
+  state.lastTime = performance.now();
+}
+
+// ----------------------------------------------------------------------------
+// 6. 入力ハンドリング（キーボード & タッチ）
+// ----------------------------------------------------------------------------
+window.addEventListener('keydown', (e) => {
+  state.keys[e.code] = true;
+
+  let numIdx = -1;
+  if (e.code >= 'Digit1' && e.code <= 'Digit5') {
+    numIdx = parseInt(e.code.replace('Digit', ''), 10) - 1;
+  } else if (e.code >= 'Numpad1' && e.code <= 'Numpad5') {
+    numIdx = parseInt(e.code.replace('Numpad', ''), 10) - 1;
+  }
+
+  if (state.mode === 'playing') {
+    if (numIdx >= 0 && numIdx <= 2) {
+      useActiveSkill(numIdx);
+    } else if (e.code === 'Escape') {
+      openBuildModal();
+    }
+  } else if (state.mode === 'levelup') {
+    if (e.code === 'Escape') {
+      if (state.pendingModifierCard) {
+        cancelTargetSelection();
+      } else {
+        openBuildModal();
+      }
+    } else if (state.pendingModifierCard) {
+      if (numIdx >= 0 && numIdx < state.player.skills.length) {
+        state.pendingModifierCard.apply(state.player.skills[numIdx]);
+        finishLevelUp();
+      }
+    } else {
+      if (numIdx >= 0 && numIdx < state.currentLevelUpChoices.length) {
+        handleUpgradeSelection(state.currentLevelUpChoices[numIdx]);
+      }
+    }
+  } else if (state.mode === 'paused' && e.code === 'Escape') {
+    closeBuildModal();
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  state.keys[e.code] = false;
+});
+
+canvas.addEventListener('touchstart', (e) => {
+  if (state.mode !== 'playing') return;
+  const touch = e.touches[0];
+  state.touchActive = true;
+  state.touchStart = { x: touch.clientX, y: touch.clientY };
+  state.touchCurr = { x: touch.clientX, y: touch.clientY };
+}, { passive: true });
+
+canvas.addEventListener('touchmove', (e) => {
+  if (!state.touchActive) return;
+  const touch = e.touches[0];
+  state.touchCurr = { x: touch.clientX, y: touch.clientY };
+}, { passive: true });
+
+canvas.addEventListener('touchend', () => {
+  state.touchActive = false;
+});
+
+// ----------------------------------------------------------------------------
+// 7. 戦闘・スキル・誘発システム
+// ----------------------------------------------------------------------------
+
+function useActiveSkill(slotIndex) {
+  if (state.mode !== 'playing') return;
+  const p = state.player;
+  const sk = p.skills[slotIndex];
+  if (!sk || sk.currentCd > 0) return;
+
+  sk.critCdProcUsed = false;
+
+  const baseCd = sk.def.cd * sk.cdMult;
+  const totalCdr = Math.min(0.65, p.cdReduction);
+  sk.currentCd = baseCd * (1 - totalCdr);
+
+  sk.def.execute(p, sk);
+
+  if (sk.mods.some(m => m.id === 'mod_haste')) {
+    p.hasteTimer = Math.max(p.hasteTimer, 3.0);
+  }
+  if (sk.mods.some(m => m.id === 'mod_heal')) {
+    healPlayer(3);
+  }
+
+  if (p.passives['pas_skill_3way']) {
+    p.tripleShotCharges = Math.min(3, p.tripleShotCharges + p.passives['pas_skill_3way']);
+  }
+
+  if (p.passives['pas_skill_reset']) {
+    p.skillCastCounter++;
+    const threshold = Math.max(2, 4 - p.passives['pas_skill_reset']);
+    if (p.skillCastCounter >= threshold) {
+      p.skillCastCounter = 0;
+      const otherSkills = p.skills.filter((_, idx) => idx !== slotIndex && _.currentCd > 0);
+      if (otherSkills.length > 0) {
+        const chosen = otherSkills[Math.floor(Math.random() * otherSkills.length)];
+        chosen.currentCd = 0;
+        addFloatingText(p.x, p.y - 36, `♻️ ${chosen.def.name} CD完了!`, '#38bdf8');
+      }
+    }
+  }
+}
+
+function healPlayer(amount) {
+  const p = state.player;
+  const before = p.hp;
+  p.hp = Math.min(p.maxHp, p.hp + amount);
+  const actual = Math.round(p.hp - before);
+  if (actual > 0) {
+    addFloatingText(p.x, p.y - 24, `+${actual}`, '#4ade80');
+  }
+}
+
+function dealDamageToEnemy(enemy, rawDamage, options = {}) {
+  if (!enemy || enemy.hp <= 0) return;
+  const {
+    isProc = false,
+    sourceSkill = null,
+    knockbackX = 0,
+    knockbackY = 0
+  } = options;
+
+  const p = state.player;
+  const isCrit = Math.random() < p.critChance;
+  const finalDmg = Math.round(rawDamage * (isCrit ? p.critMult : 1.0));
+
+  enemy.hp -= finalDmg;
+  enemy.hitFlash = 0.1;
+  enemy.x += knockbackX;
+  enemy.y += knockbackY;
+
+  addFloatingText(
+    enemy.x + (Math.random() - 0.5) * 16,
+    enemy.y - enemy.radius,
+    isCrit ? `${finalDmg}!` : `${finalDmg}`,
+    isCrit ? '#facc15' : '#ffffff',
+    isCrit ? 16 : 12
+  );
+
+  if (isCrit && p.passives['pas_crit_heal'] && p.critHealCooldown <= 0) {
+    p.critHealCooldown = 1.0;
+    healPlayer(p.passives['pas_crit_heal']);
+  }
+
+  if (!isProc && sourceSkill) {
+    if (isCrit && !sourceSkill.critCdProcUsed && sourceSkill.mods.some(m => m.id === 'mod_crit_cd')) {
+      sourceSkill.critCdProcUsed = true;
+      sourceSkill.currentCd = Math.max(0, sourceSkill.currentCd - 1.2);
+    }
+    if (sourceSkill.mods.some(m => m.id === 'mod_explode') && Math.random() < 0.35) {
+      spawnShockwave(enemy.x, enemy.y, 65 * p.areaMult, p.getAttackDamage() * 0.9, 60, '#fb923c', true, null);
+    }
+  }
+
+  if (enemy.hp <= 0) {
+    onEnemyKilled(enemy, isProc, sourceSkill);
+  }
+}
+
+function onEnemyKilled(enemy, isProc, sourceSkill) {
+  state.kills++;
+  const p = state.player;
+
+  const mults = getDepthMultipliers(enemy.spawnDistMeters);
+  const expVal = Math.max(1, Math.round(enemy.baseExp * mults.expMult));
+  state.gems.push({
+    x: enemy.x,
+    y: enemy.y,
+    val: expVal,
+    magnetized: false,
+    color: expVal >= 10 ? '#f472b6' : expVal >= 4 ? '#38bdf8' : '#4ade80'
+  });
+
+  if (!isProc) {
+    if (sourceSkill && sourceSkill.mods.some(m => m.id === 'mod_kill_seeker')) {
+      const nextTarget = getNearestEnemy(enemy.x, enemy.y, 350, enemy);
+      if (nextTarget) {
+        const ang = Math.atan2(nextTarget.y - enemy.y, nextTarget.x - enemy.x);
+        spawnProjectile(enemy.x, enemy.y, ang, 460, p.getAttackDamage() * 1.1, 1, '#fef08a', true, null);
+      }
+    }
+
+    if (p.passives['pas_kill_thunder']) {
+      p.killTriggerCounter++;
+      if (p.killTriggerCounter >= 12) {
+        p.killTriggerCounter = 0;
+        const lv = p.passives['pas_kill_thunder'];
+        const count = 2 + lv;
+        const dmg = p.getAttackDamage() * (1.8 + lv * 0.4);
+        for (let i = 0; i < count; i++) {
+          const target = getRandomEnemyNear(p.x, p.y, 480);
+          if (target) {
+            spawnLightningStrike(target.x, target.y, dmg, true);
+          }
+        }
+      }
+    }
+
+    if (p.passives['pas_kill_sanctuary']) {
+      const lv = p.passives['pas_kill_sanctuary'];
+      if (Math.random() < 0.25) {
+        spawnSanctuary(enemy.x, enemy.y, 58 * p.areaMult, p.getAttackDamage() * (0.45 + lv * 0.15), 2.5, '#f472b6', true, null);
+      }
+    }
   }
 }
 
 // ----------------------------------------------------------------------------
-// 3. 怪人4種＆幹部4種のランダム定義
+// 8. 攻撃・エフェクト生成ヘルパー
 // ----------------------------------------------------------------------------
-const KAIJIN_TYPES = [
-  {
-    id: 'slime',
-    name: 'スライム怪人・ゲルブロブ',
-    icon: '🟢',
-    color: '#22c55e',
-    gimmickDesc: '粘液バリア3層破壊＋スライムコア4個撃破で覚醒+3pt！',
-    mechanic: '粘液バウンド（バンパー反発強化＆分裂コア）'
-  },
-  {
-    id: 'octopus',
-    name: 'タコ怪人・クラーケン',
-    icon: '🐙',
-    color: '#a855f7',
-    gimmickDesc: '触手バリア3層破壊＋墨ポット4個撃破で覚醒+3pt！',
-    mechanic: '墨視界妨害（一定間隔で画面端に墨スプラッシュ）'
-  },
-  {
-    id: 'plant',
-    name: '植物怪人・アルラウネ',
-    icon: '🌺',
-    color: '#10b981',
-    gimmickDesc: '胞子バリア3層破壊＋ツタ結晶4個撃破で覚醒+3pt！',
-    mechanic: 'ツタ拘束フィールド（中央で一時減速＆弾き飛ばし）'
-  },
-  {
-    id: 'machine',
-    name: '機械怪人・ギガギア',
-    icon: '⚙️',
-    color: '#64748b',
-    gimmickDesc: '電磁バリア3層破壊＋ギア回路4個撃破で覚醒+3pt！',
-    mechanic: '電磁パルス加速（回転ギアがボールを高速弾き）'
-  }
-];
 
-const KANBU_TYPES = [
-  {
-    id: 'fire',
-    name: '四天王・火将イグニス',
-    icon: '🔥',
-    color: '#ef4444',
-    gimmickDesc: '①封印4キーで最上段開放 ②外周ループ3周＋炎コア3撃破で覚醒+9pt！',
-    mechanic: '炎の加速リング（中央通過でボール超加速）'
-  },
-  {
-    id: 'water',
-    name: '四天王・水将アクエリアス',
-    icon: '🌊',
-    color: '#0ea5e9',
-    gimmickDesc: '①封印4キーで最上段開放 ②外周ループ3周＋渦コア3撃破で覚醒+9pt！',
-    mechanic: '水流カレント（左右に揺れる渦潮が軌道を変化）'
-  },
-  {
-    id: 'wind',
-    name: '四天王・風将シルフィード',
-    icon: '🌪️',
-    color: '#34d399',
-    gimmickDesc: '①封印4キーで最上段開放 ②外周ループ3周＋風コア3撃破で覚醒+9pt！',
-    mechanic: '竜巻ウィンドゾーン（上昇気流でボールが舞い上がる）'
-  },
-  {
-    id: 'earth',
-    name: '四天王・土将ガイアロック',
-    icon: '🪨',
-    color: '#d97706',
-    gimmickDesc: '①封印4キーで最上段開放 ②外周ループ3周＋岩コア3撃破で覚醒+9pt！',
-    mechanic: '岩壁ブロック＆地震バウンド（高反発ロック）'
-  }
-];
+function spawnProjectile(x, y, angle, speed, damage, pierce, color, isProc = false, sourceSkill = null) {
+  state.projectiles.push({
+    x, y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    radius: pierce > 1 ? 8 : 6,
+    damage,
+    pierce,
+    hitIds: new Set(),
+    life: 1.8,
+    color,
+    isProc,
+    sourceSkill
+  });
+}
 
-// ----------------------------------------------------------------------------
-// 4. ピンボール物理＆4層ワールド設計
-// ----------------------------------------------------------------------------
-const WORLD_W = 480;
-const LAYER_H = 760;
-const TOTAL_H = LAYER_H * 4;
+function spawnShockwave(x, y, maxRadius, damage, knockback, color, isProc = false, sourceSkill = null) {
+  state.effects.push({
+    type: 'shockwave',
+    x, y,
+    radius: 10,
+    maxRadius,
+    damage,
+    knockback,
+    color,
+    life: 0.32,
+    maxLife: 0.32,
+    hitIds: new Set(),
+    isProc,
+    sourceSkill
+  });
+}
 
-class PinballGame {
-  constructor() {
-    this.canvas = document.getElementById('pinball-canvas');
-    this.ctx = this.canvas.getContext('2d');
+function spawnSlashWave(x, y, angle, damage, range, color, isProc = false, sourceSkill = null) {
+  state.effects.push({
+    type: 'slash',
+    x, y,
+    angle,
+    range,
+    damage,
+    color,
+    life: 0.28,
+    maxLife: 0.28,
+    hitIds: new Set(),
+    isProc,
+    sourceSkill
+  });
+}
 
-    // ゲーム進行状態
-    this.state = 'TITLE'; // TITLE, PLAYING, PAUSED_AWAKEN, GAMEOVER
-    this.score = 0;
-    this.ballsLeft = 3;
-    this.currentLayer = 0; // 0:下段, 1:中段, 2:上段, 3:最上段
-    this.cameraY = LAYER_H * 3;
+function spawnMeteor(x, y, damage, radius, isProc = false, sourceSkill = null) {
+  state.effects.push({
+    type: 'meteor',
+    x, y,
+    radius,
+    damage,
+    life: 0.35,
+    maxLife: 0.35,
+    exploded: false,
+    isProc,
+    sourceSkill
+  });
+}
 
-    // 覚醒ステータス＆キーボード選択カーソル
-    this.awakenPoints = 0;
-    this.awakenLevels = { white: 0, blue: 0, pink: 0, yellow: 0 };
-    this.awakenCursorIndex = 0;
+function spawnLightningStrike(x, y, damage, isProc = true) {
+  state.effects.push({
+    type: 'lightning',
+    x, y,
+    radius: 55,
+    damage,
+    life: 0.25,
+    maxLife: 0.25,
+    triggered: false,
+    isProc
+  });
+}
 
-    // ランダム選出される敵
-    this.kaijin = KAIJIN_TYPES[0];
-    this.kanbu = KANBU_TYPES[0];
+function spawnSanctuary(x, y, radius, dps, duration, color, isProc = false, sourceSkill = null) {
+  state.effects.push({
+    type: 'sanctuary',
+    x, y,
+    radius,
+    dps,
+    tickTimer: 0,
+    life: duration,
+    maxLife: duration,
+    color,
+    isProc,
+    sourceSkill
+  });
+}
 
-    // ボール管理（本体 + 分身ボール）
-    this.mainBall = null;
-    this.clones = [];
+function triggerChainLightning(startX, startY, damage, maxJumps, range, isProc = false, sourceSkill = null) {
+  let currX = startX;
+  let currY = startY;
+  const visited = new Set();
+  const points = [{ x: currX, y: currY }];
 
-    // 各層の動的ギミック状態
-    this.layersData = [];
-
-    // 入力状態
-    this.keys = { left: false, right: false, plunger: false };
-    this.plungerCharge = 0;
-    this.tiltCooldown = 0;
-
-    // エフェクト・パーティクル・画面シェイク
-    this.particles = [];
-    this.floatingTexts = [];
-    this.shakeTimer = 0;
-    this.shakeIntensity = 0;
-    this.inkBlots = [];
-
-    // 最上段・首領の妨害タイマー＆アニメーション
-    this.bossAttackTimer = 0;
-    this.bossActiveDebuff = null; // 'GRAVITY_WAVE' | 'FLIPPER_SHRINK' | null
-    this.bossDebuffTimer = 0;
-    this.bossEndureTimer = 0;
-    this.bossHpVisual = 100;
-
-    this.lastTime = 0;
-    this.rollEnemies();
-    this.setupEvents();
-    this.resizeCanvas();
-  }
-
-  rollEnemies() {
-    this.kaijin = KAIJIN_TYPES[Math.floor(Math.random() * KAIJIN_TYPES.length)];
-    this.kanbu = KANBU_TYPES[Math.floor(Math.random() * KANBU_TYPES.length)];
-    document.getElementById('preview-kaijin').textContent = `${this.kaijin.icon} ${this.kaijin.name}`;
-    document.getElementById('preview-kanbu').textContent = `${this.kanbu.icon} ${this.kanbu.name}`;
-  }
-
-  getScoreMultiplier() {
-    return Math.pow(2, this.awakenLevels.white);
-  }
-
-  getGravityMultiplier() {
-    return Math.pow(0.9, this.awakenLevels.blue);
-  }
-
-  getFlipperPowerMultiplier() {
-    return Math.pow(1.1, this.awakenLevels.yellow);
-  }
-
-  addScore(basePoints, x, y, color = '#fde047') {
-    const mult = this.getScoreMultiplier();
-    const gained = Math.round(basePoints * mult);
-    this.score += gained;
-    this.spawnFloatingText(`+${gained.toLocaleString()}`, x, y, color);
-    this.updateHUD();
-  }
-
-  addAwakenPoints(pts, x, y) {
-    this.awakenPoints += pts;
-    this.spawnFloatingText(`✨覚醒+${pts}pt`, x, y - 18, '#f472b6');
-    this.updateHUD();
-
-    if (this.awakenPoints >= 10) {
-      const available = Object.keys(this.awakenLevels).filter(k => this.awakenLevels[k] < 4);
-      if (available.length > 0) {
-        this.awakenPoints -= 10;
-        this.openAwakenModal();
-      } else {
-        this.awakenPoints -= 10;
-        this.addScore(50000, x, y, '#fef08a');
+  for (let i = 0; i < maxJumps; i++) {
+    let best = null;
+    let bestDist = range;
+    for (const e of state.enemies) {
+      if (e.hp <= 0 || visited.has(e)) continue;
+      const d = Math.hypot(e.x - currX, e.y - currY);
+      if (d < bestDist) {
+        bestDist = d;
+        best = e;
       }
     }
+    if (!best) break;
+    visited.add(best);
+    points.push({ x: best.x, y: best.y });
+    dealDamageToEnemy(best, damage, { isProc, sourceSkill });
+    currX = best.x;
+    currY = best.y;
   }
 
-  // --------------------------------------------------------------------------
-  // 4層のジオメトリ・レーン・スリングショット・スピナー・ギミック初期化
-  // --------------------------------------------------------------------------
-  initLayers() {
-    this.layersData = [];
-    for (let i = 0; i < 4; i++) {
-      const topY = (3 - i) * LAYER_H;
-      const bottomY = topY + LAYER_H;
+  if (points.length > 1) {
+    state.effects.push({
+      type: 'chain',
+      points,
+      life: 0.24,
+      maxLife: 0.24
+    });
+  }
+}
 
-      const flipperY = bottomY - 92;
-      const layerObj = {
-        index: i,
-        topY,
-        bottomY,
-        flipperY,
-        leftFlipperAngle: 0.42,
-        rightFlipperAngle: Math.PI - 0.42,
-
-        // ストッパー（1回だけセンタードレイン落下を防ぐ魔法バリア）
-        stopperActive: false,
-        stopperTimer: 0,
-
-        // 発射口（上層へ一気に飛ばすワープ魔法陣砲）
-        launcherActive: false,
-        launcherX: 72,
-        launcherY: topY + 285,
-
-        // 上段→最上段の封印ゲート（Layer 2のみ閉鎖スタート）
-        topGateOpen: i !== 2,
-        gateKeys: [],
-
-        // ギミック進捗カウンター
-        bumperHits: 0,
-        spinCount: 0,
-        loopCount: 0,
-        loopCooldown: 0,
-        barrierHp: 3,
-
-        // 複合ピンボール要素
-        bumpers: [],
-        targets: [],          // 発射口出現用ターゲット（上段はゲート開放後のみ出現！）
-        rollovers: [],        // 上部ロールオーバーレーン
-        spinner: null,        // 回転スピナー
-        slingshots: [],       // 左右三角スリングショット
-        awakenTargets: []     // 覚醒条件用の固有ターゲットバンク
-      };
-
-      // 全層共通：左右三角スリングショット（フリッパー上方の高反発三角形）
-      layerObj.slingshots = [
-        {
-          side: 'left',
-          x1: 72, y1: flipperY - 125,
-          x2: 112, y2: flipperY - 42,
-          x3: 72, y3: flipperY - 42,
-          flash: 0
-        },
-        {
-          side: 'right',
-          x1: 388, y1: flipperY - 125,
-          x2: 348, y2: flipperY - 42,
-          x3: 388, y3: flipperY - 42,
-          flash: 0
-        }
-      ];
-
-      // --- Layer 0: 下段（魔法少女 VS 大勢の戦闘員たち） ---
-      // 覚醒+1pt条件：上部3連ロールオーバー全通過 ＋ 中央スピナー累計20回転
-      if (i === 0) {
-        layerObj.rollovers = [
-          { x: 155, y: topY + 88, r: 14, lit: false, label: 'M' },
-          { x: 230, y: topY + 76, r: 14, lit: false, label: 'A' },
-          { x: 305, y: topY + 88, r: 14, lit: false, label: 'G' }
-        ];
-        layerObj.spinner = {
-          x: 230, y: topY + 345, w: 46, angle: 0, angVel: 0
-        };
-        layerObj.bumpers = [
-          { x: 170, y: topY + 215, r: 23, label: '戦闘員A', color: '#4ade80', hitAnim: 0 },
-          { x: 290, y: topY + 215, r: 23, label: '戦闘員B', color: '#4ade80', hitAnim: 0 },
-          { x: 230, y: topY + 275, r: 25, label: '戦闘員長', color: '#22c55e', hitAnim: 0 }
-        ];
-        layerObj.targets = [
-          { x: 96, y: topY + 195, r: 14, active: true, color: '#38bdf8' },
-          { x: 96, y: topY + 245, r: 14, active: true, color: '#38bdf8' },
-          { x: 364, y: topY + 195, r: 14, active: true, color: '#38bdf8' },
-          { x: 364, y: topY + 245, r: 14, active: true, color: '#38bdf8' }
-        ];
-      }
-
-      // --- Layer 1: 中段（魔法少女 VS 怪人4種） ---
-      // 覚醒+3pt条件：怪人中央バリア3層破壊 ＋ 怪人ドロップターゲット4基全撃破
-      if (i === 1) {
-        const kColor = this.kaijin.color;
-        layerObj.rollovers = [
-          { x: 140, y: topY + 95, r: 14, lit: false, label: '★' },
-          { x: 320, y: topY + 95, r: 14, lit: false, label: '★' }
-        ];
-        layerObj.spinner = {
-          x: 112, y: topY + 270, w: 38, angle: 0, angVel: 0
-        };
-        layerObj.bumpers = [
-          { x: 165, y: topY + 225, r: 24, label: this.kaijin.icon, color: kColor, hitAnim: 0 },
-          { x: 295, y: topY + 225, r: 24, label: this.kaijin.icon, color: kColor, hitAnim: 0 },
-          { x: 230, y: topY + 175, r: 30, label: 'バリア3', color: '#f43f5e', hitAnim: 0, isBarrierCore: true }
-        ];
-        layerObj.targets = [
-          { x: 92, y: topY + 185, r: 14, active: true, color: '#38bdf8' },
-          { x: 368, y: topY + 185, r: 14, active: true, color: '#38bdf8' },
-          { x: 368, y: topY + 235, r: 14, active: true, color: '#38bdf8' }
-        ];
-        layerObj.awakenTargets = [
-          { x: 155, y: topY + 340, r: 14, active: true, color: kColor },
-          { x: 205, y: topY + 355, r: 14, active: true, color: kColor },
-          { x: 255, y: topY + 355, r: 14, active: true, color: kColor },
-          { x: 305, y: topY + 340, r: 14, active: true, color: kColor }
-        ];
-      }
-
-      // --- Layer 2: 上段（魔法少女 VS 幹部4種 + 封印ゲート） ---
-      if (i === 2) {
-        const cColor = this.kanbu.color;
-        layerObj.spinner = {
-          x: 356, y: topY + 260, w: 40, angle: 0, angVel: 0
-        };
-        layerObj.bumpers = [
-          { x: 170, y: topY + 245, r: 24, label: this.kanbu.icon, color: cColor, hitAnim: 0 },
-          { x: 290, y: topY + 245, r: 24, label: this.kanbu.icon, color: cColor, hitAnim: 0 },
-          { x: 230, y: topY + 315, r: 24, label: '幹部炉', color: '#fbbf24', hitAnim: 0 }
-        ];
-        // ① 封印解除ギミック（ゲートが開くまで有効な4つの魔法陣キー）
-        layerObj.gateKeys = [
-          { x: 130, y: topY + 125, r: 15, active: true, color: '#f59e0b' },
-          { x: 190, y: topY + 108, r: 15, active: true, color: '#f59e0b' },
-          { x: 270, y: topY + 108, r: 15, active: true, color: '#f59e0b' },
-          { x: 330, y: topY + 125, r: 15, active: true, color: '#f59e0b' }
-        ];
-        // ② 発射口を出現させるギミック（ゲート開放後のみ表示＆当たり判定有効！）
-        layerObj.targets = [
-          { x: 100, y: topY + 210, r: 15, active: true, color: '#fde047' },
-          { x: 230, y: topY + 165, r: 16, active: true, color: '#fde047' },
-          { x: 360, y: topY + 210, r: 15, active: true, color: '#fde047' }
-        ];
-        // ③ 覚醒+9pt用の幹部試練コア（3基）
-        layerObj.awakenTargets = [
-          { x: 155, y: topY + 380, r: 14, active: true, color: cColor },
-          { x: 230, y: topY + 395, r: 14, active: true, color: cColor },
-          { x: 305, y: topY + 380, r: 14, active: true, color: cColor }
-        ];
-      }
-
-      // --- Layer 3: 最上段（魔法少女 VS 首領） ---
-      if (i === 3) {
-        layerObj.spinner = {
-          x: 230, y: topY + 265, w: 46, angle: 0, angVel: 0
-        };
-        layerObj.bumpers = [
-          { x: 165, y: topY + 225, r: 25, label: '魔王玉', color: '#c026d3', hitAnim: 0 },
-          { x: 295, y: topY + 225, r: 25, label: '魔王玉', color: '#c026d3', hitAnim: 0 },
-          { x: 230, y: topY + 160, r: 34, label: '首領', color: '#9333ea', hitAnim: 0 }
-        ];
-        layerObj.targets = [
-          { x: 96, y: topY + 245, r: 16, active: true, color: '#38bdf8', role: 'DEFENSE' },
-          { x: 364, y: topY + 245, r: 16, active: true, color: '#38bdf8', role: 'DEFENSE' },
-          { x: 170, y: topY + 335, r: 16, active: true, color: '#fde047', role: 'UNISON' },
-          { x: 230, y: topY + 355, r: 17, active: true, color: '#f472b6', role: 'UNISON' },
-          { x: 290, y: topY + 335, r: 16, active: true, color: '#fde047', role: 'UNISON' }
-        ];
-      }
-
-      this.layersData.push(layerObj);
+function getNearestEnemy(x, y, maxRange = Infinity, exclude = null) {
+  let best = null;
+  let bestD = maxRange;
+  for (const e of state.enemies) {
+    if (e.hp <= 0 || e === exclude) continue;
+    const d = Math.hypot(e.x - x, e.y - y);
+    if (d < bestD) {
+      bestD = d;
+      best = e;
     }
   }
+  return best;
+}
 
-  startNewGame() {
-    sound.init();
-    sound.startBgm();
-    this.rollEnemies();
-    this.score = 0;
-    this.ballsLeft = 3;
-    this.awakenPoints = 0;
-    this.awakenLevels = { white: 0, blue: 0, pink: 0, yellow: 0 };
-    this.currentLayer = 0;
-    this.cameraY = LAYER_H * 3;
-    this.particles = [];
-    this.floatingTexts = [];
-    this.inkBlots = [];
-    this.bossAttackTimer = 0;
-    this.bossActiveDebuff = null;
-    this.bossHpVisual = 100;
+function getRandomEnemyNear(x, y, maxRange) {
+  const list = state.enemies.filter(e => e.hp > 0 && Math.hypot(e.x - x, e.y - y) <= maxRange);
+  if (list.length === 0) return null;
+  return list[Math.floor(Math.random() * list.length)];
+}
 
-    this.initLayers();
-    this.spawnMainBallInLane();
-    this.state = 'PLAYING';
-    document.getElementById('start-overlay').classList.add('hidden');
-    this.updateHUD();
-  }
+function addFloatingText(x, y, text, color = '#fff', size = 13) {
+  state.floatingTexts.push({
+    x, y, text, color, size,
+    vy: -42,
+    life: 0.65,
+    maxLife: 0.65
+  });
+}
 
-  spawnMainBallInLane() {
-    const baseY = LAYER_H * 3;
-    this.currentLayer = 0;
-    this.mainBall = {
-      x: 454,
-      y: baseY + LAYER_H - 120,
-      vx: 0,
-      vy: 0,
-      r: 11,
-      inPlungerLane: true,
-      isClone: false,
-      trail: []
-    };
-    this.syncClonesToLayer(0);
-  }
+// ----------------------------------------------------------------------------
+// 9. 敵スポーン＆AI（戦闘員・怪人デザイン）
+// ----------------------------------------------------------------------------
+const ENEMY_ARCHETYPES = [
+  { id: 'grunt', name: 'ショッカー風戦闘員', icon: '🕶️', baseHp: 26, baseAtk: 9, speed: 95, radius: 16, baseExp: 2, color: '#334155', minDist: 0 },
+  { id: 'runner', name: 'バイク突撃兵', icon: '🏍️', baseHp: 20, baseAtk: 11, speed: 155, radius: 15, baseExp: 3, color: '#ea580c', minDist: 80 },
+  { id: 'tank', name: '重装甲怪人・ガマ男', icon: '🐸', baseHp: 85, baseAtk: 18, speed: 58, radius: 24, baseExp: 7, color: '#15803d', minDist: 160 },
+  { id: 'mage', name: '呪術怪人・カラス天狗', icon: '👺', baseHp: 52, baseAtk: 15, speed: 82, radius: 19, baseExp: 6, color: '#7e22ce', minDist: 280 },
+  { id: 'boss', name: '大幹部・ダークジェネラル', icon: '😈', baseHp: 220, baseAtk: 28, speed: 68, radius: 30, baseExp: 20, color: '#be123c', minDist: 450 }
+];
 
-  syncClonesToLayer(layerIdx) {
-    const count = this.awakenLevels.pink;
-    this.clones = [];
-    const layer = this.layersData[layerIdx];
+function spawnEnemyAt(x, y) {
+  const distMeters = Math.max(0, (x - 180) / PX_PER_METER);
+  const mults = getDepthMultipliers(distMeters);
+
+  const candidates = ENEMY_ARCHETYPES.filter(a => distMeters >= a.minDist * 0.7);
+  const arch = candidates[Math.floor(Math.random() * candidates.length)];
+
+  state.enemies.push({
+    arch,
+    x,
+    y: Math.max(70, Math.min(state.height - 70, y)),
+    hp: arch.baseHp * mults.hpMult,
+    maxHp: arch.baseHp * mults.hpMult,
+    atk: arch.baseAtk * mults.atkMult,
+    speed: arch.speed * (0.92 + Math.random() * 0.18),
+    radius: arch.radius,
+    baseExp: arch.baseExp,
+    spawnDistMeters: distMeters,
+    hitFlash: 0
+  });
+}
+
+function updateSpawning(dt) {
+  const timeMults = getTimeMultipliers(state.elapsedTime);
+  if (state.enemies.length >= timeMults.maxEnemies) return;
+
+  state.spawnTimer -= dt;
+  if (state.spawnTimer <= 0) {
+    state.spawnTimer = timeMults.spawnInterval;
+    const p = state.player;
+    const count = timeMults.packSize;
+
     for (let i = 0; i < count; i++) {
-      const offsetX = (i - (count - 1) / 2) * 38;
-      this.clones.push({
-        x: 230 + offsetX,
-        y: layer.topY + 390,
-        vx: (i % 2 === 0 ? 140 : -140),
-        vy: -120,
-        r: 10.5,
-        isClone: true,
-        layer: layerIdx,
-        trail: []
-      });
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // 非停止カットイン演出（防御魔法 / 必殺魔法）
-  // --------------------------------------------------------------------------
-  triggerNonStopCutin(type) {
-    const girlKeys = ['white', 'blue', 'pink', 'yellow'];
-    const randomGirl = MAGICAL_GIRLS[girlKeys[Math.floor(Math.random() * girlKeys.length)]];
-    const container = document.getElementById('nonstop-cutin-layer');
-
-    const banner = document.createElement('div');
-    const isDefense = type === 'DEFENSE';
-    if (isDefense) {
-      sound.playDefense();
-    } else {
-      sound.playLaunch();
-    }
-
-    banner.className = `cutin-nonstop pointer-events-none flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border-2 border-white shadow-2xl bg-gradient-to-r ${randomGirl.bgGrad} max-w-[92%]`;
-    banner.innerHTML = `
-      <div class="bg-slate-950/30 rounded-xl p-1 shrink-0">
-        ${createMagicalGirlSVG(randomGirl.id, 'w-14 h-14')}
-      </div>
-      <div class="text-slate-950 pr-2">
-        <div class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-950 text-white inline-block">
-          ${isDefense ? '🛡️ 防御魔法発動！ストッパー出現' : '⚡ 必殺魔法撃破！発射口出現'}
-        </div>
-        <div class="text-xs sm:text-sm font-black mt-0.5">${randomGirl.name}</div>
-        <div class="text-[11px] font-bold leading-tight">${isDefense ? randomGirl.quoteDefense : randomGirl.quoteAttack}</div>
-      </div>
-    `;
-    container.innerHTML = '';
-    container.appendChild(banner);
-    setTimeout(() => {
-      if (banner.parentNode === container) container.removeChild(banner);
-    }, 2350);
-  }
-
-  // --------------------------------------------------------------------------
-  // 10pt覚醒モーダル＆変身演出（キーボード操作完全対応）
-  // --------------------------------------------------------------------------
-  openAwakenModal() {
-    this.state = 'PAUSED_AWAKEN';
-    const order = ['white', 'blue', 'pink', 'yellow'];
-    const firstAvail = order.findIndex(id => this.awakenLevels[id] < 4);
-    this.awakenCursorIndex = firstAvail >= 0 ? firstAvail : 0;
-    this.renderAwakenCards();
-    document.getElementById('awaken-modal').classList.remove('hidden');
-  }
-
-  renderAwakenCards() {
-    const cardsBox = document.getElementById('awaken-cards');
-    cardsBox.innerHTML = '';
-    const order = ['white', 'blue', 'pink', 'yellow'];
-
-    order.forEach((girlId, idx) => {
-      const girl = MAGICAL_GIRLS[girlId];
-      const lv = this.awakenLevels[girl.id];
-      const isMax = lv >= 4;
-      const isSelected = idx === this.awakenCursorIndex;
-
-      const card = document.createElement('button');
-      card.disabled = isMax;
-      card.className = `text-left p-2.5 rounded-2xl border-2 transition-all flex items-center gap-2.5 relative ${
-        isMax
-          ? 'opacity-40 cursor-not-allowed bg-slate-900 border-gray-600'
-          : `bg-gradient-to-br ${girl.bgGrad} ${
-              isSelected
-                ? 'border-amber-300 ring-4 ring-amber-300/80 scale-[1.03] shadow-[0_0_25px_rgba(253,224,71,0.85)]'
-                : 'border-white/75 opacity-90 hover:opacity-100'
-            }`
-      }`;
-      card.innerHTML = `
-        <div class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-slate-950 border border-amber-300 text-amber-200 text-xs font-black flex items-center justify-center shadow">
-          ${idx + 1}
-        </div>
-        <div class="bg-slate-950/30 rounded-xl p-1 shrink-0">
-          ${createMagicalGirlSVG(girl.id, 'w-14 h-14')}
-        </div>
-        <div class="text-slate-950 min-w-0 flex-1">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black truncate">${girl.name}</span>
-            <span class="px-1.5 py-0.5 rounded bg-slate-950 text-white text-[10px] font-black">
-              ${isMax ? 'MAX' : `${lv}/4回`}
-            </span>
-          </div>
-          <div class="text-[11px] font-bold opacity-85 truncate">${girl.title}</div>
-          <div class="mt-1 inline-block px-2 py-0.5 rounded-full bg-white/95 text-slate-950 text-xs font-black">
-            ✨ ${girl.desc}
-          </div>
-        </div>
-      `;
-      if (!isMax) {
-        card.addEventListener('mouseenter', () => {
-          this.awakenCursorIndex = idx;
-          this.renderAwakenCards();
-        });
-        card.addEventListener('click', () => this.selectAwakening(girl.id));
-      }
-      cardsBox.appendChild(card);
-    });
-  }
-
-  selectAwakening(girlId) {
-    if (this.awakenLevels[girlId] >= 4) return;
-    this.awakenLevels[girlId] = Math.min(4, this.awakenLevels[girlId] + 1);
-    document.getElementById('awaken-modal').classList.add('hidden');
-
-    if (girlId === 'pink') {
-      const layer = this.layersData[this.currentLayer];
-      this.clones.push({
-        x: 230,
-        y: layer.topY + 370,
-        vx: (Math.random() > 0.5 ? 160 : -160),
-        vy: -140,
-        r: 10.5,
-        isClone: true,
-        layer: this.currentLayer,
-        trail: []
-      });
-    }
-
-    const girl = MAGICAL_GIRLS[girlId];
-    const overlay = document.getElementById('awaken-cutin-overlay');
-    overlay.innerHTML = `
-      <div class="cutin-awaken flex flex-col items-center text-center p-6 rounded-3xl bg-gradient-to-b ${girl.bgGrad} border-4 border-white shadow-[0_0_50px_rgba(255,255,255,0.9)] max-w-xs mx-4">
-        <div class="text-xs font-black px-3 py-1 rounded-full bg-slate-950 text-amber-300 mb-2">
-          ✨ MAGICAL AWAKENING Lv.${this.awakenLevels[girlId]} ✨
-        </div>
-        <div class="bg-slate-950/25 rounded-full p-2 mb-2">
-          ${createMagicalGirlSVG(girlId, 'w-32 h-32')}
-        </div>
-        <div class="text-xl font-black text-slate-950">${girl.name}</div>
-        <div class="text-xs font-black text-slate-900 mt-1">${girl.quoteAwaken}</div>
-        <div class="mt-3 px-4 py-1.5 rounded-full bg-slate-950 text-white text-sm font-black">
-          効果発動：${girl.desc}！
-        </div>
-      </div>
-    `;
-    overlay.classList.remove('hidden');
-    sound.playAwaken();
-    this.updateHUD();
-
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-      this.state = 'PLAYING';
-    }, 2350);
-  }
-
-  // --------------------------------------------------------------------------
-  // 最上段：4人協力攻撃魔法＆首領が耐える演出
-  // --------------------------------------------------------------------------
-  triggerUnisonAttack() {
-    sound.playUnison();
-    this.triggerShake(1.6, 12);
-    const layer3 = this.layersData[3];
-    this.addScore(100000, 230, layer3.topY + 200, '#fde047');
-    this.bossHpVisual = Math.max(10, this.bossHpVisual - 25);
-    this.bossEndureTimer = 2.8;
-
-    const overlay = document.getElementById('unison-overlay');
-    const content = document.getElementById('unison-content');
-    content.innerHTML = `
-      <div class="grid grid-cols-4 gap-1.5 px-3 mb-3 z-10">
-        <div class="bg-white/90 rounded-2xl p-1 border-2 border-pink-400 shadow-lg">${createMagicalGirlSVG('white', 'w-16 h-16 sm:w-20 sm:h-20')}</div>
-        <div class="bg-sky-100/90 rounded-2xl p-1 border-2 border-blue-500 shadow-lg">${createMagicalGirlSVG('blue', 'w-16 h-16 sm:w-20 sm:h-20')}</div>
-        <div class="bg-pink-100/90 rounded-2xl p-1 border-2 border-pink-500 shadow-lg">${createMagicalGirlSVG('pink', 'w-16 h-16 sm:w-20 sm:h-20')}</div>
-        <div class="bg-amber-100/90 rounded-2xl p-1 border-2 border-amber-500 shadow-lg">${createMagicalGirlSVG('yellow', 'w-16 h-16 sm:w-20 sm:h-20')}</div>
-      </div>
-      <div class="unison-beam w-full h-16 bg-gradient-to-r from-white via-pink-400 via-sky-400 to-amber-300 shadow-[0_0_40px_#fff] flex items-center justify-center">
-        <span class="text-slate-950 font-black text-base sm:text-xl tracking-wider drop-shadow">
-          ✨ 4人協力・クアドラプル・ミラクルビーム！！ ✨
-        </span>
-      </div>
-      <div class="mt-4 px-4 py-2 rounded-2xl bg-purple-950/90 border-2 border-fuchsia-400 text-center animate-bounce">
-        <div class="text-2xl">😈💦</div>
-        <div class="text-xs sm:text-sm font-black text-fuchsia-200">
-          首領「グオオォッ……！4人の光が合わさるとは……だがまだ倒れんぞ！！」
-        </div>
-        <div class="text-xs font-black text-amber-300 mt-0.5">大ダメージ＆大量スコア獲得！！</div>
-      </div>
-    `;
-    overlay.classList.remove('hidden');
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-    }, 2800);
-  }
-
-  // --------------------------------------------------------------------------
-  // 入力・フリッパー・プランジャー・チルト制御
-  // --------------------------------------------------------------------------
-  setupEvents() {
-    window.addEventListener('keydown', (e) => {
-      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) {
-        e.preventDefault();
-      }
-
-      if (this.state === 'PAUSED_AWAKEN') {
-        const order = ['white', 'blue', 'pink', 'yellow'];
-        if (['Digit1', 'Numpad1'].includes(e.code)) {
-          this.selectAwakening(order[0]);
-          return;
-        }
-        if (['Digit2', 'Numpad2'].includes(e.code)) {
-          this.selectAwakening(order[1]);
-          return;
-        }
-        if (['Digit3', 'Numpad3'].includes(e.code)) {
-          this.selectAwakening(order[2]);
-          return;
-        }
-        if (['Digit4', 'Numpad4'].includes(e.code)) {
-          this.selectAwakening(order[3]);
-          return;
-        }
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
-          this.awakenCursorIndex = (this.awakenCursorIndex + 3) % 4;
-          sound.playTarget();
-          this.renderAwakenCards();
-          return;
-        }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-          this.awakenCursorIndex = (this.awakenCursorIndex + 1) % 4;
-          sound.playTarget();
-          this.renderAwakenCards();
-          return;
-        }
-        if (e.code === 'Enter' || e.code === 'Space') {
-          this.selectAwakening(order[this.awakenCursorIndex]);
-          return;
-        }
-        return;
-      }
-
-      if (e.code === 'KeyA' || e.code === 'ArrowLeft') {
-        if (!this.keys.left && this.state === 'PLAYING') sound.playFlipper();
-        this.keys.left = true;
-      }
-      if (e.code === 'KeyD' || e.code === 'ArrowRight') {
-        if (!this.keys.right && this.state === 'PLAYING') sound.playFlipper();
-        this.keys.right = true;
-      }
-      if (e.code === 'Space' || e.code === 'ArrowDown') {
-        this.keys.plunger = true;
-      }
-      if (e.code === 'KeyW' || e.code === 'ArrowUp') {
-        this.doTilt();
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'KeyA' || e.code === 'ArrowLeft') this.keys.left = false;
-      if (e.code === 'KeyD' || e.code === 'ArrowRight') this.keys.right = false;
-      if (e.code === 'Space' || e.code === 'ArrowDown') {
-        if (this.keys.plunger) this.releasePlunger();
-        this.keys.plunger = false;
-      }
-    });
-
-    // タッチ＆マウスボタン（モバイル・タブレット対応）
-    const bindHold = (el, keyName, onRelease = null) => {
-      const down = (e) => {
-        e.preventDefault();
-        if (!this.keys[keyName] && this.state === 'PLAYING' && keyName !== 'plunger') sound.playFlipper();
-        this.keys[keyName] = true;
-      };
-      const up = (e) => {
-        e.preventDefault();
-        if (this.keys[keyName] && onRelease) onRelease();
-        this.keys[keyName] = false;
-      };
-      el.addEventListener('mousedown', down);
-      el.addEventListener('touchstart', down, { passive: false });
-      window.addEventListener('mouseup', up);
-      window.addEventListener('touchend', up);
-    };
-
-    bindHold(document.getElementById('touch-left'), 'left');
-    bindHold(document.getElementById('touch-right'), 'right');
-    bindHold(document.getElementById('touch-plunger'), 'plunger', () => this.releasePlunger());
-
-    // キャンバス直接タップでの左右フリッパー操作
-    this.canvas.addEventListener('touchstart', (e) => {
-      if (this.state !== 'PLAYING') return;
-      const rect = this.canvas.getBoundingClientRect();
-      for (let i = 0; i < e.touches.length; i++) {
-        const tx = e.touches[i].clientX - rect.left;
-        if (tx < rect.width * 0.5) {
-          if (!this.keys.left) sound.playFlipper();
-          this.keys.left = true;
-        } else {
-          if (!this.keys.right) sound.playFlipper();
-          this.keys.right = true;
-        }
-      }
-    }, { passive: true });
-
-    this.canvas.addEventListener('touchend', (e) => {
-      if (e.touches.length === 0) {
-        this.keys.left = false;
-        this.keys.right = false;
-      }
-    }, { passive: true });
-
-    // UIボタン
-    document.getElementById('btn-start-game').addEventListener('click', () => this.startNewGame());
-    document.getElementById('btn-sound').addEventListener('click', (e) => {
-      const on = sound.toggle();
-      e.target.textContent = on ? '🔊 ON' : '🔇 OFF';
-    });
-    document.getElementById('btn-help').addEventListener('click', () => {
-      const overlay = document.getElementById('start-overlay');
-      if (this.state === 'PLAYING') {
-        overlay.classList.remove('hidden');
-        document.getElementById('btn-start-game').textContent = '▶ ゲームに戻る';
-        document.getElementById('btn-start-game').onclick = () => {
-          overlay.classList.add('hidden');
-          document.getElementById('btn-start-game').onclick = () => this.startNewGame();
-        };
-      }
-    });
-
-    window.addEventListener('resize', () => this.resizeCanvas());
-  }
-
-  resizeCanvas() {
-    const wrapper = document.getElementById('canvas-wrapper');
-    this.canvas.width = wrapper.clientWidth;
-    this.canvas.height = wrapper.clientHeight;
-  }
-
-  releasePlunger() {
-    if (this.state !== 'PLAYING' || !this.mainBall) return;
-    if (this.mainBall.inPlungerLane) {
-      const power = 780 + this.plungerCharge * 540;
-      this.mainBall.vy = -power;
-      this.mainBall.vx = -40;
-      sound.playLaunch();
-      this.spawnParticles(this.mainBall.x, this.mainBall.y, '#fde047', 16);
-    }
-    this.plungerCharge = 0;
-  }
-
-  doTilt() {
-    if (this.state !== 'PLAYING' || this.tiltCooldown > 0) return;
-    this.tiltCooldown = 2.0;
-    this.triggerShake(0.3, 8);
-    const nudgeX = (Math.random() - 0.5) * 260;
-    if (this.mainBall && !this.mainBall.inPlungerLane) {
-      this.mainBall.vx += nudgeX;
-      this.mainBall.vy -= 140;
-    }
-    this.clones.forEach(c => {
-      c.vx += nudgeX;
-      c.vy -= 140;
-    });
-    this.spawnFloatingText('⚡ 魔法チルト！', 240, this.cameraY + 380, '#38bdf8');
-  }
-
-  triggerShake(duration, intensity) {
-    this.shakeTimer = duration;
-    this.shakeIntensity = intensity;
-  }
-
-  // --------------------------------------------------------------------------
-  // メイン物理ステップ（毎フレーム更新）
-  // --------------------------------------------------------------------------
-  update(dt) {
-    if (this.state !== 'PLAYING') return;
-
-    if (this.tiltCooldown > 0) this.tiltCooldown -= dt;
-    if (this.shakeTimer > 0) this.shakeTimer -= dt;
-    if (this.bossEndureTimer > 0) this.bossEndureTimer -= dt;
-
-    // 墨ブロットフェードアウト
-    this.inkBlots.forEach(b => b.alpha -= dt * 0.25);
-    this.inkBlots = this.inkBlots.filter(b => b.alpha > 0);
-
-    // プランジャーチャージ
-    if (this.keys.plunger) {
-      this.plungerCharge = Math.min(1, this.plungerCharge + dt * 1.6);
-    }
-
-    // 各層フリッパー角度・スピナー・スリングショット更新
-    const flipSpeed = 18;
-    this.layersData.forEach((layer) => {
-      const targetL = this.keys.left ? -0.52 : 0.42;
-      const targetR = this.keys.right ? Math.PI + 0.52 : Math.PI - 0.42;
-      layer.leftFlipperAngle += (targetL - layer.leftFlipperAngle) * Math.min(1, dt * flipSpeed);
-      layer.rightFlipperAngle += (targetR - layer.rightFlipperAngle) * Math.min(1, dt * flipSpeed);
-
-      if (layer.stopperTimer > 0) layer.stopperTimer -= dt;
-      if (layer.loopCooldown > 0) layer.loopCooldown -= dt;
-
-      if (layer.spinner) {
-        layer.spinner.angle += layer.spinner.angVel * dt;
-        layer.spinner.angVel *= Math.pow(0.25, dt);
-      }
-      layer.slingshots.forEach(sl => {
-        if (sl.flash > 0) sl.flash = Math.max(0, sl.flash - dt * 4);
-      });
-
-      layer.bumpers.forEach(b => { if (b.hitAnim > 0) b.hitAnim = Math.max(0, b.hitAnim - dt * 4); });
-    });
-
-    // 最上段（Layer 3）滞在時の首領妨害タイマー
-    if (this.currentLayer === 3) {
-      this.bossAttackTimer += dt;
-      if (this.bossAttackTimer > 7.5) {
-        this.bossAttackTimer = 0;
-        this.bossActiveDebuff = Math.random() > 0.5 ? 'GRAVITY_WAVE' : 'FLIPPER_SHRINK';
-        this.bossDebuffTimer = 4.5;
-        this.triggerShake(0.5, 7);
-        this.spawnFloatingText(
-          this.bossActiveDebuff === 'GRAVITY_WAVE' ? '😈首領妨害：超重力波！' : '😈首領妨害：フリッパー縮小！',
-          230,
-          this.layersData[3].topY + 120,
-          '#e879f9'
-        );
-      }
-      if (this.bossDebuffTimer > 0) {
-        this.bossDebuffTimer -= dt;
-        if (this.bossDebuffTimer <= 0) this.bossActiveDebuff = null;
-      }
-    } else {
-      this.bossActiveDebuff = null;
-    }
-
-    // サブステップ物理演算（すり抜け防止のため4分割）
-    const subSteps = 4;
-    const subDt = dt / subSteps;
-
-    for (let s = 0; s < subSteps; s++) {
-      if (this.mainBall) this.stepBallPhysics(this.mainBall, subDt);
-      for (let i = this.clones.length - 1; i >= 0; i--) {
-        const alive = this.stepBallPhysics(this.clones[i], subDt);
-        if (!alive) {
-          this.spawnParticles(this.clones[i].x, this.clones[i].y, '#f472b6', 14);
-          this.clones.splice(i, 1);
-        }
-      }
-    }
-
-    // メインボールの現在層判定＆カメラ追従
-    if (this.mainBall) {
-      const newLayer = Math.max(0, Math.min(3, 3 - Math.floor(this.mainBall.y / LAYER_H)));
-      if (newLayer !== this.currentLayer) {
-        const prevLayer = this.currentLayer;
-        this.currentLayer = newLayer;
-
-        // 最上段(3)から上段(2)へ落下したら、再び封印ゲートを閉ざし、発射口＆発射口出現ギミックも消滅させる
-        if (prevLayer === 3 && newLayer === 2) {
-          const layer2 = this.layersData[2];
-          layer2.topGateOpen = false;
-          layer2.launcherActive = false;
-          layer2.gateKeys.forEach(k => { k.active = true; });
-          layer2.targets.forEach(t => { t.active = true; });
-          this.spawnFloatingText('🔒 封印結界が再び閉ざされた！', 230, layer2.topY + 90, '#f59e0b');
-        }
-
-        // 本体が上層または下層へ移動したタイミングで分身を復活
-        this.syncClonesToLayer(newLayer);
-        this.updateHUD();
-      }
-
-      const targetCamY = (3 - this.currentLayer) * LAYER_H;
-      this.cameraY += (targetCamY - this.cameraY) * Math.min(1, dt * 7.5);
-    }
-
-    // パーティクル＆フローティングテキスト更新
-    this.particles.forEach(p => {
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      p.life -= dt;
-    });
-    this.particles = this.particles.filter(p => p.life > 0);
-
-    this.floatingTexts.forEach(t => {
-      t.y -= 38 * dt;
-      t.life -= dt;
-    });
-    this.floatingTexts = this.floatingTexts.filter(t => t.life > 0);
-  }
-
-  stepBallPhysics(ball, dt) {
-    if (Math.random() < 0.45) {
-      ball.trail.push({ x: ball.x, y: ball.y, alpha: 0.7 });
-      if (ball.trail.length > 10) ball.trail.shift();
-    }
-    ball.trail.forEach(tr => tr.alpha -= dt * 2.5);
-
-    let grav = 540 * this.getGravityMultiplier();
-    if (this.bossActiveDebuff === 'GRAVITY_WAVE') grav *= 1.35;
-
-    ball.vy += grav * dt;
-
-    const layerIdx = ball.isClone ? ball.layer : Math.max(0, Math.min(3, 3 - Math.floor(ball.y / LAYER_H)));
-    const layer = this.layersData[layerIdx];
-
-    if (layerIdx === 1 && !ball.inPlungerLane) {
-      if (this.kaijin.id === 'plant') {
-        const d = Math.hypot(ball.x - 230, ball.y - (layer.topY + 270));
-        if (d < 65) {
-          ball.vx += Math.sin(performance.now() * 0.01) * 180 * dt;
-          ball.vy -= 260 * dt;
-        }
-      } else if (this.kaijin.id === 'machine') {
-        const dx = ball.x - 230;
-        const dy = ball.y - (layer.topY + 270);
-        const d = Math.hypot(dx, dy);
-        if (d < 70 && d > 5) {
-          ball.vx += (-dy / d) * 320 * dt;
-          ball.vy += (dx / d) * 320 * dt;
-        }
-      }
-    }
-
-    if (layerIdx === 2 && !ball.inPlungerLane) {
-      if (this.kanbu.id === 'fire') {
-        const d = Math.hypot(ball.x - 230, ball.y - (layer.topY + 240));
-        if (d < 48) {
-          ball.vx *= 1.008;
-          ball.vy *= 1.008;
-        }
-      } else if (this.kanbu.id === 'water') {
-        ball.vx += Math.sin(performance.now() * 0.004) * 240 * dt;
-      } else if (this.kanbu.id === 'wind') {
-        if (Math.abs(ball.x - 230) < 55) {
-          ball.vy -= 360 * dt;
-        }
-      }
-    }
-
-    const maxSpeed = 1280;
-    const spd = Math.hypot(ball.vx, ball.vy);
-    if (spd > maxSpeed) {
-      ball.vx = (ball.vx / spd) * maxSpeed;
-      ball.vy = (ball.vy / spd) * maxSpeed;
-    }
-
-    ball.x += ball.vx * dt;
-    ball.y += ball.vy * dt;
-
-    // プランジャーレーン処理
-    if (ball.inPlungerLane) {
-      if (ball.x < 438 + ball.r) { ball.x = 438 + ball.r; ball.vx = Math.abs(ball.vx) * 0.5; }
-      if (ball.x > 472 - ball.r) { ball.x = 472 - ball.r; ball.vx = -Math.abs(ball.vx) * 0.5; }
-      if (ball.y < LAYER_H * 3 + 95) {
-        ball.inPlungerLane = false;
-        ball.vx = -290;
-        ball.vy = 40;
-      }
-      if (ball.y > LAYER_H * 4 - 45) {
-        ball.y = LAYER_H * 4 - 45;
-        ball.vy = 0;
-      }
-      return true;
-    }
-
-    // 左右外壁コリジョン
-    const leftWall = 26;
-    const rightWall = 432;
-    if (ball.x - ball.r < leftWall) {
-      ball.x = leftWall + ball.r;
-      ball.vx = Math.abs(ball.vx) * 0.82;
-    }
-    if (ball.x + ball.r > rightWall) {
-      ball.x = rightWall - ball.r;
-      ball.vx = -Math.abs(ball.vx) * 0.82;
-    }
-
-    // 層の上部天井＆上層への開口部処理
-    if (ball.y - ball.r < layer.topY + 18 && ball.vy < 0) {
-      const inOpening = ball.x > 185 && ball.x < 275;
-      const canGoUp =
-        !ball.isClone &&
-        layerIdx < 3 &&
-        inOpening &&
-        (layerIdx !== 2 || layer.topGateOpen);
-
-      if (canGoUp) {
-        ball.y = layer.topY - 22;
-        ball.vy = Math.min(ball.vy, -460);
-        sound.playWarp();
-        this.spawnParticles(ball.x, layer.topY, '#38bdf8', 18);
-        this.spawnFloatingText('⬆️ 上層突破！', ball.x, layer.topY - 10, '#38bdf8');
+      if (state.enemies.length >= timeMults.maxEnemies) break;
+      const side = Math.random();
+      let sx, sy;
+      if (side < 0.65) {
+        sx = state.cameraX + state.width + 40 + Math.random() * 80;
+        sy = 80 + Math.random() * (state.height - 160);
+      } else if (side < 0.85) {
+        sx = state.cameraX - 40 - Math.random() * 60;
+        sy = 80 + Math.random() * (state.height - 160);
       } else {
-        ball.y = layer.topY + 18 + ball.r;
-        ball.vy = Math.abs(ball.vy) * 0.82;
-        if (layerIdx === 2 && !layer.topGateOpen && inOpening) {
-          this.spawnFloatingText('🔒 4つの封印キーを全て灯せ！', 230, layer.topY + 42, '#fbbf24');
+        sx = state.cameraX + Math.random() * state.width;
+        sy = Math.random() < 0.5 ? 55 : state.height - 55;
+      }
+      spawnEnemyAt(sx, sy);
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 10. メイン更新ループ
+// ----------------------------------------------------------------------------
+function update(dt) {
+  if (state.mode !== 'playing') return;
+
+  state.elapsedTime += dt;
+  const p = state.player;
+
+  if (p.invulnTimer > 0) p.invulnTimer -= dt;
+  if (p.hasteTimer > 0) p.hasteTimer -= dt;
+  if (p.critHealCooldown > 0) p.critHealCooldown -= dt;
+
+  const isLowHp = p.hp <= p.maxHp * 0.5;
+  const lowHpCdBonus = (isLowHp && p.passives['pas_lowhp_cd']) ? (0.3 + p.passives['pas_lowhp_cd'] * 0.15) : 0;
+  p.skills.forEach(sk => {
+    if (sk.currentCd > 0) {
+      sk.currentCd = Math.max(0, sk.currentCd - dt * (1 + lowHpCdBonus));
+    }
+  });
+
+  let mx = 0, my = 0;
+  if (state.keys['KeyW'] || state.keys['ArrowUp']) my -= 1;
+  if (state.keys['KeyS'] || state.keys['ArrowDown']) my += 1;
+  if (state.keys['KeyA'] || state.keys['ArrowLeft']) mx -= 1;
+  if (state.keys['KeyD'] || state.keys['ArrowRight']) mx += 1;
+
+  if (state.touchActive) {
+    const dx = state.touchCurr.x - state.touchStart.x;
+    const dy = state.touchCurr.y - state.touchStart.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist > 10) {
+      mx = dx / dist;
+      my = dy / dist;
+    }
+  }
+
+  const moveLen = Math.hypot(mx, my);
+  if (moveLen > 0) {
+    mx /= moveLen;
+    my /= moveLen;
+    p.facingAngle = Math.atan2(my, mx);
+
+    const hasteMult = p.hasteTimer > 0 ? 1.45 : 1.0;
+    const spd = p.baseSpeed * p.speedMult * hasteMult;
+    const stepX = mx * spd * dt;
+    const stepY = my * spd * dt;
+
+    p.x = Math.max(state.cameraX + 30, p.x + stepX);
+    p.y = Math.max(68, Math.min(state.height - 68, p.y + stepY));
+
+    p.movingDuration += dt;
+    p.moveDistAccum += Math.hypot(stepX, stepY);
+
+    if (p.passives['pas_move_wave'] && p.moveDistAccum >= 220) {
+      p.moveDistAccum = 0;
+      const lv = p.passives['pas_move_wave'];
+      spawnShockwave(p.x, p.y, 115 * p.areaMult, p.getAttackDamage() * (0.75 + lv * 0.25), 140, '#f472b6', true, null);
+    }
+  } else {
+    p.movingDuration = Math.max(0, p.movingDuration - dt * 2);
+  }
+
+  const targetCamX = p.x - state.width * 0.32;
+  if (targetCamX > state.cameraX) {
+    state.cameraX += (targetCamX - state.cameraX) * Math.min(1, dt * 6);
+  }
+  const currMeters = Math.max(0, Math.floor((p.x - 180) / PX_PER_METER));
+  if (currMeters > state.maxDistanceMeters) {
+    state.maxDistanceMeters = currMeters;
+    if (state.maxDistanceMeters > state.bestDistanceMeters) {
+      state.bestDistanceMeters = state.maxDistanceMeters;
+      localStorage.setItem('mg_endless_best', String(state.bestDistanceMeters));
+    }
+  }
+
+  const maxRightBg = state.bgObjects.reduce((m, o) => Math.max(m, o.x), 0);
+  if (maxRightBg < state.cameraX + state.width + 400) {
+    state.bgObjects.push(createBgObject(maxRightBg + 180 + Math.random() * 140));
+  }
+  state.bgObjects = state.bgObjects.filter(o => o.x > state.cameraX - 300);
+
+  let moveAspdBonus = 0;
+  if (p.passives['pas_move_aspd']) {
+    const lv = p.passives['pas_move_aspd'];
+    const ramp = Math.min(1, p.movingDuration / 2.5);
+    moveAspdBonus = ramp * (0.2 + lv * 0.12);
+  }
+  const effectiveInterval = p.baseShootInterval / (p.aspdMult + moveAspdBonus);
+  p.shootTimer -= dt;
+  if (p.shootTimer <= 0) {
+    const target = getNearestEnemy(p.x, p.y, 520);
+    if (target) {
+      p.shootTimer = effectiveInterval;
+      const baseAngle = Math.atan2(target.y - p.y, target.x - p.x);
+      const dmg = p.getAttackDamage();
+
+      if (p.tripleShotCharges > 0) {
+        p.tripleShotCharges--;
+        [-0.22, 0, 0.22].forEach(offset => {
+          spawnProjectile(p.x, p.y, baseAngle + offset, 540, dmg * 1.15, 2, '#facc15', false, null);
+        });
+      } else {
+        spawnProjectile(p.x, p.y, baseAngle, 500, dmg, 1, '#f472b6', false, null);
+      }
+      Sound.shoot();
+    } else {
+      p.shootTimer = 0.1;
+    }
+  }
+
+  updateSpawning(dt);
+
+  for (let i = state.projectiles.length - 1; i >= 0; i--) {
+    const proj = state.projectiles[i];
+    proj.x += proj.vx * dt;
+    proj.y += proj.vy * dt;
+    proj.life -= dt;
+
+    if (proj.life <= 0) {
+      state.projectiles.splice(i, 1);
+      continue;
+    }
+
+    for (const e of state.enemies) {
+      if (e.hp <= 0 || proj.hitIds.has(e)) continue;
+      const d = Math.hypot(e.x - proj.x, e.y - proj.y);
+      if (d < e.radius + proj.radius) {
+        proj.hitIds.add(e);
+        dealDamageToEnemy(e, proj.damage, {
+          isProc: proj.isProc,
+          sourceSkill: proj.sourceSkill,
+          knockbackX: (proj.vx / 500) * 14,
+          knockbackY: (proj.vy / 500) * 14
+        });
+        Sound.hit();
+        proj.pierce--;
+        if (proj.pierce <= 0) {
+          state.projectiles.splice(i, 1);
+          break;
         }
       }
     }
+  }
 
-    // 外周ガイド壁（インレーン・アウトレーン形成）
-    this.collideSegment(ball, 26, layer.bottomY - 210, 62, layer.flipperY + 26, 0.72);
-    this.collideSegment(ball, 432, layer.bottomY - 210, 396, layer.flipperY + 26, 0.72);
-    this.collideSegment(ball, 54, layer.bottomY - 165, 128, layer.flipperY - 4, 0.82);
-    this.collideSegment(ball, 404, layer.bottomY - 165, 332, layer.flipperY - 4, 0.82);
+  for (let i = state.effects.length - 1; i >= 0; i--) {
+    const ef = state.effects[i];
+    ef.life -= dt;
 
-    // 左右三角スリングショット判定
-    layer.slingshots.forEach((sl) => {
-      const prevVx = ball.vx;
-      const prevVy = ball.vy;
-      this.collideSegment(ball, sl.x1, sl.y1, sl.x2, sl.y2, 1.45);
-      this.collideSegment(ball, sl.x2, sl.y2, sl.x3, sl.y3, 0.85);
-      this.collideSegment(ball, sl.x3, sl.y3, sl.x1, sl.y1, 0.85);
-      if (Math.hypot(ball.vx - prevVx, ball.vy - prevVy) > 120) {
-        sl.flash = 1.0;
-        sound.playBumper(1.35);
-        this.addScore(500 * (layerIdx + 1), (sl.x1 + sl.x2) / 2, (sl.y1 + sl.y2) / 2, '#f472b6');
-      }
-    });
-
-    // 上部ロールオーバーレーン判定
-    layer.rollovers.forEach((ro) => {
-      if (!ro.lit && Math.hypot(ball.x - ro.x, ball.y - ro.y) < ball.r + ro.r) {
-        ro.lit = true;
-        sound.playTarget();
-        this.spawnParticles(ro.x, ro.y, '#38bdf8', 10);
-        this.addScore(1200 * (layerIdx + 1), ro.x, ro.y - 14, '#38bdf8');
-        if (layerIdx === 0) this.checkLayer0Awaken(layer, ro.x, ro.y);
-      }
-    });
-
-    // 回転スピナー判定
-    if (layer.spinner) {
-      const sp = layer.spinner;
-      if (Math.abs(ball.x - sp.x) < sp.w * 0.55 && Math.abs(ball.y - sp.y) < ball.r + 7) {
-        const speedY = Math.abs(ball.vy);
-        if (speedY > 80) {
-          const spinsAdded = Math.max(1, Math.floor(speedY / 190));
-          sp.angVel = (ball.vy < 0 ? 1 : -1) * Math.min(35, 14 + spinsAdded * 4);
-          layer.spinCount += spinsAdded;
-          sound.playTone(780 + (layer.spinCount % 8) * 60, 'triangle', 0.06, 0.09);
-          this.addScore(300 * spinsAdded * (layerIdx + 1), sp.x, sp.y - 16, '#a5f3fc');
-          if (layerIdx === 0) this.checkLayer0Awaken(layer, sp.x, sp.y);
-        }
-      }
-    }
-
-    // 上段（Layer 2）外周ループレーン通過判定
-    if (layerIdx === 2 && layer.loopCooldown <= 0) {
-      const inLeftLoop = ball.x < 68 && Math.abs(ball.y - (layer.topY + 180)) < 25 && ball.vy < -280;
-      const inRightLoop = ball.x > 392 && Math.abs(ball.y - (layer.topY + 180)) < 25 && ball.vy < -280;
-      if (inLeftLoop || inRightLoop) {
-        layer.loopCooldown = 1.2;
-        layer.loopCount++;
-        sound.playWarp();
-        this.spawnParticles(ball.x, ball.y, this.kanbu.color, 14);
-        this.spawnFloatingText(`🌀 外周ループ (${layer.loopCount}/3周)`, ball.x, ball.y - 15, '#fde047');
-        this.checkLayer2Awaken(layer, ball.x, ball.y);
-      }
-    }
-
-    // フリッパー衝突判定
-    const flipLen = this.bossActiveDebuff === 'FLIPPER_SHRINK' ? 54 : 74;
-    const leftPivot = { x: 132, y: layer.flipperY };
-    const rightPivot = { x: 328, y: layer.flipperY };
-    const leftTip = {
-      x: leftPivot.x + Math.cos(layer.leftFlipperAngle) * flipLen,
-      y: leftPivot.y + Math.sin(layer.leftFlipperAngle) * flipLen
-    };
-    const rightTip = {
-      x: rightPivot.x + Math.cos(layer.rightFlipperAngle) * flipLen,
-      y: rightPivot.y + Math.sin(layer.rightFlipperAngle) * flipLen
-    };
-
-    const flipMult = this.getFlipperPowerMultiplier();
-    this.collideFlipper(ball, leftPivot, leftTip, this.keys.left, flipMult);
-    this.collideFlipper(ball, rightPivot, rightTip, this.keys.right, flipMult);
-
-    // バンパー衝突判定
-    layer.bumpers.forEach((bmp) => {
-      const dx = ball.x - bmp.x;
-      const dy = ball.y - bmp.y;
-      const dist = Math.hypot(dx, dy);
-      const minDist = ball.r + bmp.r;
-      if (dist < minDist && dist > 0.001) {
-        const nx = dx / dist;
-        const ny = dy / dist;
-        ball.x = bmp.x + nx * (minDist + 1);
-        ball.y = bmp.y + ny * (minDist + 1);
-        const bounce = (this.kaijin.id === 'slime' && layerIdx === 1) ? 690 : 590;
-        ball.vx = nx * bounce;
-        ball.vy = ny * bounce;
-        bmp.hitAnim = 1.0;
-
-        sound.playBumper(1 + layerIdx * 0.15);
-        this.spawnParticles(bmp.x, bmp.y, bmp.color, 10);
-        this.addScore(1500 * (layerIdx + 1), bmp.x, bmp.y - 20, bmp.color);
-
-        if (layerIdx === 1 && bmp.isBarrierCore && layer.barrierHp > 0) {
-          layer.barrierHp--;
-          bmp.label = layer.barrierHp > 0 ? `バリア${layer.barrierHp}` : '破壊済!';
-          if (layer.barrierHp === 0) {
-            this.triggerShake(0.35, 7);
-            this.spawnFloatingText('💥 怪人バリア破壊！', bmp.x, bmp.y - 30, '#fb7185');
-            this.checkLayer1Awaken(layer, bmp.x, bmp.y);
-          }
-        }
-
-        layer.bumperHits++;
-        if (layerIdx < 3 && !layer.stopperActive && layer.bumperHits >= 3) {
-          layer.bumperHits = 0;
-          layer.stopperActive = true;
-          this.triggerNonStopCutin('DEFENSE');
-          this.updateHUD();
-        }
-      }
-    });
-
-    // ① 上段（Layer 2）封印ゲート解除キー判定（ゲート閉鎖中のみ有効）
-    if (layerIdx === 2 && !layer.topGateOpen) {
-      layer.gateKeys.forEach((gk) => {
-        if (!gk.active) return;
-        const dist = Math.hypot(ball.x - gk.x, ball.y - gk.y);
-        if (dist < ball.r + gk.r) {
-          const nx = (ball.x - gk.x) / (dist || 1);
-          const ny = (ball.y - gk.y) / (dist || 1);
-          ball.vx = nx * 460;
-          ball.vy = ny * 460;
-          gk.active = false;
-          sound.playTarget();
-          this.spawnParticles(gk.x, gk.y, '#f59e0b', 14);
-          this.addScore(4000, gk.x, gk.y - 16, '#fde047');
-
-          const remaining = layer.gateKeys.filter(k => k.active).length;
-          if (remaining === 0) {
-            layer.topGateOpen = true;
-            sound.playWarp();
-            this.triggerShake(0.45, 8);
-            this.spawnFloatingText('🔓 封印解除！最上段への道＆発射口ギミック出現！', 230, layer.topY + 75, '#fde047');
-          } else {
-            this.spawnFloatingText(`🔑 封印キー点灯！(残り${remaining})`, gk.x, gk.y + 18, '#fbbf24');
-          }
-          this.updateHUD();
-        }
-      });
-    }
-
-    // ② 発射口出現ギミック（ターゲット）判定
-    // ※上段（layerIdx === 2）は topGateOpen === true の時のみ存在・有効化！
-    const targetsAvailable = layerIdx !== 2 || layer.topGateOpen;
-    if (targetsAvailable) {
-      layer.targets.forEach((tgt) => {
-        if (!tgt.active) return;
-        const dist = Math.hypot(ball.x - tgt.x, ball.y - tgt.y);
-        if (dist < ball.r + tgt.r) {
-          const nx = (ball.x - tgt.x) / (dist || 1);
-          const ny = (ball.y - tgt.y) / (dist || 1);
-          ball.vx = nx * 480;
-          ball.vy = ny * 480;
-          tgt.active = false;
-          sound.playTarget();
-          this.spawnParticles(tgt.x, tgt.y, tgt.color, 12);
-          this.addScore(2500 * (layerIdx + 1), tgt.x, tgt.y - 16, tgt.color);
-
-          if (layerIdx === 3) {
-            if (tgt.role === 'DEFENSE') {
-              this.bossActiveDebuff = null;
-              this.triggerNonStopCutin('DEFENSE');
-              this.spawnFloatingText('🛡️ 首領の妨害を無効化！', tgt.x, tgt.y - 25, '#38bdf8');
-            }
-            const unisonTargets = layer.targets.filter(t => t.role === 'UNISON');
-            if (unisonTargets.every(t => !t.active)) {
-              this.triggerUnisonAttack();
-              unisonTargets.forEach(t => t.active = true);
-            }
-          }
-
-          const allCleared = layer.targets.every(t => !t.active);
-          if (allCleared) {
-            layer.targets.forEach(t => t.active = true);
-            if (layerIdx < 3 && !layer.launcherActive) {
-              layer.launcherActive = true;
-              this.triggerNonStopCutin('ATTACK');
-              this.updateHUD();
-            }
-          }
-        }
-      });
-    }
-
-    // ③ 覚醒ポイント獲得用の複合ターゲット判定（中段・上段）
-    layer.awakenTargets.forEach((at) => {
-      if (!at.active) return;
-      const dist = Math.hypot(ball.x - at.x, ball.y - at.y);
-      if (dist < ball.r + at.r) {
-        const nx = (ball.x - at.x) / (dist || 1);
-        const ny = (ball.y - at.y) / (dist || 1);
-        ball.vx = nx * 470;
-        ball.vy = ny * 470;
-        at.active = false;
-        sound.playTarget();
-        this.spawnParticles(at.x, at.y, at.color, 12);
-        this.addScore(3000 * (layerIdx + 1), at.x, at.y - 16, at.color);
-
-        if (layerIdx === 1 && this.kaijin.id === 'octopus' && Math.random() < 0.45) {
-          this.inkBlots.push({
-            x: 80 + Math.random() * 300,
-            y: layer.topY + 180 + Math.random() * 320,
-            r: 55 + Math.random() * 30,
-            alpha: 0.78
+    if (ef.type === 'shockwave') {
+      const progress = 1 - Math.max(0, ef.life / ef.maxLife);
+      ef.radius = 15 + (ef.maxRadius - 15) * progress;
+      for (const e of state.enemies) {
+        if (e.hp <= 0 || ef.hitIds.has(e)) continue;
+        const d = Math.hypot(e.x - ef.x, e.y - ef.y);
+        if (d <= ef.radius + e.radius) {
+          ef.hitIds.add(e);
+          const ang = Math.atan2(e.y - ef.y, e.x - ef.x);
+          dealDamageToEnemy(e, ef.damage, {
+            isProc: ef.isProc,
+            sourceSkill: ef.sourceSkill,
+            knockbackX: Math.cos(ang) * (ef.knockback * 0.15),
+            knockbackY: Math.sin(ang) * (ef.knockback * 0.15)
           });
         }
-
-        if (layerIdx === 1) this.checkLayer1Awaken(layer, at.x, at.y);
-        if (layerIdx === 2) this.checkLayer2Awaken(layer, at.x, at.y);
       }
-    });
-
-    // 発射口（上層へのワープ魔法陣砲）判定
-    if (layerIdx < 3 && layer.launcherActive) {
-      const dLaunch = Math.hypot(ball.x - layer.launcherX, ball.y - layer.launcherY);
-      if (dLaunch < ball.r + 22) {
-        layer.launcherActive = false;
-        const nextLayer = this.layersData[layerIdx + 1];
-        sound.playWarp();
-        this.spawnParticles(layer.launcherX, layer.launcherY, '#fde047', 24);
-
-        this.mainBall.x = 230;
-        this.mainBall.y = nextLayer.bottomY - 260;
-        this.mainBall.vx = (Math.random() - 0.5) * 160;
-        this.mainBall.vy = -380;
-        this.spawnFloatingText('🚀 魔法陣砲ワープ！！', 230, nextLayer.bottomY - 280, '#fde047');
-        this.updateHUD();
-        return true;
+    } else if (ef.type === 'slash') {
+      for (const e of state.enemies) {
+        if (e.hp <= 0 || ef.hitIds.has(e)) continue;
+        const dx = e.x - ef.x;
+        const dy = e.y - ef.y;
+        const d = Math.hypot(dx, dy);
+        if (d <= ef.range + e.radius) {
+          const angDiff = Math.abs(Math.atan2(Math.sin(Math.atan2(dy, dx) - ef.angle), Math.cos(Math.atan2(dy, dx) - ef.angle)));
+          if (angDiff <= 0.85) {
+            ef.hitIds.add(e);
+            dealDamageToEnemy(e, ef.damage, {
+              isProc: ef.isProc,
+              sourceSkill: ef.sourceSkill,
+              knockbackX: Math.cos(ef.angle) * 28,
+              knockbackY: Math.sin(ef.angle) * 28
+            });
+          }
+        }
       }
-    }
-
-    // センタードレイン落下判定
-    if (ball.y + ball.r > layer.bottomY - 22) {
-      if (layer.stopperActive) {
-        layer.stopperActive = false;
-        layer.stopperTimer = 0.5;
-        ball.y = layer.bottomY - 34 - ball.r;
-        ball.vy = -680;
-        ball.vx = (Math.random() - 0.5) * 220;
-        sound.playDefense();
-        this.spawnParticles(ball.x, layer.bottomY - 26, '#38bdf8', 22);
-        this.spawnFloatingText('🛡️ 魔法バリアで落下阻止！', ball.x, layer.bottomY - 50, '#38bdf8');
-        this.updateHUD();
-        return true;
+    } else if (ef.type === 'meteor') {
+      if (ef.life <= ef.maxLife * 0.45 && !ef.exploded) {
+        ef.exploded = true;
+        Sound.explosion();
+        for (const e of state.enemies) {
+          if (e.hp <= 0) continue;
+          if (Math.hypot(e.x - ef.x, e.y - ef.y) <= ef.radius + e.radius) {
+            dealDamageToEnemy(e, ef.damage, { isProc: ef.isProc, sourceSkill: ef.sourceSkill });
+          }
+        }
       }
-
-      if (ball.isClone) {
-        return false;
+    } else if (ef.type === 'lightning') {
+      if (!ef.triggered) {
+        ef.triggered = true;
+        Sound.explosion();
+        for (const e of state.enemies) {
+          if (e.hp <= 0) continue;
+          if (Math.hypot(e.x - ef.x, e.y - ef.y) <= ef.radius + e.radius) {
+            dealDamageToEnemy(e, ef.damage, { isProc: ef.isProc });
+          }
+        }
       }
-
-      if (layerIdx > 0) {
-        ball.y = layer.bottomY + 28;
-        ball.vy = Math.min(ball.vy, 260);
-        this.spawnFloatingText('⬇️ 下層へ落下…', ball.x, layer.bottomY + 45, '#fb7185');
-      } else {
-        sound.playDrain();
-        this.triggerShake(0.5, 9);
-        this.spawnParticles(ball.x, layer.bottomY - 20, '#f43f5e', 28);
-        this.ballsLeft--;
-        this.updateHUD();
-
-        if (this.ballsLeft <= 0) {
-          this.gameOver();
-        } else {
-          this.spawnMainBallInLane();
+    } else if (ef.type === 'sanctuary') {
+      ef.tickTimer -= dt;
+      if (ef.tickTimer <= 0) {
+        ef.tickTimer = 0.45;
+        for (const e of state.enemies) {
+          if (e.hp <= 0) continue;
+          if (Math.hypot(e.x - ef.x, e.y - ef.y) <= ef.radius + e.radius) {
+            dealDamageToEnemy(e, ef.dps * 0.45, { isProc: ef.isProc, sourceSkill: ef.sourceSkill });
+          }
         }
       }
     }
 
-    return true;
-  }
-
-  checkLayer0Awaken(layer0, x, y) {
-    const allRolloversLit = layer0.rollovers.every(r => r.lit);
-    if (allRolloversLit && layer0.spinCount >= 20) {
-      layer0.rollovers.forEach(r => r.lit = false);
-      layer0.spinCount = 0;
-      sound.playBumper(1.65);
-      this.addAwakenPoints(1, x, y);
+    if (ef.life <= 0) {
+      state.effects.splice(i, 1);
     }
-    this.updateHUD();
   }
 
-  checkLayer1Awaken(layer1, x, y) {
-    const allAwakenCleared = layer1.awakenTargets.every(t => !t.active);
-    if (layer1.barrierHp <= 0 && allAwakenCleared) {
-      layer1.barrierHp = 3;
-      const core = layer1.bumpers.find(b => b.isBarrierCore);
-      if (core) core.label = 'バリア3';
-      layer1.awakenTargets.forEach(t => t.active = true);
-      sound.playBumper(1.75);
-      this.addAwakenPoints(3, x, y);
+  for (let i = state.enemies.length - 1; i >= 0; i--) {
+    const e = state.enemies[i];
+    if (e.hp <= 0) {
+      state.enemies.splice(i, 1);
+      continue;
     }
-    this.updateHUD();
-  }
+    if (e.hitFlash > 0) e.hitFlash -= dt;
 
-  checkLayer2Awaken(layer2, x, y) {
-    const allTrialCleared = layer2.awakenTargets.every(t => !t.active);
-    if (layer2.loopCount >= 3 && allTrialCleared) {
-      layer2.loopCount = 0;
-      layer2.awakenTargets.forEach(t => t.active = true);
-      sound.playBumper(1.9);
-      this.addAwakenPoints(9, x, y);
+    if (e.x < state.cameraX - 280) {
+      state.enemies.splice(i, 1);
+      continue;
     }
-    this.updateHUD();
-  }
 
-  collideSegment(ball, x1, y1, x2, y2, restitution = 0.8) {
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const lenSq = dx * dx + dy * dy;
-    let t = ((ball.x - x1) * dx + (ball.y - y1) * dy) / lenSq;
-    t = Math.max(0, Math.min(1, t));
-    const cx = x1 + t * dx;
-    const cy = y1 + t * dy;
-    const dist = Math.hypot(ball.x - cx, ball.y - cy);
-    if (dist < ball.r && dist > 0.0001) {
-      const nx = (ball.x - cx) / dist;
-      const ny = (ball.y - cy) / dist;
-      ball.x = cx + nx * (ball.r + 0.5);
-      ball.y = cy + ny * (ball.r + 0.5);
-      const vn = ball.vx * nx + ball.vy * ny;
-      if (vn < 0) {
-        ball.vx -= (1 + restitution) * vn * nx;
-        ball.vy -= (1 + restitution) * vn * ny;
+    const dx = p.x - e.x;
+    const dy = p.y - e.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist > 1) {
+      e.x += (dx / dist) * e.speed * dt;
+      e.y += (dy / dist) * e.speed * dt;
+    }
+
+    if (dist < p.radius + e.radius - 4 && p.invulnTimer <= 0) {
+      const dmgTaken = Math.max(1, Math.round(e.atk));
+      p.hp -= dmgTaken;
+      p.invulnTimer = 0.75;
+      Sound.hurt();
+      addFloatingText(p.x, p.y - 28, `-${dmgTaken}`, '#fb7185', 18);
+
+      if (p.passives['pas_hurt_nova']) {
+        const lv = p.passives['pas_hurt_nova'];
+        p.invulnTimer += 0.6 + lv * 0.35;
+        spawnShockwave(p.x, p.y, 210 * p.areaMult, p.getAttackDamage() * (1.5 + lv * 0.6), 420, '#38bdf8', true, null);
+      }
+
+      if (p.hp <= 0) {
+        p.hp = 0;
+        triggerGameOver();
+        return;
       }
     }
   }
 
-  collideFlipper(ball, p1, p2, isActive, powerMult) {
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const lenSq = dx * dx + dy * dy;
-    let t = ((ball.x - p1.x) * dx + (ball.y - p1.y) * dy) / lenSq;
-    t = Math.max(0, Math.min(1, t));
-    const cx = p1.x + t * dx;
-    const cy = p1.y + t * dy;
-    const flipR = 7;
-    const dist = Math.hypot(ball.x - cx, ball.y - cy);
-    if (dist < ball.r + flipR && dist > 0.0001) {
-      const nx = (ball.x - cx) / dist;
-      const ny = (ball.y - cy) / dist;
-      ball.x = cx + nx * (ball.r + flipR + 0.5);
-      ball.y = cy + ny * (ball.r + flipR + 0.5);
+  for (let i = state.gems.length - 1; i >= 0; i--) {
+    const g = state.gems[i];
+    const dx = p.x - g.x;
+    const dy = p.y - g.y;
+    const d = Math.hypot(dx, dy);
 
-      if (isActive) {
-        const tipLeverage = 0.65 + t * 0.55;
-        const launchPower = 890 * powerMult * tipLeverage;
-        ball.vx = nx * launchPower * 0.72 + (cx - 230) * 0.8;
-        ball.vy = -Math.abs(launchPower);
-        this.spawnParticles(cx, cy, '#fef08a', 6);
-      } else {
-        const vn = ball.vx * nx + ball.vy * ny;
-        if (vn < 0) {
-          ball.vx -= 1.65 * vn * nx;
-          ball.vy -= 1.65 * vn * ny;
-        }
+    if (d < p.magnetRange || g.magnetized) {
+      const pullSpd = g.magnetized ? 520 : 340;
+      g.x += (dx / Math.max(1, d)) * pullSpd * dt;
+      g.y += (dy / Math.max(1, d)) * pullSpd * dt;
+    }
+
+    if (d < p.radius + 14) {
+      p.exp += g.val;
+      Sound.gem();
+      state.gems.splice(i, 1);
+
+      if (p.exp >= p.nextExp) {
+        p.exp -= p.nextExp;
+        p.level++;
+        p.nextExp = calcNextExp(p.level);
+        openLevelUpModal();
+        return;
       }
     }
   }
 
-  spawnParticles(x, y, color, count) {
-    for (let i = 0; i < count; i++) {
-      const ang = Math.random() * Math.PI * 2;
-      const spd = 60 + Math.random() * 240;
-      this.particles.push({
-        x, y,
-        vx: Math.cos(ang) * spd,
-        vy: Math.sin(ang) * spd,
-        r: 2.5 + Math.random() * 3.5,
-        color,
-        life: 0.35 + Math.random() * 0.35
-      });
-    }
+  for (let i = state.floatingTexts.length - 1; i >= 0; i--) {
+    const ft = state.floatingTexts[i];
+    ft.y += ft.vy * dt;
+    ft.life -= dt;
+    if (ft.life <= 0) state.floatingTexts.splice(i, 1);
   }
 
-  spawnFloatingText(text, x, y, color = '#fff') {
-    this.floatingTexts.push({ text, x, y, color, life: 1.0 });
-  }
+  updateHUD();
+}
 
-  gameOver() {
-    this.state = 'GAMEOVER';
-    sound.stopBgm();
-    const overlay = document.getElementById('start-overlay');
-    document.getElementById('start-desc').innerHTML = `
-      <span class="text-lg font-black text-amber-300">FINAL SCORE: ${this.score.toLocaleString()}</span><br>
-      4人の魔法少女とともに4層聖域を戦い抜きました！
-    `;
-    document.getElementById('btn-start-game').textContent = '✨ もう一度プレイする ✨';
-    document.getElementById('btn-start-game').onclick = () => this.startNewGame();
-    overlay.classList.remove('hidden');
-  }
+// ----------------------------------------------------------------------------
+// 11. 描画処理（田舎町ステージ＆魔法少女＆エフェクト）
+// ----------------------------------------------------------------------------
+function draw() {
+  ctx.clearRect(0, 0, state.width, state.height);
 
-  // --------------------------------------------------------------------------
-  // HUD更新
-  // --------------------------------------------------------------------------
-  updateHUD() {
-    document.getElementById('hud-score').textContent = String(this.score).padStart(9, '0');
-    document.getElementById('hud-mult').textContent = `×${this.getScoreMultiplier()}`;
-    document.getElementById('hud-balls').textContent = '💖'.repeat(Math.max(0, this.ballsLeft)) || '💔';
+  const camX = state.cameraX;
+  const h = state.height;
 
-    document.getElementById('hud-awaken-pt').textContent = `${this.awakenPoints} / 10 pt`;
-    document.getElementById('hud-awaken-bar').style.width = `${Math.min(100, this.awakenPoints * 10)}%`;
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+  skyGrad.addColorStop(0, '#1e1b4b');
+  skyGrad.addColorStop(0.22, '#312e81');
+  skyGrad.addColorStop(0.24, '#14532d');
+  skyGrad.addColorStop(1, '#052e16');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, state.width, h);
 
-    document.getElementById('lv-white').textContent = `${this.awakenLevels.white}/4`;
-    document.getElementById('lv-blue').textContent = `${this.awakenLevels.blue}/4`;
-    document.getElementById('lv-pink').textContent = `${this.awakenLevels.pink}/4`;
-    document.getElementById('lv-yellow').textContent = `${this.awakenLevels.yellow}/4`;
+  ctx.fillStyle = '#334155';
+  ctx.fillRect(0, 85, state.width, h - 170);
 
-    for (let i = 0; i < 4; i++) {
-      const el = document.getElementById(`minimap-${i}`);
-      if (i === this.currentLayer) {
-        el.className = 'px-1.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-amber-400 text-slate-950 font-black';
-      } else {
-        el.className = 'px-1.5 py-0.5 rounded-full bg-white/10 text-gray-400';
-      }
-    }
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([36, 28]);
+  ctx.lineDashOffset = -camX;
+  ctx.beginPath();
+  ctx.moveTo(0, h * 0.5);
+  ctx.lineTo(state.width, h * 0.5);
+  ctx.stroke();
+  ctx.setLineDash([]);
 
-    const layer = this.layersData[this.currentLayer];
-    const layerTitles = [
-      '下段：戦闘員軍団エリア',
-      `中段：${this.kaijin.name}`,
-      `上段：${this.kanbu.name}`,
-      '最上段：首領・魔王ディザスター'
-    ];
-    document.getElementById('hud-layer-name').textContent = layerTitles[this.currentLayer];
-
-    const enemyIcon = document.getElementById('enemy-icon');
-    const enemyName = document.getElementById('enemy-name');
-    const enemyHint = document.getElementById('enemy-gimmick-hint');
-
-    if (this.currentLayer === 0) {
-      const litCnt = layer.rollovers.filter(r => r.lit).length;
-      enemyIcon.textContent = '👾';
-      enemyName.textContent = '悪の戦闘員軍団（覚醒+1pt）';
-      enemyHint.textContent = `覚醒条件: レーン(${litCnt}/3) ＋ スピナー(${Math.min(20, layer.spinCount)}/20回転)`;
-    } else if (this.currentLayer === 1) {
-      const tgtDone = layer.awakenTargets.filter(t => !t.active).length;
-      enemyIcon.textContent = this.kaijin.icon;
-      enemyName.textContent = `${this.kaijin.name}（覚醒+3pt）`;
-      enemyHint.textContent = `覚醒条件: バリア(残${layer.barrierHp})破壊 ＋ 怪人コア(${tgtDone}/4)`;
-    } else if (this.currentLayer === 2) {
-      const keysLit = layer.gateKeys.filter(k => !k.active).length;
-      const trialDone = layer.awakenTargets.filter(t => !t.active).length;
-      enemyIcon.textContent = this.kanbu.icon;
-      enemyName.textContent = `${this.kanbu.name}（覚醒+9pt）`;
-      enemyHint.textContent = layer.topGateOpen
-        ? `🔓開放済! 覚醒条件: 外周ループ(${Math.min(3, layer.loopCount)}/3周)＋試練(${trialDone}/3)`
-        : `🔒封印キー(${keysLit}/4)全点灯で最上段＆発射口ギミック出現！`;
-    } else {
-      enemyIcon.textContent = '😈';
-      enemyName.textContent = '闇の魔王・ディザスター（最終決戦）';
-      enemyHint.textContent = '左右盾で妨害無効！中央3基ユニゾンで4人協力大魔法！';
-    }
-
-    const tagStopper = document.getElementById('tag-stopper');
-    const tagLauncher = document.getElementById('tag-launcher');
-    if (this.currentLayer < 3) {
-      tagStopper.className = layer.stopperActive
-        ? 'px-1.5 py-0.5 rounded bg-cyan-500/30 text-cyan-200 border border-cyan-300'
-        : 'px-1.5 py-0.5 rounded bg-slate-800/80 text-gray-400 border border-white/10';
-      tagStopper.textContent = layer.stopperActive ? '🛡️防御:展開中' : '🛡️防御:未';
-
-      tagLauncher.className = layer.launcherActive
-        ? 'px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-200 border border-amber-300'
-        : 'px-1.5 py-0.5 rounded bg-slate-800/80 text-gray-400 border border-white/10';
-      tagLauncher.textContent = layer.launcherActive ? '🚀発射:出現中' : '🚀発射:未';
-    } else {
-      tagStopper.className = 'px-1.5 py-0.5 rounded bg-fuchsia-500/30 text-fuchsia-200 border border-fuchsia-300';
-      tagStopper.textContent = `魔王HP:${this.bossHpVisual}%`;
-      tagLauncher.className = 'px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-200 border border-amber-300';
-      tagLauncher.textContent = '✨最終層';
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // Canvas リッチ描画ループ
-  // --------------------------------------------------------------------------
-  render() {
-    const ctx = this.ctx;
-    const cw = this.canvas.width;
-    const ch = this.canvas.height;
-
-    ctx.clearRect(0, 0, cw, ch);
-
-    const scaleX = cw / WORLD_W;
-    const scaleY = ch / LAYER_H;
-    const scale = Math.min(scaleX, scaleY);
-    const offsetX = (cw - WORLD_W * scale) / 2;
-    const offsetY = (ch - LAYER_H * scale) / 2;
-
-    ctx.save();
-    ctx.translate(offsetX, offsetY);
-    ctx.scale(scale, scale);
-
-    if (this.shakeTimer > 0) {
-      const sx = (Math.random() - 0.5) * this.shakeIntensity * 2;
-      const sy = (Math.random() - 0.5) * this.shakeIntensity * 2;
-      ctx.translate(sx, sy);
-    }
-
-    ctx.translate(0, -this.cameraY);
-
-    for (let i = 0; i < 4; i++) {
-      const layer = this.layersData[i];
-      if (!layer) continue;
-      if (layer.bottomY < this.cameraY - 80 || layer.topY > this.cameraY + LAYER_H + 80) continue;
-      this.renderLayer(ctx, layer);
-    }
-
-    this.clones.forEach(c => this.renderBall(ctx, c));
-    if (this.mainBall) this.renderBall(ctx, this.mainBall);
-
-    this.particles.forEach(p => {
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, p.life * 1.5);
-      ctx.fillStyle = p.color;
+  ctx.strokeStyle = 'rgba(250, 204, 21, 0.35)';
+  ctx.lineWidth = 2;
+  const firstMeterMark = Math.floor(camX / (PX_PER_METER * 50)) * 50;
+  for (let m = firstMeterMark; m < firstMeterMark + 1000; m += 50) {
+    if (m < 0) continue;
+    const screenX = 180 + m * PX_PER_METER - camX;
+    if (screenX >= -50 && screenX <= state.width + 50) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-
-    this.floatingTexts.forEach(t => {
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, t.life * 1.4);
-      ctx.font = '900 15px "M PLUS Rounded 1c", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.strokeStyle = 'rgba(10, 5, 25, 0.9)';
-      ctx.lineWidth = 4;
-      ctx.strokeText(t.text, t.x, t.y);
-      ctx.fillStyle = t.color;
-      ctx.fillText(t.text, t.x, t.y);
-      ctx.restore();
-    });
-
-    this.inkBlots.forEach(b => {
-      ctx.save();
-      ctx.globalAlpha = b.alpha;
-      ctx.fillStyle = '#090314';
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-
-    ctx.restore();
-  }
-
-  renderLayer(ctx, layer) {
-    const i = layer.index;
-    const bgPalettes = [
-      ['#132a2e', '#090d1e'],
-      ['#1e1b4b', '#0f172a'],
-      ['#3b152b', '#13091f'],
-      ['#2e1065', '#090314']
-    ];
-
-    const grad = ctx.createLinearGradient(0, layer.topY, 0, layer.bottomY);
-    grad.addColorStop(0, bgPalettes[i][0]);
-    grad.addColorStop(1, bgPalettes[i][1]);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, layer.topY, WORLD_W, LAYER_H);
-
-    const now = performance.now() * 0.001;
-    ctx.save();
-    ctx.translate(230, layer.topY + 290);
-    ctx.rotate(now * 0.25 * (i % 2 === 0 ? 1 : -1));
-    ctx.strokeStyle = 'rgba(244, 114, 182, 0.14)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, 145, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.beginPath();
-    for (let k = 0; k < 6; k++) {
-      const a = (k * Math.PI) / 3;
-      const px = Math.cos(a) * 145;
-      const py = Math.sin(a) * 145;
-      if (k === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.save();
-    ctx.textAlign = 'center';
-    if (i === 0) {
-      ctx.font = '32px sans-serif';
-      ctx.fillText('👾 👾 👾', 230, layer.topY + 115);
-    } else if (i === 1) {
-      ctx.font = '48px sans-serif';
-      ctx.fillText(this.kaijin.icon, 230, layer.topY + 125);
-      if (this.kaijin.id === 'plant' || this.kaijin.id === 'machine') {
-        ctx.strokeStyle = this.kaijin.id === 'plant' ? 'rgba(16,185,129,0.35)' : 'rgba(148,163,184,0.4)';
-        ctx.setLineDash([6, 6]);
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(230, layer.topY + 270, 65, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-    } else if (i === 2) {
-      ctx.font = '48px sans-serif';
-      ctx.fillText(this.kanbu.icon, 230, layer.topY + 185);
-      if (this.kanbu.id === 'fire') {
-        ctx.strokeStyle = 'rgba(239,68,68,0.45)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(230, layer.topY + 240, 48, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    } else if (i === 3) {
-      const shakeX = this.bossEndureTimer > 0 ? (Math.random() - 0.5) * 14 : 0;
-      ctx.font = '56px sans-serif';
-      ctx.fillText(this.bossEndureTimer > 0 ? '😈💦' : '😈', 230 + shakeX, layer.topY + 125);
-    }
-    ctx.restore();
-
-    // 外壁・ガイドレール描画
-    ctx.strokeStyle = '#f472b6';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(26, layer.topY + 18);
-    ctx.lineTo(26, layer.bottomY - 210);
-    ctx.lineTo(128, layer.flipperY - 6);
-    ctx.moveTo(432, layer.topY + 18);
-    ctx.lineTo(432, layer.bottomY - 210);
-    ctx.lineTo(332, layer.flipperY - 6);
-    ctx.stroke();
-
-    // 天井壁
-    ctx.beginPath();
-    ctx.moveTo(26, layer.topY + 18);
-    ctx.lineTo(185, layer.topY + 18);
-    ctx.moveTo(275, layer.topY + 18);
-    ctx.lineTo(432, layer.topY + 18);
-    ctx.stroke();
-
-    // 上段→最上段の「封印の結界ゲート」描画
-    if (i === 2 && !layer.topGateOpen) {
-      const remKeys = layer.gateKeys.filter(k => k.active).length;
-      ctx.save();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 6;
-      ctx.shadowColor = '#f59e0b';
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      ctx.moveTo(182, layer.topY + 18);
-      ctx.lineTo(278, layer.topY + 18);
+      ctx.moveTo(screenX, 85);
+      ctx.lineTo(screenX, h - 85);
       ctx.stroke();
-      ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 11px "M PLUS Rounded 1c", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(`🔒封印結界(残キー${remKeys})`, 230, layer.topY + 34);
-      ctx.restore();
-    } else if (i < 3) {
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('▲ UP ▲', 230, layer.topY + 32);
-    }
 
-    // 外周ループレーン＆インレーン・アウトレーンガイド線描画
+      ctx.fillStyle = 'rgba(250, 204, 21, 0.6)';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(`${m}m`, screenX + 6, 102);
+    }
+  }
+
+  for (const obj of state.bgObjects) {
+    const sx = obj.x - camX;
+    if (sx < -80 || sx > state.width + 80) continue;
+    drawBgProp(sx, obj.y, obj.type, obj.scale);
+  }
+
+  for (const ef of state.effects) {
+    if (ef.type === 'sanctuary') {
+      const sx = ef.x - camX;
+      ctx.save();
+      ctx.fillStyle = ef.color + '33';
+      ctx.strokeStyle = ef.color + '99';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx, ef.y, ef.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  for (const g of state.gems) {
+    const sx = g.x - camX;
     ctx.save();
-    ctx.strokeStyle = 'rgba(244, 114, 182, 0.45)';
+    ctx.fillStyle = g.color;
+    ctx.shadowColor = g.color;
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.moveTo(sx, g.y - 7);
+    ctx.lineTo(sx + 5, g.y);
+    ctx.lineTo(sx, g.y + 7);
+    ctx.lineTo(sx - 5, g.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  for (const e of state.enemies) {
+    const sx = e.x - camX;
+    if (sx < -60 || sx > state.width + 60) continue;
+    ctx.save();
+
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath();
+    ctx.ellipse(sx, e.y + e.radius * 0.85, e.radius * 0.85, e.radius * 0.35, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = e.hitFlash > 0 ? '#ffffff' : e.arch.color;
+    ctx.beginPath();
+    ctx.arc(sx, e.y, e.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.stroke();
+
+    ctx.font = `${Math.round(e.radius * 1.25)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(e.arch.icon, sx, e.y + 1);
+
+    if (e.hp < e.maxHp) {
+      const bw = e.radius * 1.8;
+      const bh = 4;
+      const ratio = Math.max(0, e.hp / e.maxHp);
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(sx - bw / 2, e.y - e.radius - 10, bw, bh);
+      ctx.fillStyle = '#fb7185';
+      ctx.fillRect(sx - bw / 2, e.y - e.radius - 10, bw * ratio, bh);
+    }
+    ctx.restore();
+  }
+
+  const p = state.player;
+  const px = p.x - camX;
+  ctx.save();
+
+  ctx.strokeStyle = 'rgba(244, 114, 182, 0.14)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(px, p.y, p.magnetRange, 0, Math.PI * 2);
+  ctx.stroke();
+
+  if (p.invulnTimer > 0) {
+    ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(54, layer.bottomY - 165);
-    ctx.lineTo(128, layer.flipperY - 4);
-    ctx.moveTo(404, layer.bottomY - 165);
-    ctx.lineTo(332, layer.flipperY - 4);
+    ctx.arc(px, p.y, p.radius + 8, 0, Math.PI * 2);
     ctx.stroke();
-
-    if (i === 2) {
-      ctx.strokeStyle = 'rgba(253, 224, 71, 0.35)';
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(48, layer.bottomY - 220);
-      ctx.lineTo(48, layer.topY + 110);
-      ctx.moveTo(410, layer.bottomY - 220);
-      ctx.lineTo(410, layer.topY + 110);
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
-    ctx.restore();
-
-    // 左右三角スリングショット描画
-    layer.slingshots.forEach((sl) => {
-      ctx.save();
-      ctx.fillStyle = sl.flash > 0 ? '#fef08a' : 'rgba(236, 72, 153, 0.28)';
-      ctx.strokeStyle = sl.flash > 0 ? '#ffffff' : '#f472b6';
-      ctx.lineWidth = 3;
-      if (sl.flash > 0) {
-        ctx.shadowColor = '#fde047';
-        ctx.shadowBlur = 14;
-      }
-      ctx.beginPath();
-      ctx.moveTo(sl.x1, sl.y1);
-      ctx.lineTo(sl.x2, sl.y2);
-      ctx.lineTo(sl.x3, sl.y3);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-    });
-
-    // 上部ロールオーバーレーン描画
-    layer.rollovers.forEach((ro) => {
-      ctx.save();
-      ctx.fillStyle = ro.lit ? '#38bdf8' : 'rgba(15, 23, 42, 0.75)';
-      ctx.strokeStyle = ro.lit ? '#ffffff' : '#38bdf8';
-      ctx.lineWidth = 2;
-      if (ro.lit) {
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 12;
-      }
-      ctx.beginPath();
-      ctx.arc(ro.x, ro.y, ro.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = ro.lit ? '#090414' : '#bae6fd';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(ro.label, ro.x, ro.y + 4);
-      ctx.restore();
-    });
-
-    // 回転スピナー描画
-    if (layer.spinner) {
-      const sp = layer.spinner;
-      const bladeW = Math.max(4, Math.abs(Math.cos(sp.angle)) * sp.w);
-      ctx.save();
-      ctx.strokeStyle = '#67e8f9';
-      ctx.lineWidth = 4;
-      ctx.shadowColor = '#22d3ee';
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.moveTo(sp.x - bladeW / 2, sp.y);
-      ctx.lineTo(sp.x + bladeW / 2, sp.y);
-      ctx.stroke();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(sp.x - sp.w / 2, sp.y, 3, 0, Math.PI * 2);
-      ctx.arc(sp.x + sp.w / 2, sp.y, 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // 下段右端：プランジャーレーン描画
-    if (i === 0) {
-      ctx.strokeStyle = '#fbbf24';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(438, layer.topY + 115);
-      ctx.lineTo(438, layer.bottomY - 30);
-      ctx.lineTo(472, layer.bottomY - 30);
-      ctx.lineTo(472, layer.topY + 60);
-      ctx.stroke();
-
-      const springTop = layer.bottomY - 108 + this.plungerCharge * 42;
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(442, springTop, 26, layer.bottomY - 32 - springTop);
-    }
-
-    // ストッパー（魔法防御バリア）描画
-    if (layer.stopperActive) {
-      ctx.save();
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 6;
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 15;
-      ctx.beginPath();
-      ctx.moveTo(132, layer.bottomY - 26);
-      ctx.lineTo(328, layer.bottomY - 26);
-      ctx.stroke();
-      ctx.fillStyle = '#bae6fd';
-      ctx.font = 'bold 11px "M PLUS Rounded 1c", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('🛡️ MAGICAL BARRIER ACTIVE 🛡️', 230, layer.bottomY - 10);
-      ctx.restore();
-    }
-
-    // 発射口（上層へのワープ魔法陣砲）描画
-    if (i < 3 && layer.launcherActive) {
-      ctx.save();
-      ctx.translate(layer.launcherX, layer.launcherY);
-      ctx.rotate(now * 3);
-      ctx.strokeStyle = '#fde047';
-      ctx.lineWidth = 3;
-      ctx.shadowColor = '#f59e0b';
-      ctx.shadowBlur = 16;
-      ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.strokeRect(-14, -14, 28, 28);
-      ctx.restore();
-
-      ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 10px "M PLUS Rounded 1c", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('🚀UP砲', layer.launcherX, layer.launcherY + 34);
-    }
-
-    // ① 上段（Layer 2）封印解除キー描画（ゲート閉鎖中のみ表示）
-    if (i === 2 && !layer.topGateOpen) {
-      layer.gateKeys.forEach((gk) => {
-        ctx.save();
-        ctx.fillStyle = gk.active ? '#f59e0b' : 'rgba(245, 158, 11, 0.22)';
-        ctx.strokeStyle = gk.active ? '#ffffff' : '#78350f';
-        ctx.lineWidth = 2;
-        if (gk.active) {
-          ctx.shadowColor = '#f59e0b';
-          ctx.shadowBlur = 12;
-        }
-        ctx.beginPath();
-        ctx.arc(gk.x, gk.y, gk.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = gk.active ? '#090414' : '#fde68a';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(gk.active ? '鍵' : '済', gk.x, gk.y + 3.5);
-        ctx.restore();
-      });
-    }
-
-    // ② 発射口出現ギミック（ターゲット）描画
-    // ※上段（i === 2）はゲート開放（layer.topGateOpen === true）までは一切描画しない！
-    const showLauncherTargets = i !== 2 || layer.topGateOpen;
-    if (showLauncherTargets) {
-      layer.targets.forEach(tgt => {
-        if (!tgt.active) return;
-        ctx.save();
-        ctx.fillStyle = tgt.color;
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        ctx.shadowColor = tgt.color;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.arc(tgt.x, tgt.y, tgt.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        const icon = tgt.role === 'DEFENSE' ? '盾' : tgt.role === 'UNISON' ? '★' : '砲';
-        ctx.fillText(icon, tgt.x, tgt.y + 3.5);
-        ctx.restore();
-      });
-    }
-
-    // ③ 覚醒ポイント用の複合ターゲット描画（中段・上段）
-    layer.awakenTargets.forEach(at => {
-      ctx.save();
-      ctx.fillStyle = at.active ? at.color : 'rgba(148, 163, 184, 0.25)';
-      ctx.strokeStyle = at.active ? '#fde047' : '#475569';
-      ctx.lineWidth = 2;
-      if (at.active) {
-        ctx.shadowColor = at.color;
-        ctx.shadowBlur = 10;
-      }
-      ctx.beginPath();
-      ctx.arc(at.x, at.y, at.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = at.active ? '#090414' : '#94a3b8';
-      ctx.font = 'bold 9px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(at.active ? '覚醒' : '済', at.x, at.y + 3);
-      ctx.restore();
-    });
-
-    // バンパー描画
-    layer.bumpers.forEach(bmp => {
-      const scaleB = 1 + bmp.hitAnim * 0.25;
-      ctx.save();
-      ctx.translate(bmp.x, bmp.y);
-      ctx.scale(scaleB, scaleB);
-      ctx.fillStyle = bmp.color;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 3;
-      ctx.shadowColor = bmp.color;
-      ctx.shadowBlur = 14;
-      ctx.beginPath();
-      ctx.arc(0, 0, bmp.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = '#090414';
-      ctx.font = 'bold 11px "M PLUS Rounded 1c", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(bmp.label, 0, 4);
-      ctx.restore();
-    });
-
-    // 左右フリッパー描画
-    const flipLen = this.bossActiveDebuff === 'FLIPPER_SHRINK' ? 54 : 74;
-    this.drawFlipper(ctx, 132, layer.flipperY, layer.leftFlipperAngle, flipLen, '#f472b6');
-    this.drawFlipper(ctx, 328, layer.flipperY, layer.rightFlipperAngle, flipLen, '#38bdf8');
   }
 
-  drawFlipper(ctx, px, py, angle, len, color) {
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath();
+  ctx.ellipse(px, p.y + 16, 15, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#f472b6';
+  ctx.shadowColor = '#f472b6';
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.arc(px, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#ffffff';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  ctx.font = '22px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🎀', px, p.y - 1);
+
+  const wandX = px + Math.cos(p.facingAngle) * 24;
+  const wandY = p.y + Math.sin(p.facingAngle) * 24;
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.arc(wandX, wandY, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+
+  for (const proj of state.projectiles) {
+    const sx = proj.x - camX;
     ctx.save();
-    ctx.translate(px, py);
-    ctx.rotate(angle);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 14;
-    ctx.lineCap = 'round';
-    ctx.shadowColor = color;
+    ctx.fillStyle = proj.color;
+    ctx.shadowColor = proj.color;
     ctx.shadowBlur = 10;
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(len, 0);
-    ctx.stroke();
-
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(4, 0);
-    ctx.lineTo(len - 4, 0);
-    ctx.stroke();
+    ctx.arc(sx, proj.y, proj.radius, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
-  renderBall(ctx, ball) {
-    ball.trail.forEach(tr => {
-      if (tr.alpha <= 0) return;
-      ctx.save();
-      ctx.globalAlpha = tr.alpha * 0.45;
-      ctx.fillStyle = ball.isClone ? '#f472b6' : '#fef08a';
-      ctx.beginPath();
-      ctx.arc(tr.x, tr.y, ball.r * 0.75, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-
+  for (const ef of state.effects) {
+    const alpha = Math.max(0, ef.life / ef.maxLife);
     ctx.save();
-    if (ball.isClone) {
-      ctx.fillStyle = 'rgba(236, 72, 153, 0.72)';
-      ctx.strokeStyle = '#fbcfe8';
-      ctx.lineWidth = 2.5;
-      ctx.shadowColor = '#ec4899';
-      ctx.shadowBlur = 14;
+    if (ef.type === 'shockwave') {
+      const sx = ef.x - camX;
+      ctx.strokeStyle = ef.color;
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = 5;
       ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.arc(sx, ef.y, ef.radius, 0, Math.PI * 2);
       ctx.stroke();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('♥', ball.x, ball.y + 4);
-    } else {
-      const grad = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 2, ball.x, ball.y, ball.r);
-      grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(0.55, '#fde047');
-      grad.addColorStop(1, '#38bdf8');
-      ctx.fillStyle = grad;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
-      ctx.shadowColor = '#fde047';
-      ctx.shadowBlur = 16;
+    } else if (ef.type === 'slash') {
+      const sx = ef.x - camX;
+      ctx.strokeStyle = ef.color;
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.arc(sx, ef.y, ef.range * 0.78, ef.angle - 0.85, ef.angle + 0.85);
+      ctx.stroke();
+    } else if (ef.type === 'meteor') {
+      const sx = ef.x - camX;
+      if (!ef.exploded) {
+        ctx.strokeStyle = 'rgba(244, 114, 182, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sx, ef.y, ef.radius, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = 'rgba(251, 146, 60, 0.55)';
+        ctx.beginPath();
+        ctx.arc(sx, ef.y, ef.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (ef.type === 'lightning') {
+      const sx = ef.x - camX;
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 6 * alpha;
+      ctx.beginPath();
+      ctx.moveTo(sx + 15, ef.y - 220);
+      ctx.lineTo(sx - 8, ef.y - 110);
+      ctx.lineTo(sx + 6, ef.y - 50);
+      ctx.lineTo(sx, ef.y);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(250, 204, 21, 0.35)';
+      ctx.beginPath();
+      ctx.arc(sx, ef.y, ef.radius, 0, Math.PI * 2);
       ctx.fill();
+    } else if (ef.type === 'chain') {
+      ctx.strokeStyle = '#c084fc';
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ef.points.forEach((pt, idx) => {
+        if (idx === 0) ctx.moveTo(pt.x - camX, pt.y);
+        else ctx.lineTo(pt.x - camX, pt.y);
+      });
       ctx.stroke();
     }
+    ctx.restore();
+  }
+
+  for (const ft of state.floatingTexts) {
+    const sx = ft.x - camX;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
+    ctx.font = `900 ${ft.size}px 'M PLUS Rounded 1c', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(ft.text, sx + 1.5, ft.y + 1.5);
+    ctx.fillStyle = ft.color;
+    ctx.fillText(ft.text, sx, ft.y);
     ctx.restore();
   }
 }
 
+function drawBgProp(x, y, type, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.font = '28px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  const icons = {
+    pole: '🗼',
+    vending: '🥤',
+    busstop: '🚏',
+    scarecrow: '🌾',
+    hydrant: '🧯',
+    tree: '🌳'
+  };
+  ctx.fillText(icons[type] || '🌳', 0, 0);
+  ctx.restore();
+}
+
 // ----------------------------------------------------------------------------
-// 5. ゲーム起動＆アニメーションループ
+// 12. HUD＆UI更新処理
 // ----------------------------------------------------------------------------
-window.onload = function () {
-  const game = new PinballGame();
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
 
-  function gameLoop(timestamp) {
-    if (!game.lastTime) game.lastTime = timestamp;
-    const dt = Math.min(0.033, (timestamp - game.lastTime) / 1000);
-    game.lastTime = timestamp;
+function updateHUD() {
+  const p = state.player;
+  const currMeters = Math.max(0, Math.floor((p.x - 180) / PX_PER_METER));
+  const depthMults = getDepthMultipliers(currMeters);
+  const timeMults = getTimeMultipliers(state.elapsedTime);
 
-    game.update(dt);
-    game.render();
+  document.getElementById('hudMaxDist').textContent = state.maxDistanceMeters;
+  document.getElementById('hudCurrDist').textContent = currMeters;
+  document.getElementById('hudBestDist').textContent = state.bestDistanceMeters;
 
-    requestAnimationFrame(gameLoop);
+  document.getElementById('hudDepthLv').textContent = depthMults.depthLv;
+  document.getElementById('hudEnemyMult').textContent = depthMults.hpMult.toFixed(1);
+  document.getElementById('hudTime').textContent = formatTime(state.elapsedTime);
+  document.getElementById('hudSpawnMult').textContent = timeMults.spawnRateMult.toFixed(1);
+  document.getElementById('hudKills').textContent = state.kills;
+
+  document.getElementById('hudLevel').textContent = p.level;
+  document.getElementById('hudHpText').textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+  document.getElementById('hudHpBar').style.width = `${Math.max(0, (p.hp / p.maxHp) * 100)}%`;
+
+  document.getElementById('hudExpText').textContent = `${p.exp} / ${p.nextExp}`;
+  document.getElementById('hudExpBar').style.width = `${Math.min(100, (p.exp / p.nextExp) * 100)}%`;
+
+  p.skills.forEach((sk, idx) => {
+    const btn = document.getElementById(`skillBtn_${idx}`);
+    const overlay = document.getElementById(`skillCdOverlay_${idx}`);
+    const cdText = document.getElementById(`skillCdText_${idx}`);
+    if (!btn || !overlay || !cdText) return;
+
+    if (sk.currentCd > 0) {
+      btn.classList.remove('skill-ready');
+      const totalCd = sk.def.cd * sk.cdMult * (1 - Math.min(0.65, p.cdReduction));
+      const pct = Math.min(100, (sk.currentCd / totalCd) * 100);
+      overlay.style.height = `${pct}%`;
+      cdText.textContent = sk.currentCd.toFixed(1);
+      cdText.classList.remove('hidden');
+    } else {
+      btn.classList.add('skill-ready');
+      overlay.style.height = '0%';
+      cdText.classList.add('hidden');
+    }
+  });
+}
+
+function renderSkillSlots() {
+  const container = document.getElementById('skillSlotsContainer');
+  container.innerHTML = '';
+  state.player.skills.forEach((sk, idx) => {
+    const btn = document.createElement('button');
+    btn.id = `skillBtn_${idx}`;
+    btn.className = 'relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl glass-panel border-2 border-pink-400/60 flex flex-col items-center justify-center overflow-hidden shadow-lg active:scale-95 transition cursor-pointer';
+    btn.onclick = () => useActiveSkill(idx);
+
+    btn.innerHTML = `
+      <span class="absolute top-1 left-1.5 text-[10px] font-black bg-slate-900/80 text-pink-300 px-1.5 rounded">${idx + 1}</span>
+      ${sk.mods.length > 0 ? `<span class="absolute top-1 right-1.5 text-[10px] font-black bg-cyan-500 text-slate-950 px-1.5 rounded">+${sk.mods.length}</span>` : ''}
+      <span class="text-2xl sm:text-3xl mb-0.5">${sk.def.icon}</span>
+      <span class="text-[10px] sm:text-xs font-bold text-white truncate w-full px-1 text-center">${sk.def.name.split('・')[0]}</span>
+      <div id="skillCdOverlay_${idx}" class="absolute bottom-0 left-0 right-0 bg-slate-950/80 transition-all duration-75" style="height: 0%;"></div>
+      <span id="skillCdText_${idx}" class="absolute inset-0 flex items-center justify-center text-lg sm:text-xl font-black text-amber-300 hidden"></span>
+    `;
+    container.appendChild(btn);
+  });
+}
+
+// ----------------------------------------------------------------------------
+// 13. レベルアップ5択＆スキル効果付与UI
+// ----------------------------------------------------------------------------
+function generateLevelUpChoices() {
+  const p = state.player;
+  const pool = [];
+
+  for (const mod of SKILL_MODIFIERS_POOL) {
+    pool.push({
+      kind: 'modifier',
+      data: mod,
+      tag: 'スキル効果追加',
+      tagColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-400/40',
+      icon: mod.icon,
+      title: mod.name,
+      desc: mod.desc
+    });
   }
 
+  for (const pas of PASSIVES_POOL) {
+    const currLv = p.passives[pas.id] || 0;
+    if (currLv >= pas.maxLv) continue;
+    pool.push({
+      kind: 'passive',
+      data: pas,
+      tag: `${pas.tag} (Lv.${currLv + 1})`,
+      tagColor: pas.type === 'passive' ? 'bg-pink-500/20 text-pink-300 border-pink-400/40' : 'bg-amber-500/20 text-amber-300 border-amber-400/40',
+      icon: pas.icon,
+      title: pas.name,
+      desc: pas.desc
+    });
+  }
+
+  const shuffled = pool.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 5);
+}
+
+function openLevelUpModal() {
+  state.mode = 'levelup';
+  Sound.levelUp();
+  state.currentLevelUpChoices = generateLevelUpChoices();
+  state.pendingModifierCard = null;
+
+  document.getElementById('skillTargetSelector').classList.add('hidden');
+  const container = document.getElementById('upgradeCardsContainer');
+  container.classList.remove('hidden');
+  container.innerHTML = '';
+
+  state.currentLevelUpChoices.forEach((choice, idx) => {
+    const card = document.createElement('button');
+    card.className = 'card-hover glass-panel rounded-2xl p-4 text-left flex flex-col justify-between border-2 border-white/15 cursor-pointer h-full relative';
+    card.onclick = () => handleUpgradeSelection(choice);
+
+    card.innerHTML = `
+      <div>
+        <div class="flex justify-between items-center gap-1 mb-2">
+          <span class="inline-block text-[10px] font-black px-2 py-0.5 rounded-full border ${choice.tagColor}">
+            ${choice.tag}
+          </span>
+          <span class="bg-slate-800 border border-white/20 text-amber-300 text-xs font-black px-2 py-0.5 rounded-md">
+            [${idx + 1}]
+          </span>
+        </div>
+        <div class="text-3xl mb-2">${choice.icon}</div>
+        <div class="text-sm sm:text-base font-black text-white mb-1.5 leading-snug">${choice.title}</div>
+        <p class="text-xs text-slate-300 leading-relaxed">${choice.desc}</p>
+      </div>
+      <div class="mt-3 pt-2 border-t border-white/10 text-[11px] font-bold text-pink-300 text-right">
+        選択する →
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById('screenLevelUp').classList.remove('hidden');
+}
+
+function handleUpgradeSelection(choice) {
+  const p = state.player;
+
+  if (choice.kind === 'modifier') {
+    state.pendingModifierCard = choice.data;
+    document.getElementById('upgradeCardsContainer').classList.add('hidden');
+    const selector = document.getElementById('skillTargetSelector');
+    selector.classList.remove('hidden');
+    document.getElementById('selectedModDesc').textContent = `${choice.data.name}：${choice.data.desc}`;
+
+    const btnBox = document.getElementById('skillTargetButtons');
+    btnBox.innerHTML = '';
+    p.skills.forEach((sk, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'card-hover bg-slate-900/90 hover:bg-slate-800 border-2 border-cyan-400/40 rounded-xl p-3 text-left cursor-pointer';
+      btn.onclick = () => {
+        choice.data.apply(sk);
+        finishLevelUp();
+      };
+      btn.innerHTML = `
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">${sk.def.icon}</span>
+            <span class="font-black text-sm text-white">${sk.def.name}</span>
+          </div>
+          <span class="bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-black px-2 py-0.5 rounded">[${idx + 1}]</span>
+        </div>
+        <div class="text-[11px] text-slate-400">付与済み効果: ${sk.mods.length > 0 ? sk.mods.map(m => m.label).join(', ') : 'なし'}</div>
+      `;
+      btnBox.appendChild(btn);
+    });
+  } else {
+    const id = choice.data.id;
+    p.passives[id] = (p.passives[id] || 0) + 1;
+
+    if (id === 'stat_atk') {
+      p.atkMult *= 1.22;
+      p.aspdMult += 0.10;
+    } else if (id === 'stat_hp_magnet') {
+      p.maxHp += 25;
+      p.hp = Math.min(p.maxHp, p.hp + 25);
+      p.magnetRange *= 1.35;
+    } else if (id === 'stat_area_cd') {
+      p.areaMult *= 1.18;
+      p.cdReduction = Math.min(0.65, p.cdReduction + 0.10);
+    }
+
+    finishLevelUp();
+  }
+}
+
+function cancelTargetSelection() {
+  state.pendingModifierCard = null;
+  document.getElementById('skillTargetSelector').classList.add('hidden');
+  document.getElementById('upgradeCardsContainer').classList.remove('hidden');
+}
+
+function finishLevelUp() {
+  state.pendingModifierCard = null;
+  document.getElementById('screenLevelUp').classList.add('hidden');
+  renderSkillSlots();
+  updateHUD();
+  state.mode = 'playing';
+  state.lastTime = performance.now();
+}
+
+// ----------------------------------------------------------------------------
+// 14. ビルド確認モーダル & ゲームオーバー処理
+// ----------------------------------------------------------------------------
+function generateBuildHTML() {
+  const p = state.player;
+  let html = `
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900/80 p-3 rounded-xl border border-white/10 text-xs">
+      <div><span class="text-slate-400">攻撃力:</span> <span class="font-bold text-white">${Math.round(p.getAttackDamage())}</span></div>
+      <div><span class="text-slate-400">最大HP:</span> <span class="font-bold text-rose-300">${p.maxHp}</span></div>
+      <div><span class="text-slate-400">クリ率:</span> <span class="font-bold text-amber-300">${Math.round(p.critChance * 100)}%</span></div>
+      <div><span class="text-slate-400">CD短縮:</span> <span class="font-bold text-cyan-300">${Math.round(p.cdReduction * 100)}%</span></div>
+    </div>
+    <div>
+      <div class="font-bold text-pink-300 mb-2">所持アクティブスキル (3枠)</div>
+      <div class="space-y-2">
+  `;
+
+  p.skills.forEach(sk => {
+    const effCd = (sk.def.cd * sk.cdMult * (1 - p.cdReduction)).toFixed(1);
+    html += `
+      <div class="bg-slate-900/70 p-3 rounded-xl border border-white/10">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-black text-white">${sk.def.icon} ${sk.def.name}</span>
+          <span class="text-xs text-amber-300">CD: ${effCd}秒 / 威力倍率: ×${sk.dmgMult.toFixed(2)}</span>
+        </div>
+        <p class="text-xs text-slate-300 mb-1.5">${sk.def.desc}</p>
+        <div class="flex flex-wrap gap-1">
+          ${sk.mods.length > 0
+            ? sk.mods.map(m => `<span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 px-2 py-0.5 rounded-full">${m.label}</span>`).join('')
+            : '<span class="text-[10px] text-slate-500">追加効果なし</span>'}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div></div><div><div class="font-bold text-cyan-300 mb-2">獲得パッシブ＆誘発能力</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2">`;
+
+  const ownedPassiveIds = Object.keys(p.passives);
+  if (ownedPassiveIds.length === 0) {
+    html += `<div class="text-xs text-slate-500">まだパッシブスキルを獲得していません。</div>`;
+  } else {
+    ownedPassiveIds.forEach(id => {
+      const def = PASSIVES_POOL.find(x => x.id === id);
+      if (!def) return;
+      html += `
+        <div class="bg-slate-900/70 p-2.5 rounded-xl border border-white/10">
+          <div class="font-bold text-white text-xs">${def.icon} ${def.name} <span class="text-pink-400">Lv.${p.passives[id]}</span></div>
+          <div class="text-[11px] text-slate-300 mt-0.5">${def.desc}</div>
+        </div>
+      `;
+    });
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+function openBuildModal() {
+  if (state.mode !== 'playing' && state.mode !== 'levelup') return;
+  state.previousModeBeforeBuild = state.mode;
+  state.mode = 'paused';
+  document.getElementById('buildModalContent').innerHTML = generateBuildHTML();
+  document.getElementById('screenBuild').classList.remove('hidden');
+}
+
+function closeBuildModal() {
+  document.getElementById('screenBuild').classList.add('hidden');
+  state.mode = state.previousModeBeforeBuild || 'playing';
+  state.lastTime = performance.now();
+}
+
+function triggerGameOver() {
+  state.mode = 'gameover';
+  document.getElementById('overDist').textContent = state.maxDistanceMeters;
+  document.getElementById('overTime').textContent = formatTime(state.elapsedTime);
+  document.getElementById('overKills').textContent = state.kills;
+  document.getElementById('overLv').textContent = state.player.level;
+  document.getElementById('overBuildSummary').innerHTML = generateBuildHTML();
+  document.getElementById('screenGameOver').classList.remove('hidden');
+}
+
+// ボタンイベントバインド
+document.getElementById('btnStartGame').onclick = startNewGame;
+document.getElementById('btnRetryGame').onclick = startNewGame;
+document.getElementById('btnBuildView').onclick = openBuildModal;
+document.getElementById('btnLevelUpBuildView').onclick = openBuildModal;
+document.getElementById('btnCloseBuild').onclick = closeBuildModal;
+document.getElementById('btnCancelTarget').onclick = cancelTargetSelection;
+
+// ----------------------------------------------------------------------------
+// 15. アニメーションフレーム起動
+// ----------------------------------------------------------------------------
+function gameLoop(timestamp) {
+  const dt = Math.min(0.05, (timestamp - state.lastTime) / 1000);
+  state.lastTime = timestamp;
+
+  update(dt);
+  draw();
+
+  requestAnimationFrame(gameLoop);
+}
+
+window.onload = function () {
+  initBgObjects();
+  state.lastTime = performance.now();
   requestAnimationFrame(gameLoop);
 };
 </script>
